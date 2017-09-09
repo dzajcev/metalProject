@@ -1,0 +1,12 @@
+
+dependencies {
+	providedCompile("javax.ws.rs:javax.ws.rs-api:${javax_ws_rs_javax_ws_rs_api_version}")
+	providedCompile("org.jboss.spec:jboss-javaee-6.0:${org_jboss_spec_jboss_javaee_6_0_version}")
+	compile("net.sf.dozer:dozer:${net_sf_dozer_dozer_version}") {
+		exclude module: 'commons-beanutils'
+		exclude module: 'commons-collections'
+	}
+	compile("commons-collections:commons-collections:3.2.2")
+	compile("commons-beanutils:commons-beanutils:1.9.3")
+    providedCompile("com.google.code.findbugs:jsr305:3.0.1");
+}

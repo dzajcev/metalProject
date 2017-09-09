@@ -1,0 +1,14 @@
+1.
+Connect to mtdb and run:
+
+DROP SCHEMA mtsm CASCADE;
+DROP TABLE public.databasechangelog;
+DROP TABLE public.databasechangeloglock;
+
+
+2.
+Connect to edb and run:
+
+DROP database mtdb;
+DROP user mt_user;
+delete from public.databasechangelog where id like 'mt-%'

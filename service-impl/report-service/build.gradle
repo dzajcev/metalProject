@@ -1,0 +1,4 @@
+dependencies {
+	 deploy project(":service-impl:report-service:report-service-impl")
+	 earlib project(path:":service-impl:report-service:report-service-impl", configuration: 'compile')
+}

@@ -1,0 +1,907 @@
+import org.tmatesoft.svn.core.wc.*
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+
+ext{
+    apacheHttpClientVersion = '4.5.3'
+    aspectjVersion = '1.8.9'
+    camelVersion = '2.19.0'
+    apachePoiVersion = '3.15'
+    commonsCompressVersion = '1.13'
+    ioNettyVersion = '3.9.2.Final'
+    xalanVersion='2.7.2'
+    ch_mimo_netty_icap_version='1.0.1.GA';
+    com_amazonaws_aws_java_sdk_version='1.9.1';
+    com_floreysoft_jmte_version='3.0';
+    com_google_code_findbugs_jsr305='3.0.1';
+    com_google_code_gson_gson_version='2.6.2';
+    com_google_guava_guava_version='13.0.1.redhat-2';
+    com_h2database_h2_version='1.4.178';
+    com_hazelcast_hazelcast_all_version='3.5.4';
+    commons_codec_commons_codec_version='1.4.0.redhat-4';
+    commons_codec_commons_codec_version_integration = '1.10'
+    commons_collections_commons_collections_version='3.2.2';
+    commons_fileupload_commons_fileupload_version='1.3.2';
+    commons_io_commons_io_version='2.5';
+    commons_io_commons_io_version_provided='2.1.0.redhat-4';
+    commons_lang_commons_lang_version_provided='2.6.0.redhat-4'; //TODO кто-то использует commonsLang3Version более новый
+    commons_logging_commons_logging_version='1.1.1'; //TODO почему не log4j?
+    commonsLang3Version = '3.5'
+    cxfVersion = '3.1.8'
+    hibernateJPAModelGenVersion='4.3.11.Final';
+    javax_enterprise_cdi_api_version='1.0-SP4';  //TODO в чем смысл таких спецификаций, когда есть org_jboss_spec_jboss_javaee_6_0_version?
+    javax_ws_rs_javax_ws_rs_api_version='2.0';
+    joda_time_joda_time_version='2.5';
+    junit_junit_version='4.12';
+    lanitSecurityAPIVersion = '4.4.0-SNAPSHOT'
+    log4j_log4j_version='1.2.17';
+    mysql_mysql_connector_java_version='5.1.34';
+    net_sf_dozer_dozer_version='5.5.1';
+    org_apache_activemq_activemq_all_version='5.14.5';
+    org_apache_commons_commons_lang3_version='3.3.1'; //TODO: remove this or commonsLang3Version
+    org_apache_tika_tika_core_version='1.14';
+    org_apache_tika_tika_parsers_version='1.14';
+    org_apache_xmlgraphics_fop_version='2.2';
+    org_bouncycastle_bcprov_version='1.46';
+    org_codehaus_jackson_jackson_mapper_asl_version='1.9.13';
+    org_codehaus_plexus_plexus_classworlds_version='2.4.2';
+    org_freemarker_freemarker_version='2.3.14';
+    org_hibernate_hibernate_core_version='4.2.18.Final-redhat-2'; //TODO why don't they use built-in jboss version?
+    org_hibernate_hibernate_entitymanager_version='4.2.18.Final-redhat-2';
+    org_hibernate_hibernate_validator_version='4.3.2.Final-redhat-2';//TODO ReflectionHelper (org.hibernate.validator.util.ReflectionHelper) in Hibernate Validator 4.1.0 before 4.2.1, 4.3.x before 4.3.2, and 5.x before 5.1.2 allows attackers to bypass Java Security Manager (JSM) restrictions and execute restricted reflection calls via a crafted application.
+    org_jboss_as_jboss_as_security_version='7.3.0.Final-redhat-14'; //TODO почему все его у себя используют напрямую?
+    org_jboss_resteasy_resteasy_client_version='3.0.7.Final';
+    org_jboss_resteasy_resteasy_jackson_provider_version='3.0.7.Final';
+    org_jboss_resteasy_resteasy_jaxrs_version='3.0.7.Final';
+    org_jboss_resteasy_resteasy_multipart_provider_version='3.0.7.Final';
+    org_jboss_spec_javax_ejb_jboss_ejb_api_3_1_spec_version='1.0.2.Final-redhat-2';
+    org_jboss_spec_javax_servlet_jboss_servlet_api_3_1_spec_version='1.0.0.Final';
+    org_jboss_spec_jboss_javaee_6_0_version='3.0.3.Final';
+    org_json_json_version='20140107';
+    org_mockito_mockito_all_version='1.9.5';
+    org_owasp_encoder_encoder_version='1.2'
+    org_postgresql_postgresql_version='9.4-1201-jdbc41';
+    org_powermock_powermock_api_mockito_version='1.6.1';
+    org_powermock_powermock_module_junit4_version='1.6.1';
+    jfreechart_version='1.0.13'
+    org_quartz_scheduler_quartz_version='2.2.1';
+    org_slf4j_jcl_over_slf4j_version='1.7.2.redhat-3'; //TODO почему есть это и org_slf4j_slf4j_log4j12_version ?
+    org_slf4j_slf4j_api_version='1.7.2.redhat-2';
+    org_slf4j_slf4j_api_version_search_service_impl='1.7.5';
+    org_slf4j_slf4j_log4j12_version='1.7.7';
+    org_slf4j_slf4j_simple_version='1.7.7';
+    org_springframework_security_spring_security_config_version='4.0.3.RELEASE';
+    org_springframework_security_spring_security_core_version='4.0.3.RELEASE';
+    org_springframework_security_spring_security_web_version='4.0.3.RELEASE';
+    org_springframework_spring_jdbc_version='4.1.6.RELEASE';
+    queryDSLVersion = '3.6.9' // TODO проблема перейти даже на 3.7.x, что-то где-то отваливается в плане тестов, нужно перейти на 4.x.y
+    slf4jVersion = '1.7.12'  //почему выделено отдельно от org_slf4j_slf4j_api_version ?
+    springFrameworkVersion = '4.3.4.RELEASE'
+    uk_co_jemos_podam_podam_version='5.1.0.RELEASE';
+    urlRewriteFilterVersion = '4.0.4'
+    xstreamVersion = '1.4.9'
+    commonCsvVersion = '1.4'
+	org_mnode_ical4j_version = '1.0.3'
+    jsoup_version='1.10.2';
+    io_swagger_jaxrs_version = '1.5.12'
+    jira_rest_client_version = '2.0.0-m30'
+    penggle_kaptcha_version = '2.3.2'
+    org_opensaml_version = '2.4.1'
+    commons_digester_version = '2.1'
+    log4j_slf4j_version = '2.8.2'
+}
+
+// https://issues.gradle.org/browse/GRADLE-1506
+System.setProperty("file.encoding", "UTF-8")
+
+apply plugin: 'idea'
+idea {
+    project {
+        jdkName = '1.8'
+        languageLevel = JavaVersion.VERSION_1_8
+    }
+}
+subprojects {
+    apply plugin: 'idea'
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
+        }
+    }
+    apply plugin: 'eclipse-wtp'
+
+    task allDeps(type: DependencyReportTask) {}
+}
+
+
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/release" }
+        maven { url "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/" }
+        maven { url "http://jasperreports.sourceforge.net/maven2/" }
+    }
+
+    dependencies {
+        classpath group: 'org.tmatesoft.svnkit', name: 'svnkit', version: '1.8.2'
+    }
+}
+
+version='8.6.0'
+ext.sourceEncoding = 'UTF-8'
+ext.compatibility = JavaVersion.VERSION_1_8
+
+// Можно переопределить в gradle.properties
+if (!hasProperty('logLevel')) {
+    ext.logLevel = 'INFO'
+}
+
+
+def type = 'all'
+
+
+def servicePattern = ':service-impl:[\\w\\-]+-service';
+def serviceImplPattern = ':service-impl:[\\w\\-]+-service:[\\w\\-]+-service-impl';
+def serviceAPIPattern = ':service-api:[\\w\\-]+-api';
+def restPattern = ':web:rest:[\\w\\-]+-rest';
+def spwebPattern = ':web:sp-web';
+def utilsPattern = ':utils:[\\w\\-]+';
+def webappsPattern = ':web:web-apps:[\\w\\-]+-webapp';
+def webpackagesPattern = ':web:web-packages:[\\w\\-]+-web-package';
+def uiPattern = '(' + webappsPattern + ')|(' + webpackagesPattern + ')';
+def corePattern = '(' + servicePattern + ')|(' + serviceImplPattern + ')|(' + restPattern + ')|(' + spwebPattern + ')';
+def searchWizDirPostfix = 'swizcli';
+def searchwizCliPattern = ':service-impl:[\\w\\-]+-service:[\\w\\-]+-service-' + searchWizDirPostfix;
+def hcModulePattern = ':modules:hazelcast';
+
+
+
+configurations {
+    sshAntTask
+}
+dependencies {
+    sshAntTask 'org.apache.ant:ant-jsch:1.7.1', 'jsch:jsch:0.1.29'
+}
+
+task copyArtifacts(type: Copy, dependsOn: 'clearArtifacts') {
+    from('.') {
+        include 'web/rest/**/*.war'
+        include 'web/sp-web/**/*.war'
+        include 'integration/**/*.war'
+        include 'service-impl/**/*.ear'
+        include 'integration/**/*.ear'
+        include 'service-impl/*-service/*-db/**/*'
+        include 'service-impl/public-forum-rest/*-db/**/*'
+        include 'service-impl/*-service/*-env/**/*'
+        include 'service-impl/*-service/*-swizcli/**/*'
+        include '**/*.gradle' //TODO: Why?
+        include 'deployment/**/*' //TODO: Why?
+        include "web/web-apps/*-webapp/build/**/*"
+        include 'integration/*-env/**/*'
+        include 'integration/*-service/*-env/**/*'
+        include 'web/*-env/**/*'
+        include 'modules/hazelcast/build/output/*'
+
+
+    }
+
+    into 'artifacts/'
+    exclude 'artifacts'
+    exclude 'web/web-apps/*-webapp/node_modules/**/*' //TODO: может, просто папкой ограничивать?
+    exclude 'web/web-apps/*-webapp/vendor/**/*'
+    exclude 'web/web-packages/**/*'
+    exclude 'service-api/**/*'
+    exclude 'utils/**/*'
+
+    includeEmptyDirs = false
+}
+//TODO: непонятный таск
+task copyArtifactsPostaromu(dependsOn: 'clearArtifacts') {
+    doLast {
+        subprojects.findAll { it.path.matches(restPattern) || it.path.matches(spwebPattern) }.each { rest ->
+            copy {
+                from rest.projectDir.canonicalPath + '/build/libs'
+                into "ARTIFACTS/WAR"
+                include "*.war"
+            }
+        }
+        subprojects.findAll { it.path.matches(servicePattern) }.each { serv ->
+            copy {
+                from serv.projectDir.canonicalPath + '/build/libs'
+                into "ARTIFACTS/EAR"
+                include "*.ear"
+            }
+            copy {
+                from serv.projectDir.canonicalPath
+                into "ARTIFACTS/ENV"
+                include "*-env/*"
+            }
+            copy {
+                from serv.projectDir.canonicalPath
+                into "ARTIFACTS/DB"
+                include "*-db/**/*"
+            }
+        }
+        subprojects.findAll { it.path.matches(webappsPattern) }.each { webapp ->
+            copy {
+                from webapp.projectDir.canonicalPath + "/build"
+                into "ARTIFACTS/UI/" + webapp.name
+                include "**/*"
+            }
+        }
+    }
+}
+
+task clearArtifacts(type: Delete) {
+    delete 'artifacts', 'ARTIFACTS'
+}
+
+
+task deploy;
+
+project.afterEvaluate {
+    getTasksByName('deployService', true).each{ task ->
+        tasks['deploy'].dependsOn(task)
+    }
+
+    getTasksByName('deployFacade', true).each{ task ->
+        tasks['deploy'].dependsOn(task)
+    }
+
+    getTasksByName('deployRest', true).each{ task ->
+        tasks['deploy'].dependsOn(task)
+    }
+
+    getTasksByName('deployUI', true).each{ task ->
+        tasks['deploy'].dependsOn(task)
+    }
+}
+
+task clearRemoteUIDirectory << {
+
+    project.ext.STATICDIR = getLocalProperty(project, 'STATICDIR', null);//'localhost:9999'
+    project.ext.NGINX = getLocalProperty(project, 'NGINX', null);//
+    project.ext.NGINXSSHPORT = getLocalProperty(project, 'NGINXSSHPORT', null);//
+    project.ext.KEYFILE = getLocalProperty(project, 'KEYFILE', null);//
+    project.ext.NGINXUSERNAME = getLocalProperty(project, 'NGINXUSERNAME', 'root');//
+
+    if (project.ext.STATICDIR == null || project.ext.STATICDIR.trim().equals("") || (!isWindows() && !project.ext.STATICDIR.contains("/"))) {
+        throw new Exception("Exception occured during deploying static modules. NGINX root dir is not correct = " + project.ext.STATICDIR);
+    }
+
+    if(project.ext.NGINX.equals("localhost")){
+        delete project.ext.STATICDIR;
+    } else {
+        ant.taskdef(name: 'sshexec',
+                classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
+                classpath: configurations.sshAntTask.asPath)
+        ant.sshexec(
+                host: project.ext.NGINX,
+                port: project.ext.NGINXSSHPORT,
+                username: project.ext.NGINXUSERNAME,
+                trust: 'true',
+                verbose: 'true',
+                passphrase: '',
+                keyfile: System.getProperty("user.home") + "/" + project.ext.KEYFILE,
+                command: 'rm -rf ' + project.ext.STATICDIR + "/" + '*'
+        )
+    }
+}
+
+
+
+task runCustomEnvScript (dependsOn: 'initEnvParameters') << {
+    project.ext.envPath = getLocalProperty(project, 'envPath', project.ext.configDir + "/deployment/cliscripts");
+    project.ext.cli_props = getLocalProperty(project, 'cli_props', 'custom.props');
+    project.ext.cli_script = getLocalProperty(project, 'cli_script', 'custom.cli');
+    runEnv(project);
+}
+
+task stopServersDomain (dependsOn: 'initEnvParameters') << {
+    project.ext.envPath = getLocalProperty(project, 'envPath', project.ext.configDir + "/deployment/cliscripts");
+    project.ext.cli_props = getLocalProperty(project, 'cli_props', 'custom.props');
+    project.ext.cli_script = getLocalProperty(project, 'cli_script', 'stopservers_domain.cli');
+    runEnv(project);
+}
+
+task startServersDomain (dependsOn: 'initEnvParameters') << {
+    project.ext.envPath = getLocalProperty(project, 'envPath', project.ext.configDir + "/deployment/cliscripts");
+    project.ext.cli_props = getLocalProperty(project, 'cli_props', 'custom.props');
+    project.ext.cli_script = getLocalProperty(project, 'cli_script', 'startservers_domain.cli');
+    runEnv(project);
+}
+
+
+allprojects{
+    //common configuration
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/release" }
+        maven { url "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/" }
+        maven { url "http://jasperreports.sourceforge.net/maven2/" }
+        maven{
+            url "http://54.76.42.99:8081/nexus/content/groups/public"
+        }
+    }
+
+    configurations.all {
+        // check for updates every build test
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+
+    task initEnvParameters << {
+        //Common properties
+        project.ext.eap='localhost:9999'
+        project.ext.LOGIN=getLocalProperty(project, 'LOGIN', null);//
+        project.ext.PASS=getLocalProperty(project, 'PASS', null);//
+        project.ext.cliClientDir=getLocalProperty(project, 'cliClientDir', project.ext.configDir + '/deployment/cliclient');
+        project.ext.cliClientJar=getLocalProperty(project, 'cliClientJar', project.ext.cliClientDir + '/jboss-cli-client.jar');
+
+        //LB properties
+        project.ext.lbArtifactsDir = project.ext.has('artifactsDir') ? project.ext['artifactsDir'] : project.projectDir.canonicalPath;
+        project.ext.lbDatabaseHost=getLocalProperty(project, 'lbDatabaseHost', getLocalProperty(project, 'databaseHost', null));//
+        project.ext.lbDatabasePort=getLocalProperty(project, 'lbDatabasePort', getLocalProperty(project, 'databasePort', null));//
+        project.ext.PGPASS=getLocalProperty(project, 'PGPASS', null);//
+        project.ext.PGLOGIN=getLocalProperty(project, 'PGLOGIN', null);//
+
+        //Env properties
+        project.ext.envArtifactsDir = project.ext.has('artifactsDir') ? project.ext['artifactsDir'] : project.projectDir.canonicalPath;
+        project.ext.envPath = getLocalProperty(project, 'envPath', project.ext.envArtifactsDir + "/" + project.name + "-env");
+        project.ext.serverMode=getLocalProperty(project, 'serverMode', 'standalone');//
+        project.ext.serverGroup=getLocalProperty(project, 'serverGroup', '');//
+        project.ext.deployEnvConfDir = getLocalProperty(project, 'deployEnvConfDir', project.ext.configDir);
+
+        //Artifact properties
+        if(project.ext.has('javaArtifactsDir') && project.ext.has('archiveName')){
+            project.ext.artifactPath=getLocalProperty(project, 'artifactPath', project.ext.javaArtifactsDir + "/" + project.ext.archiveName);
+            project.ext.artifactName = project.ext.archiveName;
+        }
+    }
+}
+
+configure(subprojects.findAll {it.path.matches(uiPattern)}) {
+    project.task('buildWODependencies') {
+        doLast {
+            executeOnShell("npm install", project.projectDir);
+            executeOnShell("bower install", project.projectDir);
+            executeOnShell("grunt buildNoKarma", project.projectDir);
+        }
+    }
+
+    task build(dependsOn: 'buildWODependencies')
+
+    project.configurations {
+        vendor {
+            project.afterEvaluate {
+                allDependencies.each { dep ->
+                    project.tasks['build'].dependsOn(getTaskDependencyFromProjectDependency(true, 'build'))
+                }
+            }
+        }
+    }
+
+    task clean(type: Delete){
+        delete 'build', 'node_modules', 'vendor'
+    }
+}
+
+configure(subprojects.findAll {it.path.matches(corePattern)}){
+    task buildCore(dependsOn: 'build');
+}
+
+configure(subprojects.findAll {it.path.matches(webappsPattern)}){
+    task buildWebapps(dependsOn: ['buildWODependencies','filterBuildInfo']);
+}
+
+configure(subprojects.findAll {it.path.matches(servicePattern) && it.name.startsWith('int-bus')}){
+    task deployFacade(dependsOn: 'deploy');
+}
+
+configure(subprojects.findAll {it.path.matches(servicePattern) && !it.name.startsWith('int-bus')}){
+    task deployService(dependsOn: 'deploy');
+}
+
+configure(subprojects.findAll {
+    it.path.matches(serviceAPIPattern) || it.path.matches(serviceImplPattern) || it.path.matches(utilsPattern)
+}) {
+//    project.beforeEvaluate {
+    apply plugin: 'java'
+    sourceCompatibility = compatibility
+    targetCompatibility = compatibility
+    compileJava.options.encoding = sourceEncoding
+    compileTestJava.options.encoding = sourceEncoding
+
+    configurations {
+        providedCompile
+        providedRuntime
+//        providedCompile.extendsFrom compile
+        providedRuntime.extendsFrom providedCompile
+    }
+
+    eclipse {
+        classpath {
+            downloadJavadoc = true
+            downloadSources = true
+            plusConfigurations += configurations.findAll { it.name.endsWith("Compile") }
+            plusConfigurations += configurations.findAll { it.name.endsWith("Runtime") }
+        }
+    }
+
+    sourceSets {
+        main {
+            compileClasspath += configurations.providedCompile
+            runtimeClasspath += configurations.providedRuntime
+        }
+        test {
+            compileClasspath += configurations.providedCompile
+            runtimeClasspath += configurations.providedRuntime
+        }
+    }
+//    }
+}
+
+configure(subprojects.findAll {it.path.matches(restPattern) || it.path.matches(spwebPattern)}){
+    apply plugin: 'war'
+    sourceCompatibility = compatibility
+    targetCompatibility = compatibility
+    compileJava.options.encoding = sourceEncoding
+    compileTestJava.options.encoding = sourceEncoding
+
+    project.afterEvaluate {
+        project.ext.javaArtifactsDir = project.ext.has('artifactsDir') ? project.ext['artifactsDir'] : project.war.destinationDir.canonicalPath;
+        project.ext.archiveName = project.war.archiveName;
+    }
+    war {
+
+        filesMatching('**/web.xml') {
+            filter(ReplaceTokens, tokens: ['jsessionIdSecure': 'false'])
+        }
+
+    }
+}
+
+configure(subprojects.findAll {it.path.matches(restPattern)}){
+    task deployRest(dependsOn: 'deploy');
+    task deploy (dependsOn: 'initEnvParameters') << {
+
+        project.ext.envPath = project.file('../../web-env').absolutePath;
+
+        if(new File(project.ext.envPath).exists()) {
+            doLog "Setting environment";
+            (new File(project.ext.envPath)).listFiles().each { file ->
+                if (file.name.matches('[a-z]+\\.cli')) {
+                    project.ext.cli_props = file.name.substring(0, file.name.lastIndexOf(".")) + ".props";//
+                    project.ext.cli_script = file.name;//
+                }
+            }
+
+            project.ext.cli_props = getLocalProperty(project, 'cli_props', project.ext.cli_props);
+            project.ext.cli_script = getLocalProperty(project, 'cli_script', project.ext.cli_script);
+        }
+        project.ext.deployEnvConfDir = getLocalProperty(project, 'deployEnvConfDir', project.ext.configDir);
+        project.ext.cliClientDir=project.ext.envPath;
+        project.ext.cliClientJar=getLocalProperty(project, 'cliClientJar', project.ext.cliClientDir + '/jboss-cli-client.jar');
+
+
+
+        if(project.ext.has('cli_props')) {
+            runEnv(project);
+        }
+
+
+        project.ext.cliClientDir=getLocalProperty(project, 'cliClientDir', project.ext.configDir + '/deployment/cliclient');
+        project.ext.cliClientJar=getLocalProperty(project, 'cliClientJar', project.ext.cliClientDir + '/jboss-cli-client.jar');
+
+        runDeploy(project)
+    }
+}
+
+configure(subprojects.findAll {it.path.matches(servicePattern) && new File(it.projectDir.canonicalPath + "/" + it.name + "-" + searchWizDirPostfix).exists()}){
+
+    task deploySearch << {
+        project.ext.SWizCoordinatorIp=getLocalProperty(project, 'SWizCoordinatorIp', null);
+        project.ext.SWizCoordinatorPort=getLocalProperty(project, 'SWizCoordinatorPort', null);
+        project.ext.SWizCoordinatorDb=getLocalProperty(project, 'SWizCoordinatorDb', null);
+
+        project.ext.SWizArtifactsDir = project.ext.has('sWizArtifactsDir') ? project.ext['sWizArtifactsDir'] : project.projectDir.canonicalPath + '/' + project.name + "-" + searchWizDirPostfix;
+        project.ext.SWizAdminDir=getLocalProperty(project, 'SWizAdminDir', project.ext.configDir + '/deployment/swizclient');
+        project.ext.SWizAdminJar=getLocalProperty(project, 'SWizAdminJar', project.ext.SWizAdminDir + '/searchwiz-admin.jar');
+
+
+        project.ext.deploySWizAdminDir = getLocalProperty(project, 'deploySWizAdminDir', project.ext.SWizAdminDir);
+
+        if(new File(project.ext.SWizArtifactsDir).exists()) {
+            (new File(project.ext.SWizArtifactsDir)).listFiles().each { file ->
+                if (file.name.matches('[a-z,_]+_master\\.xml')) {
+
+                    project.ext.swizcli_props = file.name.substring(0, file.name.lastIndexOf(".")) + ".properties";//
+                    project.ext.swizcli_script = file.name;//
+                }
+            }
+
+            project.ext.swizcli_props = getLocalProperty(project, 'swizcli_props', project.ext.swizcli_props);
+            project.ext.swizcli_script = getLocalProperty(project, 'swizcli_script', project.ext.swizcli_script);
+        }
+
+        runDeploySearch(project)
+    }
+
+}
+
+configure(subprojects.findAll {it.path.matches(servicePattern)}){
+    apply plugin: 'ear';
+
+    ear{
+        archiveName=baseName+'-ear.ear'
+    }
+
+
+    build.dependsOn 'ear'
+
+    project.afterEvaluate {
+        project.ext.javaArtifactsDir = project.ext.has('artifactsDir') ? project.ext['artifactsDir'] : project.ear.destinationDir.canonicalPath;
+        project.ext.archiveName = project.ear.archiveName;
+    }
+}
+
+configure(subprojects.findAll {it.path.matches(servicePattern) || it.path.matches(spwebPattern)}){
+    task deploy (dependsOn: 'initEnvParameters') << {
+
+        String domainFilePostfix = project.ext.serverMode=="domain"?"_domain":"";
+
+        if(new File(project.ext.envPath).exists()) {
+            (new File(project.ext.envPath)).listFiles().each { file ->
+                if (file.name.matches('[a-z]+' + domainFilePostfix + '\\.cli')) {
+                    //project.ext.cli_props = file.name.substring(0, file.name.lastIndexOf(".")) + ".props";//
+                    project.ext.cli_props = file.name.replaceAll(domainFilePostfix + ".cli", ".props");
+                    project.ext.cli_script = file.name;//
+                }
+            }
+
+            project.ext.cli_props = getLocalProperty(project, 'cli_props', project.ext.cli_props);
+            project.ext.cli_script = getLocalProperty(project, 'cli_script', project.ext.cli_script);
+        }
+
+        List<String> lbDirs = new ArrayList<>();
+        List<String> lbFiles = new ArrayList<>();
+
+        String lbPathsProperty = getLocalProperty(project, 'lbDirs', null);
+        String lbScriptsProperty = getLocalProperty(project, 'lbScripts', null);
+
+        String canonicalLbPath = getLocalProperty(project, 'lbPath', project.ext.lbArtifactsDir)
+
+        String applyFilePattern = !isWindows()?"apply[_a-z]*\\.sh":"apply[_a-z]*\\.bat";
+        String applyDevPattern = !isWindows()?"apply_dev.sh":"apply_dev.bat";
+
+        if(lbPathsProperty!=null && lbScriptsProperty!=null){
+            Collections.addAll(lbDirs,lbPathsProperty.split(","));
+            Collections.addAll(lbFiles, lbScriptsProperty.split(","));
+        } else {
+            File lbDir = new File(canonicalLbPath);
+            lbDir.listFiles().each {file ->
+                if(file.directory && file.name.endsWith('-db')){
+                    lbDirs.add(file.name);
+                    file.listFiles().each {childFile ->
+                        if(!childFile.directory && childFile.name.matches(applyFilePattern) && !childFile.name.equals(applyDevPattern)){
+                            lbFiles.add(childFile.name)
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int i = 0; i < lbDirs.size(); i++){
+            project.ext.lb_path = canonicalLbPath + "/" + lbDirs.get(i);
+            project.ext.lb_script = lbFiles.get(i);
+            runLB(project);
+        }
+
+        if(project.ext.has('cli_props')) {
+            runEnv(project);
+        }
+        runDeploy(project)
+    }
+
+    task applyEnv (dependsOn: 'initEnvParameters') << {
+        String domainFilePostfix = project.ext.serverMode=="domain"?"_domain":"";
+
+        if(new File(project.ext.envPath).exists()) {
+            (new File(project.ext.envPath)).listFiles().each { file ->
+                if (file.name.matches('[a-z]+' + domainFilePostfix + '\\.cli')) {
+                    //project.ext.cli_props = file.name.substring(0, file.name.lastIndexOf(".")) + ".props";//
+                    project.ext.cli_props = file.name.replaceAll(domainFilePostfix + ".cli", ".props");
+                    project.ext.cli_script = file.name;//
+                }
+            }
+
+            project.ext.cli_props = getLocalProperty(project, 'cli_props', project.ext.cli_props);
+            project.ext.cli_script = getLocalProperty(project, 'cli_script', project.ext.cli_script);
+        }
+
+        if(project.ext.has('cli_props')) {
+            runEnv(project);
+        }
+    }
+}
+
+configure(subprojects.findAll {it.path.matches(webappsPattern)}){
+
+    configurations {
+        sshAntTask
+    }
+    dependencies {
+        sshAntTask 'org.apache.ant:ant-jsch:1.7.1', 'jsch:jsch:0.1.29'
+    }
+
+    project.afterEvaluate {
+        project.ext.uiArtifactsDir = project.ext.has('artifactsDir') ? project.ext['artifactsDir'] : project.projectDir.canonicalPath;
+    }
+    task deployUI(dependsOn: 'deploy');
+
+    task filterBuildInfo() << {
+        project.ext.staticPath=getLocalProperty(project, 'staticPath', project.ext.uiArtifactsDir + "/build" );
+        if(new File(project.ext.staticPath + "/index.html").exists()) {
+            ant.replace(file: project.ext.staticPath + "/index.html", token: "#{gradle_buildVersion}", value: getSvnRevision());
+        }
+    }
+
+    task deploy() << {
+
+        project.ext.STATICDIR=getLocalProperty(project, 'STATICDIR', null);//'localhost:9999'
+        project.ext.NGINX=getLocalProperty(project, 'NGINX', null);//
+        project.ext.NGINXSSHPORT=getLocalProperty(project, 'NGINXSSHPORT', null);//
+        project.ext.KEYFILE=getLocalProperty(project, 'KEYFILE', null);//
+        project.ext.relative_path=getLocalProperty(project, 'relative_path', null);//
+        project.ext.NGINXUSERNAME = getLocalProperty(project, 'NGINXUSERNAME', 'root');//
+
+        project.ext.staticPath = getLocalProperty(project, 'staticPath', project.ext.uiArtifactsDir + "/build");
+
+        if(project.ext.NGINX.equals("localhost")){
+            copy{
+                from project.ext.staticPath
+                into project.ext.STATICDIR + "/" + project.ext.relative_path
+                include "**/*"
+            }
+        } else {
+            ant.taskdef(name: 'sshexec',
+                    classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
+                    classpath: configurations.sshAntTask.asPath)
+
+            ant.taskdef(name: 'scp', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
+                    classpath: configurations.sshAntTask.asPath)
+
+
+            if (!project.ext.relative_path.equals("") && !project.ext.relative_path.equals(".")) {
+                ant.sshexec(
+                        host: project.ext.NGINX,
+                        port: project.ext.NGINXSSHPORT,
+                        username: project.ext.NGINXUSERNAME,
+                        trust: 'true',
+                        verbose: 'true',
+                        passphrase: '',
+                        keyfile: System.getProperty("user.home") + "/" + project.ext.KEYFILE,
+                        command: 'mkdir ' + project.ext.STATICDIR + "/" + project.ext.relative_path
+                )
+            }
+
+
+            ant.scp(todir: project.ext.NGINXUSERNAME + '@' + project.ext.NGINX + ':' + project.ext.STATICDIR + "/" + project.ext.relative_path,
+                    keyfile: System.getProperty("user.home") + "/" + project.ext.KEYFILE,
+                    verbose: 'true',
+                    passphrase: '',
+                    port: project.ext.NGINXSSHPORT,
+                    trust: true
+            ) {
+                fileset(dir: project.ext.staticPath) {
+                    include(name: '**/*')
+                }
+            }
+        }
+    }
+}
+configure(subprojects.findAll {it.path.matches(hcModulePattern)}) {
+    task buildCore(dependsOn: 'module');
+}
+
+allprojects {
+    project.afterEvaluate {
+        project.tasks.each { task ->
+            task.onlyIf {!(project.ext.has('excludeProjects') && project.ext['excludeProjects'].contains(project.name)) &&
+                    (((!(project.path.matches(corePattern)) ||  (type.equals('all') || type.contains('core'))) &&
+                            (!(project.path.matches(webappsPattern)) || (type.equals('all') || type.contains('webapps'))) &&
+                            (!(project.path.matches(webpackagesPattern)) || (type.equals('all') || type.contains('webpackages')))) ||
+                            (project.ext.has('includeProjects') && project.ext['includeProjects'].contains(project.name)))
+            };
+        }
+    }
+
+//    println "Artifacts dir set as " + project.ext.artifactsDir;
+
+    project.ext.configDir = project.ext.has('configDir')?project.ext['configDir']:rootProject.projectDir.canonicalPath;
+//    println "Config dir set as " + project.ext.configDir;
+
+    if(project.ext.has('env.config')) {
+        println "Loading properties from external file " + project.ext.configDir + "/" + project.ext['env.config'];
+        Properties props = new Properties()
+        props.load(new FileInputStream(project.ext.configDir + "/" + project.ext['env.config']))
+        for (Object prop : props.keySet()) {
+//            println "Setting property " + prop + " to " + props.get(prop);
+            project.ext[prop] = props.get(prop);
+        }
+    }
+}
+
+def doLog(message) {
+    switch (logLevel) {
+        case 'ERROR': logger.quiet(message); break;
+        case 'QUIET': logger.lifecycle(message); break;
+        case 'WARNING': logger.warn(message); break;
+        case 'LIFECYCLE': logger.lifecycle(message); break;
+        case 'INFO': logger.info(message); break;
+        case 'DEBUG': logger.debug(message); break;
+        case 'TRACE': logger.trace(message); break;
+    }
+}
+
+
+private String getLocalProperty(Project project, String name, String defaultValue){
+    if(project.ext.has(project.name + "." + name)){
+        return project.ext[project.name + "." + name];
+    } else if (project.name.indexOf("-")>0 && project.ext.has("*"+ project.name.substring(project.name.lastIndexOf("-")) + "." + name)){
+        return project.ext["*"+ project.name.substring(project.name.lastIndexOf("-")) + "." + name];
+    } else if (project.ext.has("all." + name)){
+        return project.ext["all." + name];
+    }
+    return defaultValue;
+}
+
+
+
+private int executeOnShell(String command, File workingDir, boolean failOnError = true) {
+    println command
+    def process = new ProcessBuilder(addShellPrefix(command))
+            .directory(workingDir)
+            .redirectErrorStream(true)
+            .start()
+    process.inputStream.eachLine { println it }
+    process.waitFor();
+    int code = process.exitValue();
+    if (code != 0 && failOnError) {
+        throw new Exception("Exception during executing of " + command + " in directory " + workingDir.getCanonicalPath());
+    }
+    return process.exitValue();
+}
+
+private def addShellPrefix(String command) {
+    def commandArray = new String[3]
+    if(!isWindows()) {
+        commandArray[0] = "sh"
+        commandArray[1] = "-c"
+    } else {
+        commandArray[0] = "cmd"
+        commandArray[1] = "/c"
+    }
+    commandArray[2] = command
+    return commandArray
+}
+
+private boolean isWindows()
+{
+    return System.getProperty("os.name").startsWith("Windows");
+}
+
+private void runDeploySearch(Project pr)  {
+    File outFile = filterSWizProps(pr);
+    executeOnShell(pr.ext.javaExec + " -DconfigLocation=conf -jar " + pr.ext.SWizAdminJar + " --changeset="+pr.ext.SWizArtifactsDir + "/" +pr.ext.swizcli_script+" --props="+outFile.getCanonicalPath()+" --restIp="+pr.ext.SWizCoordinatorIp+" --restPort="+pr.ext.SWizCoordinatorPort+" --jdbcUrl=\""+pr.ext.SWizCoordinatorDb+"\"", new File(pr.ext.SWizAdminDir))
+
+}
+
+private void runDeploy(Project pr) {
+    String command;
+
+    if(pr.ext.serverMode=="domain"){
+        command = "--commands=\"if (outcome!=success) of /server-group=$pr.ext.serverGroup/deployment=$pr.ext.artifactName:read-resource,"+
+                "deploy $pr.ext.artifactPath --server-groups=$pr.ext.serverGroup, else,"+
+                "deploy --force $pr.ext.artifactPath, end-if\"";
+    } else {
+        command = "--command=\"deploy --force $pr.ext.artifactPath \"";
+    }
+
+    executeOnShell(pr.ext.javaExec + " -jar " + pr.ext.cliClientJar + "  --controller=" + pr.ext.eap +
+            " -c " +
+            command
+            + " --user=" + pr.ext.LOGIN + " --password=" + pr.ext.PASS
+            , pr.projectDir)
+}
+
+private void runUndeploy(Project pr) {
+    executeOnShell(pr.ext.javaExec + " -jar " + pr.ext.cliClientJar + "  --controller=" + pr.ext.eap + " -c --command=\"undeploy " + pr.ext.artifactName + "\"" + " --user=" + pr.ext.LOGIN + " --password=" + pr.ext.PASS, pr.projectDir, false)
+}
+
+private void runEnv(Project pr) {
+    File outFile = filterCliProps(pr);
+    executeOnShell(pr.ext.javaExec + " -jar " + pr.ext.cliClientJar + "  --controller=" + pr.ext.eap + " -c --file=" + pr.ext.envPath + "/" + pr.ext.cli_script + " --properties=" + outFile.getCanonicalPath() + " --user=" + pr.ext.LOGIN + " --password=" + pr.ext.PASS, new File(pr.ext.cliClientDir))
+}
+
+private void runLB(Project pr) {
+    if (!'true'.equals(getLocalProperty(pr, 'skip.lb', null))) {
+        if(!isWindows()) {
+            executeOnShell(" chmod 755 mk_exec.sh", new File(pr.ext.lb_path))
+            executeOnShell("./mk_exec.sh", new File(pr.ext.lb_path))
+        }
+        executeOnShell((!isWindows()?"./":"") + pr.ext.lb_script + " jdbc:postgresql://" + pr.ext.lbDatabaseHost + ":" + pr.ext.lbDatabasePort + " " + pr.ext.PGPASS + " " + pr.ext.PGLOGIN, new File(pr.ext.lb_path))
+    }
+}
+
+private File filterSWizProps(Project pr) {
+
+    Properties SWizProps = new Properties();
+    SWizProps.load(new FileInputStream(pr.ext.SWizArtifactsDir + "/" + pr.ext.swizcli_props));
+
+
+    String propsBody = "";
+    for (String swizProp : SWizProps.keySet()) {
+        if (getLocalProperty(pr, swizProp, null)!=null) {
+            SWizProps.put(swizProp, getLocalProperty(pr, swizProp, null));
+        }
+        if (propsBody != "") {
+            propsBody += "\r\n";
+        }
+        propsBody += swizProp + "=" + SWizProps.get(swizProp);
+    }
+
+    File outFile = new File(pr.ext.deploySWizAdminDir + "/out.properties");
+    def writer = new PrintWriter(outFile);
+    writer.print(propsBody);
+    writer.close()
+    outFile
+}
+
+private File filterCliProps(Project pr) {
+
+    Properties cliProps = new Properties();
+    cliProps.load(new FileInputStream(pr.ext.envPath + "/" + pr.ext.cli_props));
+
+
+    String propsBody = "";
+    for (String cliProp : cliProps.keySet()) {
+        if (getLocalProperty(pr, cliProp, null)!=null) {
+            cliProps.put(cliProp, getLocalProperty(pr, cliProp, null));
+        }
+        if (propsBody != "") {
+            propsBody += "\r\n";
+        }
+        propsBody += cliProp + "=" + cliProps.get(cliProp);
+    }
+
+    File outFile = new File(pr.ext.deployEnvConfDir + "/out.props");
+    def writer = new PrintWriter(outFile);
+    writer.print(propsBody);
+    writer.close()
+    outFile
+}
+
+private getSvnRevision(){
+    ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+    SVNClientManager clientManager = SVNClientManager.newInstance(options);
+    SVNStatusClient statusClient = clientManager.getStatusClient();
+    SVNStatus status = statusClient.doStatus(projectDir, false);
+    SVNRevision revision = status.getRevision();
+    org.tmatesoft.svn.core.SVNURL url = status.getURL();
+    return url.getPath().substring(url.getPath().lastIndexOf("/")+1) + "#" + revision.getNumber();
+}
+
+//configure(subprojects.findAll {it.path.matches(corePattern)}){ core ->
+//    task copyLibs(type: Copy) {
+//        from configurations
+//        from("build/libs")
+//        into("E:/mylibs")
+//        include('*.jar')
+//    }
+//}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	
+    <changeSet author="d.zaitsev" id="mt-mt_user-01">
+		<preConditions onFail="MARK_RAN" onFailMessage="User mt_user already exists">
+			<sqlCheck expectedResult="0">SELECT COUNT(1) FROM pg_user WHERE usename = 'mt_user'</sqlCheck>
+		</preConditions>
+		<comment>пользователь mt_user</comment>
+		<sql>create user mt_user password 'mt_user'</sql>
+		<rollback>DROP user mt_user</rollback>
+    </changeSet>
+
+    <changeSet author="d.zaitsev" id="mt-mtdb-02" runInTransaction="false">
+		<preConditions onFail="MARK_RAN" onFailMessage="Database mtdb already exists">
+			<sqlCheck expectedResult="0">SELECT COUNT(1) FROM pg_database where datname = 'mtdb'</sqlCheck>
+		</preConditions>
+		<comment>база данных mtdb</comment>
+		<sql>create database mtdb owner mt_user tablespace pg_default</sql>
+		<rollback>DROP database mtdb</rollback>
+    </changeSet>
+	
+    <changeSet author="d.zaitsev" id="mt-userdbgrants-06">
+		<comment>гранты на поключение к mtdb для mt_user</comment>
+		<sql>grant connect on database mtdb to mt_user</sql>
+		<rollback>revoke connect on database mtdb from mt_user</rollback>
+    </changeSet>
+
+    <changeSet author="d.zaitsev" id="mt-publicgrants-07">
+		<comment>отбор public грантов на поключение к mtdb</comment>
+		<sql>revoke connect on database mtdb from public</sql>
+		<rollback>grant connect on database mtdb to public</rollback>
+    </changeSet>
+
+</databaseChangeLog>

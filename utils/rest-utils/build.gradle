@@ -1,0 +1,13 @@
+
+dependencies {
+	providedCompile("javax.ws.rs:javax.ws.rs-api:${javax_ws_rs_javax_ws_rs_api_version}")
+	providedCompile("org.jboss.spec:jboss-javaee-6.0:${org_jboss_spec_jboss_javaee_6_0_version}")
+	providedCompile("org.jboss.resteasy:resteasy-jaxrs:${org_jboss_resteasy_resteasy_jaxrs_version}")
+	providedCompile("org.jboss.resteasy:resteasy-multipart-provider:${org_jboss_resteasy_resteasy_multipart_provider_version}")
+	providedCompile("org.jboss.resteasy:resteasy-jackson-provider:${org_jboss_resteasy_resteasy_jackson_provider_version}")
+	compile("org.apache.commons:commons-lang3:${org_apache_commons_commons_lang3_version}")
+	compile("org.owasp.encoder:encoder:${org_owasp_encoder_encoder_version}")
+	testCompile("junit:junit:${junit_junit_version}")
+
+	compile group: 'org.springframework', name: 'spring-web', version: '3.0.4.RELEASE'
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import ru.metal.gui.windows.SaveButton?>
+<AnchorPane id="organizationInfo" prefHeight="340.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.settings.busines.OrganizationInfoController">
+   <children>
+      <TabPane layoutX="6.0" layoutY="8.0" prefHeight="200.0" prefWidth="321.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="Общая информация">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="212.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5 5 5 5;">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Название организации" />
+                        <TextField fx:id="organizationName" layoutX="151.0" layoutY="10.0" prefHeight="25.0" prefWidth="438.0" />
+                        <TextField fx:id="director" layoutX="151.0" layoutY="45.0" prefHeight="25.0" prefWidth="438.0" />
+                        <Label layoutX="13.0" layoutY="49.0" text="Директор" />
+                        <Label layoutX="14.0" layoutY="80.0" text="Бухгалтер" />
+                        <TextField fx:id="accountant" layoutX="151.0" layoutY="76.0" prefHeight="25.0" prefWidth="439.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <TabPane layoutX="7.0" layoutY="158.0" prefHeight="160.0" prefWidth="500.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5 5 5 5;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="500.0">
+         <tabs>
+            <Tab text="Адрес">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="288.0">
+                     <children>
+                        <TextField fx:id="city" layoutX="55.0" layoutY="5.0" prefHeight="25.0" prefWidth="436.0" />
+                        <Label layoutX="14.0" layoutY="5.0" text="Город" />
+                        <Label layoutX="14.0" layoutY="36.0" text="Улица" />
+                        <TextField fx:id="street" layoutX="55.0" layoutY="36.0" prefHeight="25.0" prefWidth="436.0" />
+                        <TextField fx:id="house" layoutX="55.0" layoutY="66.0" prefHeight="25.0" prefWidth="35.0" />
+                        <Label layoutX="14.0" layoutY="66.0" text="Дом" />
+                        <Label layoutX="99.0" layoutY="66.0" text="Строение" />
+                        <TextField fx:id="building" layoutX="161.0" layoutY="66.0" prefHeight="25.0" prefWidth="35.0" />
+                        <TextField fx:id="office" layoutX="249.0" layoutY="66.0" prefHeight="25.0" prefWidth="35.0" />
+                        <Label layoutX="210.0" layoutY="66.0" text="Офис" />
+                        <TextField fx:id="phone" layoutX="339.0" layoutY="66.0" prefHeight="25.0" prefWidth="152.0" />
+                        <Label layoutX="309.0" layoutY="66.0" text="Тел" />
+                     </children></AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+      <TabPane layoutX="507.0" layoutY="158.0" prefHeight="160.0" prefWidth="500.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5 5 5 5;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="0.0">
+         <tabs>
+            <Tab text="Банковские реквизиты">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="11.0" layoutY="5.0" text="Название банка" />
+                        <TextField fx:id="bankName" layoutX="105.0" layoutY="5.0" prefHeight="25.0" prefWidth="383.0" />
+                        <TextField fx:id="inn" layoutX="47.0" layoutY="35.0" prefHeight="25.0" prefWidth="110.0" />
+                        <Label layoutX="14.0" layoutY="35.0" text="ИНН" />
+                        <Label layoutX="185.0" layoutY="35.0" text="КПП" />
+                        <TextField fx:id="kpp" layoutX="216.0" layoutY="35.0" prefHeight="25.0" prefWidth="110.0" />
+                        <TextField fx:id="bik" layoutX="378.0" layoutY="35.0" prefHeight="25.0" prefWidth="110.0" />
+                        <Label layoutX="346.0" layoutY="35.0" text="БИК" />
+                        <TextField fx:id="recipientName" layoutX="170.0" layoutY="65.0" prefHeight="25.0" prefWidth="318.0" />
+                        <Label layoutX="11.0" layoutY="65.0" text="Наименование получателя" />
+                        <Label layoutX="14.0" layoutY="95.0" text="Сч. №1" />
+                        <TextField fx:id="account1" layoutX="60.0" layoutY="95.0" prefHeight="25.0" prefWidth="152.0" />
+                        <TextField fx:id="account2" layoutX="336.0" layoutY="95.0" prefHeight="25.0" prefWidth="152.0" />
+                        <Label layoutX="288.0" layoutY="95.0" text="Сч. №2" />
+                     </children></AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+      <SaveButton fx:id="save" layoutX="934.0" layoutY="301.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="15.0" />
+   </children>
+</AnchorPane>

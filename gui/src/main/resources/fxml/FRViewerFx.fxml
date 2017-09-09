@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<?import ru.metal.gui.windows.SaveButton?>
+
+<BorderPane fx:id="view" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.print.JRViewerFxController">
+    <top>
+        <HBox alignment="CENTER" prefHeight="58.0" prefWidth="600.0" spacing="5.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="print" mnemonicParsing="false" onAction="#print" prefHeight="40" prefWidth="40" />
+                <SaveButton fx:id="save" mnemonicParsing="false" onAction="#save" prefHeight="40" prefWidth="40" />
+                <Button fx:id="firstPage" mnemonicParsing="false" onAction="#firstPage" prefHeight="40" prefWidth="40" />
+                <Button fx:id="prevPage" mnemonicParsing="false" onAction="#prevPage" prefHeight="40" prefWidth="40" />
+                <TextField fx:id="txtPage" alignment="CENTER" prefHeight="40.0" prefWidth="40.0" text="1" />
+                <Button fx:id="nextPage" mnemonicParsing="false" onAction="#nextPage" prefHeight="40" prefWidth="40" />
+                <Button fx:id="lastPage" mnemonicParsing="false" onAction="#lastPage" prefHeight="40" prefWidth="40" />
+                <Button fx:id="zoomOut" mnemonicParsing="false" onAction="#zoomOut" prefHeight="40" prefWidth="40" />
+                <Button fx:id="zoomIn" mnemonicParsing="false" onAction="#zoomIn" prefHeight="40" prefWidth="40" />
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane prefHeight="500.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+            <content>
+                <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <Label fx:id="bottomLabel"/>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,51 @@
+configurations {
+    hibernateJpaModelGenTool {
+        description = "Dependencies for running the Hibernate JPA Metamodel Generator AnnotationProcessor tool"
+    }
+}
+
+dependencies {
+    compile(project(":service-api:metal-service-api"));
+    compile(project(":utils:convert-utils"));
+    compile("org.postgresql:postgresql:${org_postgresql_postgresql_version}")
+    providedCompile("org.jboss.spec:jboss-javaee-6.0:${org_jboss_spec_jboss_javaee_6_0_version}")
+    providedCompile("org.slf4j:slf4j-api:${org_slf4j_slf4j_api_version}")
+    providedCompile("org.slf4j:jcl-over-slf4j:${org_slf4j_jcl_over_slf4j_version}")
+
+    hibernateJpaModelGenTool "org.hibernate:hibernate-jpamodelgen:$hibernateJPAModelGenVersion"
+
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/generated'
+        }
+    }
+}
+ext.genDir = new File("${projectDir}/src/generated")
+task hibernateProcessAnnotations(type: JavaCompile) {
+    source = sourceSets.main.java
+    classpath = compileJava.classpath + configurations.hibernateJpaModelGenTool
+    destinationDir = genDir
+    options.encoding = 'utf-8'
+    options.compilerArgs = [
+            "-proc:only"
+    ]
+}
+hibernateProcessAnnotations.doFirst {
+    genDir.mkdirs()
+    doLog "Generating hibernate static metamodel..."
+}
+clean.doLast {
+    if (genDir.exists() && genDir.isDirectory()) {
+        doLog "Deleting generated QueryDSL static metamodel..."
+        genDir.deleteDir();
+    }
+}
+compileJava.dependsOn hibernateProcessAnnotations
+
+idea.module {
+    sourceDirs += file("${projectDir}/src/generated")
+}

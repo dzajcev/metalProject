@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	
+	<preConditions>
+		<dbms type="postgresql" />
+	</preConditions>	
+	
+    <changeSet author="d.zaitsev" id="20170803-01">
+		<comment>Схема договоров</comment>
+		<sql>
+	    	CREATE SCHEMA IF NOT EXISTS MTSM AUTHORIZATION mt_user;
+	    	GRANT USAGE ON SCHEMA MTSM TO mt_user;
+		</sql>
+		<rollback>
+		    DROP SCHEMA MTSM;
+		</rollback>
+    </changeSet>
+
+	
+    <changeSet author="d.zaitsev" id="20170803-02">
+		<comment>прописываем для пользователя mt_user схему mtsm</comment>
+		<sql>alter user mt_user SET search_path = mtsm,public</sql>
+		<rollback>alter user mt_user SET search_path = public</rollback>
+    </changeSet>
+
+
+	<changeSet author="d.zaitsev" id="20170803-03">
+        <comment>Создание расширения "UUID-OSSP" для генерации UUID</comment>
+        <sql>CREATE EXTENSION IF NOT EXISTS "uuid-ossp"</sql>
+        <rollback>DROP EXTENSION "uuid-ossp"</rollback>
+    </changeSet>
+			
+</databaseChangeLog>

@@ -1,0 +1,44 @@
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+    }
+}
+
+apply plugin: 'java'
+compileJava.options.encoding = 'UTF-8'
+sourceCompatibility = 1.8
+apply plugin: 'javafx-gradle-plugin'
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClass = 'ru.metal.gui.StartPage'
+    
+    // minimal requirement for jfxNative-task
+    vendor = 'YourName'
+}
+dependencies{
+	compile files('libs/customFont.jar');
+	// https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts
+compile group: 'net.sf.jasperreports', name: 'jasperreports-fonts', version: '6.0.0'
+
+    compile (project(":service-api:metal-service-api"));
+	compile (project(":service-api:report-service-api"));
+    compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.4.1'
+    compile "org.jboss.spec:jboss-javaee-6.0:3.0.3.Final",
+            "org.jboss.resteasy:resteasy-jaxrs:3.0.9.Final",
+            "org.jboss.resteasy:resteasy-multipart-provider:3.0.9.Final",
+            "org.jboss.resteasy:resteasy-jackson-provider:3.0.9.Final",
+            "org.jboss.resteasy:resteasy-jaxb-provider:3.0.9.Final",
+			"org.apache.commons:commons-lang3:3.5",
+            "org.apache.httpcomponents:httpclient:4.4.1",
+            "org.apache.cxf:cxf-rt-frontend-jaxws:3.1.8",
+            "org.apache.cxf:cxf-rt-transports-http:3.1.8"
+    // https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1-m09'
+
+
+}

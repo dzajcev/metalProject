@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import ru.metal.gui.windows.SaveButton?>
+<AnchorPane id="systemSettings" prefHeight="98.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.settings.system.BusinesSettingsController">
+   <children>
+      <TabPane layoutX="109.0" layoutY="-22.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="Адрес сервера">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="77.0" prefWidth="330.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Адрес сервера" />
+                        <TextField fx:id="serverAddress" layoutX="103.0" layoutY="10.0" prefHeight="25.0" prefWidth="216.0" />
+                        <SaveButton fx:id="save" layoutX="245.0" layoutY="39.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
