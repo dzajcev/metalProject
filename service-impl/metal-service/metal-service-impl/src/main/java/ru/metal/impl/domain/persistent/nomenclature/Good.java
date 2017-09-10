@@ -3,7 +3,6 @@ package ru.metal.impl.domain.persistent.nomenclature;
 import ru.metal.impl.domain.persistent.BaseEntity;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
  * Created by User on 09.08.2017.
@@ -16,7 +15,7 @@ public class Good extends BaseEntity{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="GROUP_GUID")
-    private Group group;
+    private GoodGroup group;
 
     @Column(name = "IS_ACTIVE")
     private Boolean active;
@@ -36,11 +35,11 @@ public class Good extends BaseEntity{
         this.name = name;
     }
 
-    public Group getGroup() {
+    public GoodGroup getGroup() {
         return group;
     }
 
-    public void setGroup(Group group) {
+    public void setGroup(GoodGroup group) {
         this.group = group;
     }
 

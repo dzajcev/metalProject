@@ -1,5 +1,6 @@
 package ru.metal.api.nomenclature;
 
+import ru.metal.api.common.request.DeleteTreeItemRequest;
 import ru.metal.api.common.request.ObtainTreeItemRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
@@ -15,7 +16,9 @@ public interface NomenclatureFacade {
 
     ObtainGroupReponse getGroups(ObtainTreeItemRequest obtainTreeItemRequest);
 
-    UpdateGroupResponse updateGroups(UpdateTreeItemRequest<GroupDto> request);
+    UpdateGoodGroupResponse updateGroups(UpdateTreeItemRequest<GroupDto> request);
+
+    UpdateGoodGroupResponse deleteGroups(DeleteTreeItemRequest<GroupDto> request);
 
     ObtainGoodResponse getGoods(ObtainGoodRequest obtainGoodRequest);
 

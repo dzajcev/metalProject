@@ -1,13 +1,17 @@
 package ru.metal.rest;
 
+import ru.metal.api.common.request.DeleteTreeItemRequest;
 import ru.metal.api.common.request.ObtainTreeItemRequest;
 import ru.metal.api.common.request.UpdateTreeItemRequest;
+import ru.metal.api.common.response.DeleteTreeItemResponse;
 import ru.metal.api.contragents.ContragentsFacade;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
+import ru.metal.api.contragents.request.ObtainContragentGroupRequest;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
 import ru.metal.api.contragents.request.UpdateEmployeeRequest;
 import ru.metal.api.contragents.response.*;
+import ru.metal.api.nomenclature.dto.GroupDto;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -32,7 +36,7 @@ public class ContragentsService extends AbstractService {
 
     @POST
     @Path("/groups/get")
-    public Response getGroups(ObtainContragentRequest obtainTreeItemRequest) throws Exception {
+    public Response getGroups(ObtainContragentGroupRequest obtainTreeItemRequest) throws Exception {
         ObtainContragentGroupReponse groups = contragentsFacade.getGroups(obtainTreeItemRequest);
         return Response.ok(groups).build();
     }
@@ -43,7 +47,12 @@ public class ContragentsService extends AbstractService {
         UpdateContragentGroupResponse updateContragentGroupResponse = contragentsFacade.updateGroups(request);
         return Response.ok(updateContragentGroupResponse).build();
     }
-
+    @POST
+    @Path("/groups/delete")
+    public Response deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request) throws Exception {
+        UpdateContragentGroupResponse groupUpdateResponse = contragentsFacade.deleteGroups(request);
+        return Response.ok(groupUpdateResponse).build();
+    }
     @POST
     @Path("/contragent/get")
     public Response getContragents(ObtainContragentRequest obtainContragentRequest) throws Exception {

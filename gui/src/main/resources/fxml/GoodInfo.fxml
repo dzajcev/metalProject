@@ -9,12 +9,13 @@
 <AnchorPane id="goodInfo" prefHeight="150.0" prefWidth="522.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.nomenclature.GoodInfoController">
    <children>
       <TextField fx:id="name" layoutX="9.0" layoutY="31.0" prefHeight="25.0" prefWidth="504.0" />
-      <CheckBox fx:id="active" layoutX="9.0" layoutY="64.0" mnemonicParsing="false" text="Активен" />
+      <CheckBox fx:id="active" layoutX="261.0" layoutY="60.0" mnemonicParsing="false" />
       <ComboBox fx:id="okei" layoutX="126.0" layoutY="81.0" prefWidth="150.0" />
       <Label layoutX="9.0" layoutY="85.0" text="Единица измерения" />
-      <SaveButton fx:id="save" layoutX="439.0" layoutY="81.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" />
+      <SaveButton fx:id="save" layoutX="439.0" layoutY="111.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" />
       <Label fx:id="group" layoutX="14.0" layoutY="6.0" text="Label" />
-      <Label layoutX="9.0" layoutY="106.0" text="НДС" />
+      <Label layoutX="9.0" layoutY="111.0" text="НДС" />
       <TextField fx:id="nds" layoutX="221.0" layoutY="111.0" prefHeight="25.0" prefWidth="55.0" />
+      <Label layoutX="9.0" layoutY="60.0" text="Активность" />
    </children>
 </AnchorPane>

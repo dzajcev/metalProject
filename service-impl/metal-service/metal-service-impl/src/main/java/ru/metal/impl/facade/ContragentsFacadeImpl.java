@@ -2,10 +2,13 @@ package ru.metal.impl.facade;
 
 
 import ru.lanit.hcs.convert.mapper.Mapper;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
+import ru.metal.api.common.dto.Error;
+import ru.metal.api.common.request.DeleteTreeItemRequest;
 import ru.metal.api.common.request.UpdateTreeItemRequest;
 import ru.metal.api.contragents.ContragentsFacade;
+import ru.metal.api.contragents.ErrorCodeEnum;
 import ru.metal.api.contragents.dto.*;
+import ru.metal.api.contragents.request.ObtainContragentGroupRequest;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
 import ru.metal.api.contragents.request.UpdateEmployeeRequest;
@@ -29,7 +32,7 @@ import java.util.*;
 @Remote
 @Stateless(name = "contragentsFacade")
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class ContragentsFacadeImpl implements ContragentsFacade {
+public class ContragentsFacadeImpl extends AbstractCatalogFacade<ContragentGroup> implements ContragentsFacade {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -37,8 +40,7 @@ public class ContragentsFacadeImpl implements ContragentsFacade {
     @Inject
     private Mapper mapper;
 
-    public ObtainContragentGroupReponse getGroups(ObtainContragentRequest obtainTreeItemRequest) {
-
+    private List<ContragentGroup> getEntityGroups(ObtainContragentGroupRequest obtainTreeItemRequest) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<ContragentGroup> cq = cb.createQuery(ContragentGroup.class);
@@ -47,13 +49,16 @@ public class ContragentsFacadeImpl implements ContragentsFacade {
         if (obtainTreeItemRequest.getActive()) {
             predicates.add(cb.equal(root.get(ContragentGroup_.active), true));
         }
-        if (!obtainTreeItemRequest.getPersonTypes().isEmpty()){
-            Join<ContragentGroup, Contragent> contragents = root.join(ContragentGroup_.contragents);
+        if (!obtainTreeItemRequest.getGroupGuids().isEmpty()) {
+            predicates.add(root.get(ContragentGroup_.guid).in(obtainTreeItemRequest.getGroupGuids()));
+        }
+        if (!obtainTreeItemRequest.getPersonTypes().isEmpty()) {
+            Join<ContragentGroup, Contragent> contragents = root.join(ContragentGroup_.items);
             Predicate criteria = contragents.get(Contragent_.personType).in(obtainTreeItemRequest.getPersonTypes());
             predicates.add(criteria);
         }
-        if (!obtainTreeItemRequest.getContragentTypes().isEmpty()){
-            Join<ContragentGroup, Contragent> contragents = root.join(ContragentGroup_.contragents);
+        if (!obtainTreeItemRequest.getContragentTypes().isEmpty()) {
+            Join<ContragentGroup, Contragent> contragents = root.join(ContragentGroup_.items);
             final ListJoin<Contragent, ContragentType> status = contragents.joinList("contragentTypes");
             final Predicate predicate = status.in(obtainTreeItemRequest.getContragentTypes());
             predicates.add(predicate);
@@ -61,8 +66,12 @@ public class ContragentsFacadeImpl implements ContragentsFacade {
         cq.where(cb.and(predicates.toArray(new Predicate[0]))).distinct(true);
         TypedQuery<ContragentGroup> q = entityManager.createQuery(cq);
         List<ContragentGroup> results = q.getResultList();
+        return results;
+    }
+
+    public ObtainContragentGroupReponse getGroups(ObtainContragentGroupRequest obtainTreeItemRequest) {
         ObtainContragentGroupReponse obtainContragentGroupReponse = new ObtainContragentGroupReponse();
-        obtainContragentGroupReponse.setDataList(mapper.mapCollections(results, ContragentGroupDto.class));
+        obtainContragentGroupReponse.setDataList(mapper.mapCollections(getEntityGroups(obtainTreeItemRequest), ContragentGroupDto.class));
         return obtainContragentGroupReponse;
     }
 
@@ -72,7 +81,54 @@ public class ContragentsFacadeImpl implements ContragentsFacade {
         List<ContragentGroup> data = mapper.mapCollections(request.getDataList(), ContragentGroup.class);
 
         for (ContragentGroup group : data) {
+            if (!group.getActive()) {
+                ObtainContragentRequest obtainContragentRequest = new ObtainContragentRequest();
+                obtainContragentRequest.getGroupGuids().add(group.getGuid());
+                obtainContragentRequest.setActive(true);
+                ObtainContragentResponse contragents = getContragents(obtainContragentRequest);
+
+                if (!contragents.getDataList().isEmpty()) {
+                    UpdateContragentRequest contragentRequest = new UpdateContragentRequest();
+                    for (ContragentDto contragentDto : contragents.getDataList()) {
+                        contragentDto.setActive(false);
+                        contragentRequest.getDataList().add(contragentDto);
+                    }
+                    updateContragents(contragentRequest);
+                }
+            }
             entityManager.merge(group);
+        }
+
+        return response;
+    }
+
+
+    @Override
+    public UpdateContragentGroupResponse deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request) {
+
+        ObtainContragentGroupRequest obtainContragentGroupRequest = new ObtainContragentGroupRequest();
+        obtainContragentGroupRequest.setGroupGuids(request.getGuids());
+        List<ContragentGroup> groups = getEntityGroups(obtainContragentGroupRequest);
+        List<ContragentGroup> deleted = getDeletedGroups(groups);
+        UpdateContragentGroupResponse response = new UpdateContragentGroupResponse();
+
+        if (!deleted.isEmpty()) {
+            for (ContragentGroup group : deleted) {
+                UpdateContragentGroupResult updateGroupResult = new UpdateContragentGroupResult();
+                updateGroupResult.setGuid(group.getGuid());
+                response.getImportResults().add(updateGroupResult);
+                entityManager.remove(group);
+            }
+        }
+
+        for (ContragentGroup group : groups) {
+            if (!deleted.contains(group.getGuid()) && !group.getItems().isEmpty()) {
+                Error error = new Error(ErrorCodeEnum.CONTRAGENT001, group.getName());
+                UpdateContragentGroupResult updateGroupResult = new UpdateContragentGroupResult();
+                updateGroupResult.setGuid(group.getGuid());
+                updateGroupResult.getErrors().add(error);
+                response.getImportResults().add(updateGroupResult);
+            }
         }
 
         return response;
@@ -109,8 +165,8 @@ public class ContragentsFacadeImpl implements ContragentsFacade {
         List<Contragent> results = q.getResultList();
         ObtainContragentResponse obtainContragentResponse = new ObtainContragentResponse();
         List<ContragentDto> contragentList = mapper.mapCollections(results, ContragentDto.class);
-        for (ContragentDto dto:contragentList){
-            if (dto.getEntrepreneur().getDocuments().isEmpty()){
+        for (ContragentDto dto : contragentList) {
+            if (dto.getEntrepreneur().getDocuments().isEmpty()) {
                 dto.setEntrepreneur(null);
             }
         }
@@ -156,9 +212,5 @@ public class ContragentsFacadeImpl implements ContragentsFacade {
             response.getImportResults().add(updateEmployeeResult);
         }
         return response;
-    }
-
-    private Employee mergeEmployee(Employee employee) {
-        return entityManager.merge(employee);
     }
 }

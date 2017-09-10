@@ -1,10 +1,11 @@
-package ru.metal.api.organizationinfo;
+package ru.metal.api.nomenclature;
 
 import ru.metal.api.OperationErrorCode;
 
+
 public enum ErrorCodeEnum implements OperationErrorCode {
 
-    ORG001("Информация об организации не заполнена");
+    NOMENCLATURE001("Группа %s содержит в себе элементы. Удаление не возможно.");
     private String pattern;
 
     ErrorCodeEnum(final String pattern) {

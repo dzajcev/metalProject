@@ -4,6 +4,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
@@ -15,7 +17,6 @@ import ru.metal.api.common.request.ObtainTreeItemRequest;
 import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.ObtainGoodResponse;
-import ru.metal.dto.ContragentFx;
 import ru.metal.dto.GoodFx;
 import ru.metal.dto.GroupFx;
 import ru.metal.dto.helper.GoodHelper;
@@ -74,12 +75,7 @@ public class NomenclatureForm extends AnchorPane {
                             ObtainGoodRequest obtainGoodRequest = new ObtainGoodRequest();
                             obtainGoodRequest.setGroupGuids(treeView.getSelectedGroups());
                             obtainGoodRequest.setActive(tableViewPane.isOnlyActive());
-                            try {
-                                ObtainGoodResponse goods = nomenclatureClient.getGoods(obtainGoodRequest);
-                                tableViewPane.setItems(GoodHelper.getInstance().getFxCollection(goods.getDataList()));
-                            } catch (ServerErrorException e) {
-
-                            }
+                            tableViewPane.setItems(obtainGoods(obtainGoodRequest));
                         }
                     }
                 });
@@ -104,12 +100,16 @@ public class NomenclatureForm extends AnchorPane {
                 ObtainGoodRequest obtainGoodRequest = new ObtainGoodRequest();
                 obtainGoodRequest.setGroupGuids(newValue);
                 obtainGoodRequest.setActive(tableViewPane.isOnlyActive());
-                try {
-                    ObtainGoodResponse goods = nomenclatureClient.getGoods(obtainGoodRequest);
-                    tableViewPane.setItems(GoodHelper.getInstance().getFxCollection(goods.getDataList()));
-                } catch (ServerErrorException e) {
-
-                }
+                tableViewPane.setItems(obtainGoods(obtainGoodRequest));
+            }
+        });
+        tableViewPane.onlyActiveProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                ObtainGoodRequest request = new ObtainGoodRequest();
+                request.setGroupGuids(treeView.getSelectedGroups());
+                request.setActive(newValue);
+                tableViewPane.setItems(obtainGoods(request));
 
             }
         });
@@ -157,6 +157,14 @@ public class NomenclatureForm extends AnchorPane {
         splitPane.getItems().add(tableViewPane);
     }
 
+    private ObservableList<GoodFx> obtainGoods(ObtainGoodRequest obtainGoodRequest) {
+        try {
+            ObtainGoodResponse response = nomenclatureClient.getGoods(obtainGoodRequest);
+            return GoodHelper.getInstance().getFxCollection(response.getDataList());
+        } catch (ServerErrorException e) {
+            return FXCollections.emptyObservableList();
+        }
+    }
     public void setObtainMode(boolean obtainMode) {
         tableViewPane.setObtainMode(obtainMode);
     }

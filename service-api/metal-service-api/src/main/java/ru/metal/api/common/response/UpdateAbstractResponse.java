@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by User on 16.08.2017.
  */
-public abstract class UpdateAbstractResponse<RESULT extends UpdateResult> implements Serializable {
+public abstract class UpdateAbstractResponse<RESULT extends UpdateResult> extends AbstractResponse {
     /**
      * Информация об ошибке
      */

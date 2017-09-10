@@ -1,6 +1,6 @@
 package ru.metal.rest;
 
-import javafx.scene.control.Button;
+import ru.metal.api.common.request.DeleteTreeItemRequest;
 import ru.metal.api.common.request.ObtainTreeItemRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
@@ -37,11 +37,16 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest) throws ServerErrorException {
         UpdateTreeItemRequest<GroupDto> request=new UpdateTreeItemRequest<>();
         request.setDataList(GoodGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
-        UpdateGroupResponse execute = execute(pathGroup +"/update", RequestType.POST, request, UpdateGroupResponse.class);
+        UpdateGoodGroupResponse execute = execute(pathGroup +"/update", RequestType.POST, request, UpdateGoodGroupResponse.class);
         UpdateTreeItemResponse response=new UpdateTreeItemResponse();
         response.setError(execute.getError());
         response.setImportResults(execute.getImportResults());
         return response;
+    }
+
+    @Override
+    public UpdateGoodGroupResponse deleteItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) throws ServerErrorException {
+        return execute(pathGroup +"/delete", RequestType.POST, deleteTreeItemRequest, UpdateGoodGroupResponse.class);
     }
 
 

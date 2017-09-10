@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by User on 16.08.2017.
  */
-public abstract class ObtainAbstractRequest implements Serializable {
+public abstract class ObtainAbstractRequest extends AbstractRequest{
     private String guid;
 
     public String getGuid() {

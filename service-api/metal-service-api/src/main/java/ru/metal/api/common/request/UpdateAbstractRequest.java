@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by User on 16.08.2017.
  */
-public abstract class UpdateAbstractRequest<DATA> implements Serializable {
+public abstract class UpdateAbstractRequest<DATA> extends AbstractRequest {
 
     private List<DATA> dataList;
 

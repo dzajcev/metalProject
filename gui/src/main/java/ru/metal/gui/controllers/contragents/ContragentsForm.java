@@ -92,8 +92,8 @@ public class ContragentsForm extends AnchorPane {
             @Override
             public void changed(ObservableValue<? extends ContragentGroupFx> observable, ContragentGroupFx oldValue, ContragentGroupFx newValue) {
                 boolean root = newValue.getGuid().equals("-1");
-                boolean hasChilden = treeView.hasChildren(newValue);
-                tableViewPane.setEditable(!root && !hasChilden);
+
+                tableViewPane.setEditable(!root);
             }
         });
         treeView.selectedGroupsProperty().addListener(new ChangeListener<List<String>>() {

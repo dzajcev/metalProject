@@ -14,8 +14,6 @@ import java.util.List;
 public class ObtainContragentGroupRequest extends ObtainTreeItemRequest {
     private boolean active;
 
-    private List<String> groupGuids;
-
     private List<PersonType> personTypes=new ArrayList<>();
 
     private List<ContragentType> contragentTypes=new ArrayList<>();
@@ -26,17 +24,6 @@ public class ObtainContragentGroupRequest extends ObtainTreeItemRequest {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public List<String> getGroupGuids() {
-        if (groupGuids==null){
-            groupGuids=new ArrayList<>();
-        }
-        return groupGuids;
-    }
-
-    public void setGroupGuids(List<String> groupGuids) {
-        this.groupGuids = groupGuids;
     }
 
     public List<PersonType> getPersonTypes() {

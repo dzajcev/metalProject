@@ -1,5 +1,6 @@
 package ru.metal.rest;
 
+import ru.metal.api.common.request.DeleteTreeItemRequest;
 import ru.metal.api.common.request.ObtainTreeItemRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
@@ -37,7 +38,14 @@ public class NomenclatureService extends AbstractService {
     @POST
     @Path("/groups/update")
     public Response updateGroups(UpdateTreeItemRequest<GroupDto> request) throws Exception {
-        UpdateGroupResponse groupUpdateResponse = nomenclatureFacade.updateGroups(request);
+        UpdateGoodGroupResponse groupUpdateResponse = nomenclatureFacade.updateGroups(request);
+        return Response.ok(groupUpdateResponse).build();
+    }
+
+    @POST
+    @Path("/groups/delete")
+    public Response deleteGroups(DeleteTreeItemRequest<GroupDto> request) throws Exception {
+        UpdateGoodGroupResponse groupUpdateResponse = nomenclatureFacade.deleteGroups(request);
         return Response.ok(groupUpdateResponse).build();
     }
 

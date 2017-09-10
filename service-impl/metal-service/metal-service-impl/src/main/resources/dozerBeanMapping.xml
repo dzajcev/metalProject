@@ -34,7 +34,7 @@
         <class-b>ru.metal.api.common.dto.AdressDto</class-b>
     </mapping>
     <mapping map-null="false">
-        <class-a>ru.metal.impl.domain.persistent.nomenclature.Group</class-a>
+        <class-a>ru.metal.impl.domain.persistent.nomenclature.GoodGroup</class-a>
         <class-b>ru.metal.api.nomenclature.dto.GroupDto</class-b>
     </mapping>
     <mapping map-null="false">

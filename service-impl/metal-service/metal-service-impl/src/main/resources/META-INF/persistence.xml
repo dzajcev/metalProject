@@ -7,7 +7,7 @@
         <class>ru.metal.impl.domain.persistent.organizationinfo.OrganizationInfo</class>
         <class>ru.metal.impl.domain.persistent.Adress</class>
         <class>ru.metal.impl.domain.persistent.BankRequisites</class>
-        <class>ru.metal.impl.domain.persistent.nomenclature.Group</class>
+        <class>ru.metal.impl.domain.persistent.nomenclature.GoodGroup</class>
         <class>ru.metal.impl.domain.persistent.nomenclature.Good</class>
         <class>ru.metal.impl.domain.persistent.nomenclature.Okei</class>
         <properties>

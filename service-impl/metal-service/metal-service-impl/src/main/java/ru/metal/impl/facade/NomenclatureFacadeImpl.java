@@ -2,16 +2,20 @@ package ru.metal.impl.facade;
 
 
 import ru.lanit.hcs.convert.mapper.Mapper;
+import ru.metal.api.common.dto.Error;
+import ru.metal.api.common.request.DeleteTreeItemRequest;
 import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.nomenclature.dto.OkeiDto;
-import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
-import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.nomenclature.response.*;
+import ru.metal.api.nomenclature.ErrorCodeEnum;
 import ru.metal.api.nomenclature.NomenclatureFacade;
 import ru.metal.api.nomenclature.dto.GoodDto;
 import ru.metal.api.nomenclature.dto.GroupDto;
+import ru.metal.api.nomenclature.dto.OkeiDto;
+import ru.metal.api.nomenclature.dto.UpdateGoodGroupResult;
 import ru.metal.api.nomenclature.request.ObtainGoodRequest;
+import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
+import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
+import ru.metal.api.nomenclature.response.*;
 import ru.metal.impl.domain.persistent.nomenclature.*;
 
 import javax.ejb.Remote;
@@ -32,7 +36,7 @@ import java.util.List;
 @Remote
 @Stateless(name = "nomenclatureFacade")
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class NomenclatureFacadeImpl implements NomenclatureFacade {
+public class NomenclatureFacadeImpl extends AbstractCatalogFacade<GoodGroup> implements NomenclatureFacade {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -40,28 +44,84 @@ public class NomenclatureFacadeImpl implements NomenclatureFacade {
     @Inject
     private Mapper mapper;
 
-    public ObtainGroupReponse getGroups(ObtainTreeItemRequest obtainTreeItemRequest) {
-
+    private List<GoodGroup> getEntityGroups(ObtainTreeItemRequest obtainTreeItemRequest) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Group> cq = cb.createQuery(Group.class);
-        Root<Group> root = cq.from(Group.class);
+
+        CriteriaQuery<GoodGroup> cq = cb.createQuery(GoodGroup.class);
+        Root<GoodGroup> root = cq.from(GoodGroup.class);
+        List<Predicate> predicates = new ArrayList<>();
         if (obtainTreeItemRequest.getActive()) {
-            cq.where(cb.equal(root.get(Group_.active), true));
+            predicates.add(cb.equal(root.get(GoodGroup_.active), true));
         }
-        TypedQuery<Group> q = entityManager.createQuery(cq);
-        List<Group> results = q.getResultList();
+        if (!obtainTreeItemRequest.getGroupGuids().isEmpty()) {
+            predicates.add(root.get(GoodGroup_.guid).in(obtainTreeItemRequest.getGroupGuids()));
+        }
+
+        cq.where(cb.and(predicates.toArray(new Predicate[0]))).distinct(true);
+        TypedQuery<GoodGroup> q = entityManager.createQuery(cq);
+        List<GoodGroup> results = q.getResultList();
+        return results;
+    }
+
+
+    public ObtainGroupReponse getGroups(ObtainTreeItemRequest obtainTreeItemRequest) {
         ObtainGroupReponse obtainGroupReponse = new ObtainGroupReponse();
-        obtainGroupReponse.setDataList(mapper.mapCollections(results, GroupDto.class));
+        obtainGroupReponse.setDataList(mapper.mapCollections(getEntityGroups(obtainTreeItemRequest), GroupDto.class));
         return obtainGroupReponse;
     }
 
     @Override
-    public UpdateGroupResponse updateGroups(UpdateTreeItemRequest<GroupDto> request) {
-        UpdateGroupResponse response = new UpdateGroupResponse();
-        List<Group> data = mapper.mapCollections(request.getDataList(), Group.class);
+    public UpdateGoodGroupResponse updateGroups(UpdateTreeItemRequest<GroupDto> request) {
+        UpdateGoodGroupResponse response = new UpdateGoodGroupResponse();
+        List<GoodGroup> data = mapper.mapCollections(request.getDataList(), GoodGroup.class);
 
-        for (Group group : data) {
+        for (GoodGroup group : data) {
+            if (!group.getActive()) {
+                ObtainGoodRequest obtainGoodRequest = new ObtainGoodRequest();
+                obtainGoodRequest.getGroupGuids().add(group.getGuid());
+                obtainGoodRequest.setActive(true);
+                ObtainGoodResponse goods = getGoods(obtainGoodRequest);
+
+                if (!goods.getDataList().isEmpty()) {
+                    UpdateGoodsRequest goodRequest = new UpdateGoodsRequest();
+                    for (GoodDto goodDto : goods.getDataList()) {
+                        goodDto.setActive(false);
+                        goodRequest.getDataList().add(goodDto);
+                    }
+                    updateGoods(goodRequest);
+                }
+            }
             entityManager.merge(group);
+        }
+
+        return response;
+    }
+
+    @Override
+    public UpdateGoodGroupResponse deleteGroups(DeleteTreeItemRequest<GroupDto> request) {
+        ObtainTreeItemRequest obtainGoodGroupRequest = new ObtainTreeItemRequest();
+        obtainGoodGroupRequest.setGroupGuids(request.getGuids());
+        List<GoodGroup> groups = getEntityGroups(obtainGoodGroupRequest);
+        List<GoodGroup> deleted = getDeletedGroups(groups);
+        UpdateGoodGroupResponse response = new UpdateGoodGroupResponse();
+
+        if (!deleted.isEmpty()) {
+            for (GoodGroup group : deleted) {
+                UpdateGoodGroupResult updateGoodGroupResult = new UpdateGoodGroupResult();
+                updateGoodGroupResult.setGuid(group.getGuid());
+                response.getImportResults().add(updateGoodGroupResult);
+                entityManager.remove(group);
+            }
+        }
+
+        for (GoodGroup group : groups) {
+            if (!deleted.contains(group.getGuid()) && !group.getItems().isEmpty()) {
+                Error error = new Error(ErrorCodeEnum.NOMENCLATURE001, group.getName());
+                UpdateGoodGroupResult updateGroupResult = new UpdateGoodGroupResult();
+                updateGroupResult.setGuid(group.getGuid());
+                updateGroupResult.getErrors().add(error);
+                response.getImportResults().add(updateGroupResult);
+            }
         }
 
         return response;
@@ -79,8 +139,8 @@ public class NomenclatureFacadeImpl implements NomenclatureFacade {
             predicates.add(predicate);
         }
         if (!obtainGoodRequest.getGroupGuids().isEmpty()) {
-            Join<Good, Group> groups = root.join(Good_.group);
-            Predicate predicate = groups.get(Group_.guid).in(obtainGoodRequest.getGroupGuids());
+            Join<Good, GoodGroup> groups = root.join(Good_.group);
+            Predicate predicate = groups.get(GoodGroup_.guid).in(obtainGoodRequest.getGroupGuids());
             predicates.add(predicate);
         }
         cq.where(predicates.toArray(new Predicate[0])).distinct(true);

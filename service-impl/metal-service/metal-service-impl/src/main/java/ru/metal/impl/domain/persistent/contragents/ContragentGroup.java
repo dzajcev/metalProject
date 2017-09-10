@@ -1,8 +1,7 @@
 package ru.metal.impl.domain.persistent.contragents;
 
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.TreeviewElement;
 import ru.metal.impl.domain.persistent.BaseEntity;
+import ru.metal.impl.domain.persistent.catalog.Catalog;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,10 +11,13 @@ import java.util.List;
  */
 @Entity
 @Table(name = "CONTRAGENTS_GROUPS")
-public class ContragentGroup extends BaseEntity {
+public class ContragentGroup extends BaseEntity implements Catalog<Contragent> {
 
     @Column(name = "GROUP_NAME")
     private String name;
+
+    @Column(name = "GROUP_GUID")
+    private String groupGuid;
 
     @Column(name = "IS_ACTIVE")
     private Boolean active;
@@ -24,7 +26,7 @@ public class ContragentGroup extends BaseEntity {
     private String userGuid;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
-    private List<Contragent> contragents;
+    private List<Contragent> items;
 
     public String getName() {
         return name;
@@ -50,11 +52,23 @@ public class ContragentGroup extends BaseEntity {
         this.userGuid = userGuid;
     }
 
-    public List<Contragent> getContragents() {
-        return contragents;
+    public List<Contragent> getItems() {
+        return items;
     }
 
-    public void setContragents(List<Contragent> contragents) {
-        this.contragents = contragents;
+    public void setItems(List<Contragent> items) {
+        this.items = items;
+    }
+
+    public String getGroupGuid() {
+        return groupGuid;
+    }
+
+    public void setGroupGuid(String groupGuid) {
+        this.groupGuid = groupGuid;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

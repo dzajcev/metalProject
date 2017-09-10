@@ -18,6 +18,11 @@ public class Error implements Serializable {
         this.description=operationErrorCode.getPattern();
     }
 
+    public Error (OperationErrorCode operationErrorCode, String... params){
+        this.code=operationErrorCode.getCode();
+        this.description=String.format(operationErrorCode.getPattern(),params);
+
+    }
     public String getCode() {
         return code;
     }
