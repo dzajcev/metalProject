@@ -2,7 +2,7 @@ package ru.metal.gui.controls.tableviewcontrol.customcells;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 
 import java.text.*;
 import java.util.Date;
@@ -30,22 +30,22 @@ public class TextFieldEditingCell<T extends AbstractDto, E> extends AbstractCell
                 if (pattern != null) {
                     value = getNumber(value, pattern).toString();
                 }
-                result = (E) (Double)Double.parseDouble(value);
+                result = (E) (Double) Double.parseDouble(value);
             } else if (clazz == Integer.class) {
                 if (pattern != null) {
                     value = getNumber(value, pattern).toString();
                 }
-                result = (E) (Integer)Integer.parseInt(value);
+                result = (E) (Integer) Integer.parseInt(value);
             } else if (clazz == Long.class) {
                 if (pattern != null) {
                     value = getNumber(value, pattern).toString();
                 }
-                result = (E) (Long)Long.parseLong(value);
+                result = (E) (Long) Long.parseLong(value);
             } else if (clazz == Short.class) {
                 if (pattern != null) {
                     value = getNumber(value, pattern).toString();
                 }
-                result = (E) (Short)Short.parseShort(value);
+                result = (E) (Short) Short.parseShort(value);
             } else if (clazz == Date.class) {
                 DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                 result = (E) format.format(value);

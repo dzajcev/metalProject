@@ -1,4 +1,4 @@
-package ru.metal.api.common.dto;
+package ru.common.api.dto;
 
 /**
  * Created by User on 02.09.2017.

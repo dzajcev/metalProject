@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://dozer.sourceforge.net"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+    <configuration>
+        <custom-converters>
+            <converter type="ru.lanit.hcs.convert.converters.StringDozerConverter">
+                <class-a>java.lang.String</class-a>
+                <class-b>java.lang.String</class-b>
+            </converter>
+            <converter type="ru.lanit.hcs.convert.converters.StringToBooleanConverter">
+                <class-a>java.lang.String</class-a>
+                <class-b>java.lang.Boolean</class-b>
+            </converter>
+
+
+        </custom-converters>
+    </configuration>
+
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.organizationinfo.OrganizationInfo</class-a>
+        <class-b>ru.metal.api.organizationinfo.dto.OrganizationInfoDto</class-b>
+    </mapping>
+
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.BankRequisites</class-a>
+        <class-b>ru.metal.api.common.dto.BankRequisitesDto</class-b>
+    </mapping>
+
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.Adress</class-a>
+        <class-b>ru.metal.api.common.dto.AdressDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.nomenclature.GoodGroup</class-a>
+        <class-b>ru.metal.api.nomenclature.dto.GroupDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.nomenclature.Good</class-a>
+        <class-b>ru.metal.api.nomenclature.dto.GoodDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.nomenclature.Okei</class-a>
+        <class-b>ru.metal.api.nomenclature.dto.OkeiDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.contragents.Contragent</class-a>
+        <class-b>ru.metal.api.contragents.dto.ContragentDto</class-b>
+        <field>
+            <a>documents</a>
+            <b>entrepreneur.documents</b>
+        </field>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.contragents.ContragentGroup</class-a>
+        <class-b>ru.metal.api.contragents.dto.ContragentGroupDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.contragents.Employee</class-a>
+        <class-b>ru.metal.api.contragents.dto.EmployeeDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.contragents.Document</class-a>
+        <class-b>ru.metal.api.contragents.dto.DocumentDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.order.OrderHeader</class-a>
+        <class-b>ru.metal.api.order.dto.OrderHeaderDto</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>ru.metal.impl.domain.persistent.order.OrderBody</class-a>
+        <class-b>ru.metal.api.order.dto.OrderBodyDto</class-b>
+    </mapping>
+</mappings>

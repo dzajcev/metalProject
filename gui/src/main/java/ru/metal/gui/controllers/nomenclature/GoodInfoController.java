@@ -26,6 +26,7 @@ import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
 import ru.metal.rest.NomenclatureClient;
 
+import java.security.*;
 import java.util.List;
 
 /**
@@ -139,6 +140,7 @@ public class GoodInfoController extends AbstractController {
     }
 
     public void setGood(GoodFx good) {
+
         this.goodFx = good;
         name.setText(good.getName());
         active.setSelected(good.getActive());

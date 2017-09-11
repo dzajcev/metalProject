@@ -1,7 +1,6 @@
 package ru.metal.api.nomenclature.response;
 
-import ru.metal.api.common.response.ObtainAbstractResponse;
-import ru.metal.api.nomenclature.dto.GoodDto;
+import ru.common.api.response.ObtainAbstractResponse;
 import ru.metal.api.nomenclature.dto.OkeiDto;
 
 /**

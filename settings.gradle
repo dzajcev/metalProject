@@ -2,12 +2,22 @@ include ":service-impl:metal-service",
         ":service-impl:metal-service:metal-service-impl",
         ":service-impl:report-service",
         ":service-impl:report-service:report-service-impl",
+		":service-impl:auth-service",
+        ":service-impl:auth-service:auth-service-impl",
+		
+		":service-api:common-api",
         ":service-api:metal-service-api",
 		":service-api:report-service-api",
+		":service-api:auth-service-api",
         ":utils:rest-utils",
+		":utils:crypto-utils",
 		":utils:convert-utils",
 
-        ":web:rest:metal-rest",
+        ":web:rest:auth-rest",
+		":web:rest:metal-rest",
+		":web:rest:report-rest",
+		
+		
 		":gui"
 
 

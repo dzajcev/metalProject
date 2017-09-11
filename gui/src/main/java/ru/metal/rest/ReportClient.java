@@ -11,8 +11,7 @@ import ru.metal.exceptions.ServerErrorException;
  */
 
 public class ReportClient extends AbstractRestClient {
-
-    private final String pathOrder = "report";
+    private final String pathOrder = "/report";
 
 
 

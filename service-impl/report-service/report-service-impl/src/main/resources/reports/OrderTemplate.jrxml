@@ -57,6 +57,14 @@
 	<parameter name="total" class="java.lang.String"/>
 	<parameter name="nds" class="java.lang.String"/>
 	<parameter name="stringTotal" class="java.lang.String"/>
+	<parameter name="sourceFull" class="java.lang.String"/>
+	<parameter name="shipperSourceFull" class="java.lang.String"/>
+	<parameter name="buyerFull" class="java.lang.String"/>
+	<parameter name="shipperBuyerFull" class="java.lang.String"/>
+	<parameter name="directorPosition" class="java.lang.String"/>
+	<parameter name="directorFIO" class="java.lang.String"/>
+	<parameter name="accountantFIO" class="java.lang.String"/>
+	<parameter name="employeeFIO" class="java.lang.String"/>
 	<field name="goodName" class="java.lang.String"/>
 	<field name="count" class="java.lang.String"/>
 	<field name="okei" class="java.lang.String"/>
@@ -88,7 +96,7 @@
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<title>
-		<band height="319" splitType="Stretch">
+		<band height="430" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="585" height="14" uuid="576c922e-266b-4b21-bb95-0ef5440e3277"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -294,34 +302,41 @@
 				<textFieldExpression><![CDATA[$V{orderTitle}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="236" width="73" height="20" uuid="4d9a00ff-bdcc-4e53-b0db-facce6a739dc"/>
+				<reportElement x="0" y="230" width="73" height="20" uuid="4d9a00ff-bdcc-4e53-b0db-facce6a739dc">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="customFont" size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Поставщик]]></text>
+				<text><![CDATA[Поставщик:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="89" y="236" width="466" height="20" uuid="19f7f59b-0366-47fa-b497-a994d21eb767"/>
+				<reportElement x="120" y="230" width="434" height="20" uuid="19f7f59b-0366-47fa-b497-a994d21eb767">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="customFont" size="12" isBold="true"/>
+					<font fontName="customFont" size="11" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{sourceVariable}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{sourceFull}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="287" width="73" height="20" uuid="5b9b9367-bb50-46e8-b4f7-64f80b05be90"/>
+				<reportElement positionType="Float" x="0" y="280" width="110" height="20" uuid="5b9b9367-bb50-46e8-b4f7-64f80b05be90">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="customFont" size="12"/>
 				</textElement>
-				<text><![CDATA[Покупатель]]></text>
+				<text><![CDATA[Грузоотправитель:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="89" y="287" width="466" height="20" uuid="d062a637-a02a-43b2-9095-8508944313e7"/>
+				<reportElement x="120" y="280" width="434" height="20" uuid="d062a637-a02a-43b2-9095-8508944313e7"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="customFont" size="12" isBold="true"/>
+					<font fontName="customFont" size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{recipientVariable}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{shipperSourceFull}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="99" width="31" height="20" uuid="6543a5d2-cfae-4931-bc5a-50749d042040"/>
@@ -333,12 +348,46 @@
 				</textElement>
 				<text><![CDATA[ИНН]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="120" y="330" width="438" height="20" uuid="2b5032c1-280b-476b-a99f-f3e41c4d2d0f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="customFont" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{buyerFull}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="330" width="73" height="20" uuid="74f878fb-d669-4d75-9db6-2f6e6042ae71">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="customFont" size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Покупатель:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="380" width="107" height="20" uuid="5f89d767-61d7-4a8d-b20e-814a5b2f0da3">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<text><![CDATA[Грузополучатель:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="120" y="380" width="438" height="20" uuid="76fac103-1fa6-44a3-9251-569a7419e2a6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="customFont" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{shipperBuyerFull}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<detail>
-		<band height="53" splitType="Stretch">
+		<band height="40" splitType="Stretch">
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="0" width="575" height="53" uuid="49a86a4c-f4ba-4e32-ba26-7bed4cd48807"/>
+				<reportElement key="table" style="table" x="0" y="0" width="575" height="40" uuid="49a86a4c-f4ba-4e32-ba26-7bed4cd48807"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DataSource" uuid="09c7f882-a799-4969-8855-afc65d18c3fc">
 						<dataSourceExpression><![CDATA[$P{ItemDataSource}]]></dataSourceExpression>
@@ -389,7 +438,7 @@
 									<leftPen lineWidth="1.0"/>
 								</box>
 								<textElement verticalAlignment="Middle">
-									<font fontName="customFont" size="12"/>
+									<font fontName="customFont" size="10"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{goodName}]]></textFieldExpression>
 							</textField>
@@ -417,7 +466,7 @@
 									<leftPen lineWidth="1.0"/>
 								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="customFont" size="12"/>
+									<font fontName="customFont" size="10"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -445,7 +494,7 @@
 									<leftPen lineWidth="1.0"/>
 								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="customFont" size="12"/>
+									<font fontName="customFont" size="10"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{okei}]]></textFieldExpression>
 							</textField>
@@ -473,7 +522,7 @@
 									<leftPen lineWidth="1.0"/>
 								</box>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="customFont" size="12"/>
+									<font fontName="customFont" size="10"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
 							</textField>
@@ -501,7 +550,7 @@
 									<leftPen lineWidth="1.0"/>
 								</box>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="customFont" size="12"/>
+									<font fontName="customFont" size="10"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{summa}]]></textFieldExpression>
 							</textField>
@@ -512,7 +561,7 @@
 		</band>
 	</detail>
 	<summary>
-		<band height="404" splitType="Stretch">
+		<band height="280" splitType="Stretch">
 			<staticText>
 				<reportElement x="433" y="10" width="44" height="20" uuid="0df70e2f-ab11-4abf-8d85-d128932c8cfa"/>
 				<box rightPadding="3"/>
@@ -571,11 +620,175 @@
 			</textField>
 			<textField>
 				<reportElement x="0" y="100" width="575" height="20" uuid="cf0eb6db-6aa6-4068-b5d9-5c3f6e27d962"/>
-				<box leftPadding="3"/>
-				<textElement verticalAlignment="Middle">
+				<box leftPadding="3">
+					<bottomPen lineWidth="2.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
 					<font fontName="customFont" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{stringTotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="140" width="100" height="20" uuid="02fd1260-54f2-49f8-86c2-0e7c8ccbec81"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<text><![CDATA[Руководитель]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="140" width="130" height="20" uuid="aac5e91b-0f82-4dae-bca6-3b4cdbb7bd03">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{directorPosition}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="270" y="160" width="130" height="20" uuid="faf9aa02-6dbd-4275-bd5f-db82c5232e73">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[подпись]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="160" width="130" height="20" uuid="9a474751-6b08-4eb8-818c-fbde2403d018">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[должность]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="160" width="155" height="20" uuid="49c8e2c8-7bdf-4791-98d7-0059898b32d2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[расшифровка]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="420" y="140" width="155" height="20" uuid="18c64576-3b1b-41ac-ab8a-0fdd9620b607">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{directorFIO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="180" width="178" height="20" uuid="5ee6eeec-7bce-423a-87b4-cd7464dab05b"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<text><![CDATA[Главный (старший) бухгалтер]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="272" y="200" width="130" height="20" uuid="6454874d-91a7-44a0-93ff-1f30dfc790d5">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[подпись]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="200" width="155" height="20" uuid="ef81eca6-7938-4bb2-ac21-408e317a3edb">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[расшифровка]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="422" y="180" width="155" height="20" uuid="a6b6c2a7-cb73-4fa2-898e-00a3f49a51db">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{accountantFIO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="230" width="148" height="20" uuid="ed74426f-d3c4-4a91-a8fd-2fe71d8d8ad9"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<text><![CDATA[Ответственный]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="250" width="130" height="20" uuid="f6728e2d-6c11-4126-b76b-44161e14e12b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[подпись]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="250" width="155" height="20" uuid="18fdecc4-4208-4b32-9266-9da222ba342c">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="customFont" size="8"/>
+				</textElement>
+				<text><![CDATA[расшифровка]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="420" y="230" width="155" height="20" uuid="5badb80f-78bc-4ac7-beda-848505a0c34f">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="customFont" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{employeeFIO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

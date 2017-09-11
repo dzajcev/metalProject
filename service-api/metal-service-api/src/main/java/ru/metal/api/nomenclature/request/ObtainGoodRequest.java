@@ -1,8 +1,7 @@
 package ru.metal.api.nomenclature.request;
 
-import ru.metal.api.common.request.ObtainAbstractRequest;
+import ru.common.api.request.ObtainAbstractRequest;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class ObtainGoodRequest extends ObtainAbstractRequest {
     }
 
     public List<String> getGroupGuids() {
-        if (groupGuids==null){
-            groupGuids=new ArrayList<>();
+        if (groupGuids == null) {
+            groupGuids = new ArrayList<>();
         }
         return groupGuids;
     }

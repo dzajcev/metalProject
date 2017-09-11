@@ -3,15 +3,13 @@ package ru.metal.dto;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.common.dto.TableElement;
+import ru.common.api.dto.TableElement;
 import ru.metal.api.contragents.dto.ContragentDto;
-import ru.metal.api.contragents.dto.ContragentGroupDto;
 import ru.metal.api.contragents.dto.ContragentType;
 import ru.metal.api.contragents.dto.PersonType;
 import ru.metal.dto.annotations.PredicateField;
 import ru.metal.dto.annotations.ValidatableCollection;
 import ru.metal.dto.annotations.ValidatableField;
-import ru.metal.dto.helper.ContragentGroupHelper;
 import ru.metal.dto.helper.ContragentHelper;
 import ru.metal.dto.helper.EmployeeHelper;
 import ru.metal.dto.helper.FxHelper;
@@ -25,18 +23,18 @@ import java.util.function.Predicate;
 public class ContragentFx extends FxEntity<ContragentDto> implements TableElement<ContragentGroupFx>, Cloneable {
 
     @PredicateField
-    private Predicate<ContragentFx> kppPredicate=new Predicate<ContragentFx>() {
+    private Predicate<ContragentFx> kppPredicate = new Predicate<ContragentFx>() {
         @Override
         public boolean test(ContragentFx contragentFx) {
-            return contragentFx.getPersonType()==PersonType.UL;
+            return contragentFx.getPersonType() == PersonType.UL;
         }
     };
 
     @PredicateField
-    private Predicate<ContragentFx> flPredicate=new Predicate<ContragentFx>() {
+    private Predicate<ContragentFx> flPredicate = new Predicate<ContragentFx>() {
         @Override
         public boolean test(ContragentFx contragentFx) {
-            return contragentFx.getPersonType()!=PersonType.UL;
+            return contragentFx.getPersonType() != PersonType.UL;
         }
     };
     @ValidatableField(nullable = false, regexp = Formats.NAME_FORMAT)
@@ -403,10 +401,10 @@ public class ContragentFx extends FxEntity<ContragentDto> implements TableElemen
         contragent.setLastEditingDate(getLastEditingDate());
         contragent.setTransportGuid(getTransportGuid());
         contragent.setAccount(getAccount());
-        if (getAccountant()!=null) {
+        if (getAccountant() != null) {
             contragent.setAccountant(getAccountant().getEntity());
         }
-        if (getDirector()!=null) {
+        if (getDirector() != null) {
             contragent.setDirector(getDirector().getEntity());
         }
         contragent.setEmployees(EmployeeHelper.getInstance().getDtoCollection(getEmployees()));
@@ -419,10 +417,10 @@ public class ContragentFx extends FxEntity<ContragentDto> implements TableElemen
         contragent.setPersonType(getPersonType());
         contragent.setContragentTypes(new ArrayList<>(getContragentTypes()));
         contragent.setEmail(getEmail());
-        if (getEntrepreneur()!=null) {
+        if (getEntrepreneur() != null) {
             contragent.setEntrepreneur(getEntrepreneur().getEntity());
         }
-        if (getGroup()!=null) {
+        if (getGroup() != null) {
             contragent.setGroup(getGroup().getEntity());
         }
         contragent.setInn(getInn());
@@ -433,7 +431,7 @@ public class ContragentFx extends FxEntity<ContragentDto> implements TableElemen
         contragent.setOkpo(getOkpo());
         contragent.setOkved(getOkved());
         contragent.setPhone(getPhone());
-        if (getShipper()!=null) {
+        if (getShipper() != null) {
             contragent.setShipper(getShipper().getEntity());
         }
         return contragent;

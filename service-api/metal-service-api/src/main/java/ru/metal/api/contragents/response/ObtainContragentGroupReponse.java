@@ -1,6 +1,6 @@
 package ru.metal.api.contragents.response;
 
-import ru.metal.api.common.response.ObtainAbstractResponse;
+import ru.common.api.response.ObtainAbstractResponse;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
 
 /**

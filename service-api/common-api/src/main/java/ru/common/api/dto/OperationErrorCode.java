@@ -1,4 +1,4 @@
-package ru.metal.api;
+package ru.common.api.dto;
 
 public interface OperationErrorCode {
 

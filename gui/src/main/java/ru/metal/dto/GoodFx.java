@@ -1,7 +1,7 @@
 package ru.metal.dto;
 
 import javafx.beans.property.*;
-import ru.metal.api.common.dto.TableElement;
+import ru.common.api.dto.TableElement;
 import ru.metal.api.nomenclature.dto.GoodDto;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.FxHelper;
@@ -11,21 +11,21 @@ import ru.metal.dto.helper.GoodHelper;
  * Created by User on 09.08.2017.
  */
 
-public class GoodFx extends FxEntity<GoodDto> implements TableElement<GroupFx>{
+public class GoodFx extends FxEntity<GoodDto> implements TableElement<GroupFx> {
 
-    @ValidatableField(nullable = false,regexp = Formats.NAME_FORMAT)
-    private StringProperty name=new SimpleStringProperty();
-
-    @ValidatableField(nullable = false)
-    private ObjectProperty<GroupFx> group=new SimpleObjectProperty<>();
+    @ValidatableField(nullable = false, regexp = Formats.NAME_FORMAT)
+    private StringProperty name = new SimpleStringProperty();
 
     @ValidatableField(nullable = false)
-    private ObjectProperty<OkeiFx> okei=new SimpleObjectProperty<>();
+    private ObjectProperty<GroupFx> group = new SimpleObjectProperty<>();
 
-    @ValidatableField(nullable = false,regexp = Formats.NDS_FORMAT)
-    private IntegerProperty nds=new SimpleIntegerProperty();
+    @ValidatableField(nullable = false)
+    private ObjectProperty<OkeiFx> okei = new SimpleObjectProperty<>();
 
-    private BooleanProperty active=new SimpleBooleanProperty(true);
+    @ValidatableField(nullable = false, regexp = Formats.NDS_FORMAT)
+    private IntegerProperty nds = new SimpleIntegerProperty();
+
+    private BooleanProperty active = new SimpleBooleanProperty(true);
 
     @Override
     public String getName() {
@@ -91,14 +91,14 @@ public class GoodFx extends FxEntity<GoodDto> implements TableElement<GroupFx>{
 
     @Override
     public GoodDto getEntity() {
-        GoodDto dto=new GoodDto();
+        GoodDto dto = new GoodDto();
         dto.setNds(getNds());
         dto.setName(getName());
         dto.setActive(getActive());
-        if (getOkei()!=null) {
+        if (getOkei() != null) {
             dto.setOkei(getOkei().getEntity());
         }
-        if (getGroup()!=null) {
+        if (getGroup() != null) {
             dto.setGroup(getGroup().getEntity());
         }
         dto.setGuid(getGuid());

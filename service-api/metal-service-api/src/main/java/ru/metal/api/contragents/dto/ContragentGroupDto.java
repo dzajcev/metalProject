@@ -1,12 +1,12 @@
 package ru.metal.api.contragents.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.TreeviewElement;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.TreeviewElement;
 
 /**
  * Created by User on 29.08.2017.
  */
-public class ContragentGroupDto extends AbstractDto implements TreeviewElement{
+public class ContragentGroupDto extends AbstractDto implements TreeviewElement {
 
     private String groupGuid;
 

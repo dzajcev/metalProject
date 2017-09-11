@@ -1,6 +1,6 @@
 package ru.metal.api.organizationinfo.response;
 
-import ru.metal.api.common.response.ObtainAbstractResponse;
+import ru.common.api.response.ObtainAbstractResponse;
 import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
 
 /**

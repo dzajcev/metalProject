@@ -1,20 +1,23 @@
 package ru.metal.rest;
 
-import ru.metal.api.common.request.DeleteTreeItemRequest;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
-import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.nomenclature.response.*;
+import ru.common.api.request.DeleteTreeItemRequest;
+import ru.common.api.request.ObtainTreeItemRequest;
+import ru.common.api.request.UpdateTreeItemRequest;
 import ru.metal.api.nomenclature.NomenclatureFacade;
 import ru.metal.api.nomenclature.dto.GroupDto;
 import ru.metal.api.nomenclature.request.ObtainGoodRequest;
+import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
+import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
+import ru.metal.api.nomenclature.response.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,7 +26,7 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NEVER)
-public class NomenclatureService extends AbstractService {
+public class NomenclatureService {
 
     @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/nomenclatureFacade!ru.metal.api.nomenclature.NomenclatureFacade")
     private NomenclatureFacade nomenclatureFacade;

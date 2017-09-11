@@ -15,7 +15,7 @@ import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.lang3.SerializationUtils;
-import ru.metal.api.common.dto.CellFormats;
+import ru.common.api.dto.CellFormats;
 import ru.metal.api.contragents.dto.ContragentDto;
 import ru.metal.api.contragents.dto.ContragentType;
 import ru.metal.api.contragents.request.ObtainContragentRequest;

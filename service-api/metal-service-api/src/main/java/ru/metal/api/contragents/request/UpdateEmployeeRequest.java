@@ -1,9 +1,6 @@
 package ru.metal.api.contragents.request;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import ru.metal.api.common.request.UpdateAbstractRequest;
-import ru.metal.api.contragents.dto.ContragentDto;
+import ru.common.api.request.UpdateAbstractRequest;
 import ru.metal.api.contragents.dto.EmployeeDto;
 
 /**

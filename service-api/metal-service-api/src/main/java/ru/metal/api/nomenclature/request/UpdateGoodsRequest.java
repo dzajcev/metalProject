@@ -1,6 +1,6 @@
 package ru.metal.api.nomenclature.request;
 
-import ru.metal.api.common.request.UpdateAbstractRequest;
+import ru.common.api.request.UpdateAbstractRequest;
 import ru.metal.api.nomenclature.dto.GoodDto;
 
 /**

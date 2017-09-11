@@ -1,6 +1,6 @@
 package ru.metal.api.order.request;
 
-import ru.metal.api.common.request.ObtainAbstractRequest;
+import ru.common.api.request.ObtainAbstractRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,17 +10,17 @@ import java.util.List;
  * Created by User on 06.09.2017.
  */
 public class ObtainOrderRequest extends ObtainAbstractRequest {
-    private List<String> guids=new ArrayList<>();
+    private List<String> guids = new ArrayList<>();
 
-    private List<String> numbers=new ArrayList<>();
+    private List<String> numbers = new ArrayList<>();
 
     private Date startDate;
 
     private Date endDate;
 
-    private List<String> recipients=new ArrayList<>();
+    private List<String> recipients = new ArrayList<>();
 
-    private List<String> sources=new ArrayList<>();
+    private List<String> sources = new ArrayList<>();
 
     private boolean active;
 

@@ -1,8 +1,7 @@
 package ru.metal.api.contragents.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**

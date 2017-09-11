@@ -13,7 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
+import ru.common.api.request.ObtainTreeItemRequest;
 import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.ObtainGoodResponse;
@@ -165,6 +165,7 @@ public class NomenclatureForm extends AnchorPane {
             return FXCollections.emptyObservableList();
         }
     }
+
     public void setObtainMode(boolean obtainMode) {
         tableViewPane.setObtainMode(obtainMode);
     }

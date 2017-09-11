@@ -1,7 +1,7 @@
 package ru.metal.gui.controls.tableviewcontrol.customcells;
 
 import javafx.scene.control.DatePicker;
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -10,20 +10,22 @@ import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DatePickerCell<T extends AbstractDto> extends AbstractCell<T,Date> {
+public class DatePickerCell<T extends AbstractDto> extends AbstractCell<T, Date> {
 
     public static final Date EMPTY_DATE;
+
     static {
-        Calendar c=Calendar.getInstance();
-        c.set(Calendar.YEAR,1900);
-        c.set(Calendar.MONTH,1);
-        c.set(Calendar.DAY_OF_MONTH,1);
-        c.set(Calendar.HOUR,0);
-        c.set(Calendar.MINUTE,0);
-        c.set(Calendar.SECOND,0);
-        c.set(Calendar.MILLISECOND,0);
-        EMPTY_DATE=c.getTime();
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, 1900);
+        c.set(Calendar.MONTH, 1);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        EMPTY_DATE = c.getTime();
     }
+
     private DatePicker datePicker;
 
     public DatePickerCell() {
@@ -43,9 +45,9 @@ public class DatePickerCell<T extends AbstractDto> extends AbstractCell<T,Date> 
     @Override
     public void cancelEdit() {
         super.cancelEdit();
-        if (getDate()!=null) {
+        if (getDate() != null) {
             setText(getDate().toString());
-        }else{
+        } else {
             setText(null);
         }
         setGraphic(null);
@@ -81,7 +83,7 @@ public class DatePickerCell<T extends AbstractDto> extends AbstractCell<T,Date> 
     private void createDatePicker() {
         datePicker = new DatePicker(getDate());
         datePicker.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-        datePicker.setValue(getDate()==null?LocalDate.now():getDate());
+        datePicker.setValue(getDate() == null ? LocalDate.now() : getDate());
         datePicker.setOnAction((e) -> {
             DatePickerCell.this.setStyle(null);
             if (datePicker.getValue() != null) {

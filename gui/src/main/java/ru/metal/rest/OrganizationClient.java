@@ -11,8 +11,8 @@ import ru.metal.exceptions.ServerErrorException;
  */
 
 public class OrganizationClient extends AbstractRestClient {
-
-    private final String path = "/orginfo";
+    private final String basePath="metal";
+    private final String path = basePath+"/orginfo";
 
     public ObtainOrganizationInfoResponse getOrganizationInfo() throws ServerErrorException {
         ObtainOrganizationInfoResponse execute = execute(path, RequestType.GET, null, ObtainOrganizationInfoResponse.class);

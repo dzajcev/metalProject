@@ -4,7 +4,10 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import ru.metal.api.common.dto.CellFormats;
+import ru.common.api.dto.CellFormats;
+import ru.metal.api.contragents.dto.ContragentDto;
+import ru.metal.api.contragents.dto.EmployeeDto;
+import ru.metal.api.contragents.dto.PersonType;
 import ru.metal.api.order.OrderFacade;
 import ru.metal.api.order.dto.OrderBodyDto;
 import ru.metal.api.order.dto.OrderHeaderDto;
@@ -23,9 +26,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.*;
 
 /**
@@ -43,11 +43,11 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
     @Override
     public OrderReportResponse createJasperReport(OrderReportRequest reportRequest) {
 
-        ObtainOrderRequest obtainOrderRequest=new ObtainOrderRequest();
+        ObtainOrderRequest obtainOrderRequest = new ObtainOrderRequest();
         obtainOrderRequest.setGuids(reportRequest.getOrderList());
         ObtainOrderResponse orders = orderFacade.getOrders(obtainOrderRequest);
         OrderReportResponse orderReportResponse = new OrderReportResponse();
-        JasperPrint jasperPrint=null;
+        JasperPrint jasperPrint = null;
         for (OrderHeaderDto dto : orders.getDataList()) {
             Map<String, Object> params = new HashMap<>();
             params.put("bankName", dto.getSource().getBank());
@@ -59,7 +59,7 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
             params.put("address", dto.getSource().getAddress());
             params.put("phone", dto.getSource().getPhone());
             params.put("recipient", dto.getSource().getName());
-            params.put("orderNumber", "1111");
+            params.put("orderNumber", dto.getNumber());
             params.put("orderDate", new Date());
             params.put("buyer", dto.getRecipient().getName());
             params.put("recipientAddress", dto.getRecipient().getAddress());
@@ -67,11 +67,31 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
             params.put("recipientKpp", dto.getRecipient().getKpp());
             params.put("recipientPhone", dto.getRecipient().getPhone());
 
+            params.put("sourceFull", createFullName(dto.getSource()));
+            params.put("shipperSourceFull", createFullName(dto.getSource().getShipper() != null ? dto.getSource().getShipper() : dto.getSource()));
 
+            params.put("buyerFull", createFullName(dto.getRecipient()));
+            params.put("shipperBuyerFull", createFullName(dto.getRecipient().getShipper() != null ? dto.getRecipient().getShipper() : dto.getRecipient()));
+
+            params.put("directorPosition", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getDirector().getPosition() : "");
+            params.put("directorFIO", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getDirector().getShortName() : "");
+
+            params.put("accountantFIO", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getAccountant().getShortName() : "");
+
+            boolean employeeExist = false;
+            for (EmployeeDto employee : dto.getSource().getEmployees()) {
+                if (employee.getGuid().equals(dto.getUserGuid())) {
+                    params.put("employeeFIO", employee.getShortName());
+                    employeeExist = true;
+                }
+            }
+            if (!employeeExist) {
+                params.put("employeeFIO", "");
+            }
             List<OrderBody> body = new ArrayList<>();
             int i = 1;
-            String pattern = CellFormats.TWO_DECIMAL_PLACES;
-            DecimalFormat formatter = new DecimalFormat(pattern);
+            DecimalFormat formatterTwoPlaces = new DecimalFormat(CellFormats.TWO_DECIMAL_PLACES);
+            DecimalFormat formatterThreePlaces = new DecimalFormat(CellFormats.THREE_DECIMAL_PLACES);
             double total = 0;
             double nds = 0;
 
@@ -80,11 +100,11 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
                 orderBody.setNpp(i);
                 orderBody.setGoodName(bodyDto.getGood().getName());
                 orderBody.setOkei(bodyDto.getGood().getOkei().getName());
-                orderBody.setCount(formatter.format(bodyDto.getCount()));
-                orderBody.setPrice(formatter.format(bodyDto.getPrice()));
+                orderBody.setCount(formatterThreePlaces.format(bodyDto.getCount()));
+                orderBody.setPrice(formatterTwoPlaces.format(bodyDto.getPrice()));
 
                 double sum = bodyDto.getPrice() * bodyDto.getCount();
-                orderBody.setSumma(formatter.format(sum));
+                orderBody.setSumma(formatterTwoPlaces.format(sum));
                 body.add(orderBody);
                 i++;
                 nds += sum - sum / new Double(1 + (new Double(bodyDto.getGood().getNds()) / 100));
@@ -94,13 +114,13 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
             total = new BigDecimal(total).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             String format = RussianMoney.digits2Text(total);
 
-            params.put("total", formatter.format(total));
-            params.put("nds", formatter.format(nds));
+            params.put("total", formatterTwoPlaces.format(total));
+            params.put("nds", formatterTwoPlaces.format(nds));
             params.put("stringTotal", format);
             try {
-                if (jasperPrint==null) {
+                if (jasperPrint == null) {
                     jasperPrint = create(body, params);
-                }else{
+                } else {
                     JasperPrint jp = create(body, params);
                     jasperPrint.getPages().addAll(jp.getPages());
                 }
@@ -116,6 +136,20 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
         return orderReportResponse;
     }
 
+
+    private String createFullName(ContragentDto contragentDto) {
+        StringBuilder stringBuilder = new StringBuilder(contragentDto.getName());
+        stringBuilder.append(", ИНН ").append(contragentDto.getInn());
+        if (contragentDto.getPersonType() == PersonType.UL) {
+            stringBuilder.append(", КПП ").append(contragentDto.getKpp());
+        }
+        stringBuilder.append(", ").append(contragentDto.getAddress());
+        if (contragentDto.getPhone() != null) {
+            stringBuilder.append(", ").append(contragentDto.getPhone());
+        }
+        return stringBuilder.toString();
+
+    }
 
     @Override
     protected File getReportTemplate() {

@@ -1,7 +1,7 @@
 package ru.metal.api.contragents.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.TableElement;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.TableElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,6 @@ public class ContragentDto extends AbstractDto implements Cloneable, TableElemen
     private EmployeeDto accountant;
 
     private List<EmployeeDto> employees;
-
 
 
     public void setGroup(ContragentGroupDto group) {
@@ -238,8 +237,8 @@ public class ContragentDto extends AbstractDto implements Cloneable, TableElemen
     }
 
     public List<EmployeeDto> getEmployees() {
-        if (employees==null){
-            employees=new ArrayList<>();
+        if (employees == null) {
+            employees = new ArrayList<>();
         }
         return employees;
     }
@@ -258,7 +257,7 @@ public class ContragentDto extends AbstractDto implements Cloneable, TableElemen
 
     public ContragentDto clone() {
         try {
-            return (ContragentDto)super.clone();
+            return (ContragentDto) super.clone();
         } catch (CloneNotSupportedException e) {
             return new ContragentDto();
         }

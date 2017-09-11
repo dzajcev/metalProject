@@ -4,7 +4,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.metal.api.common.dto.AbstractDto;
 import ru.metal.api.nomenclature.dto.OkeiDto;
 import ru.metal.dto.helper.FxHelper;
 import ru.metal.dto.helper.OkeiHelper;
@@ -12,11 +11,11 @@ import ru.metal.dto.helper.OkeiHelper;
 /**
  * Created by User on 09.08.2017.
  */
-public class OkeiFx extends FxEntity<OkeiDto>{
+public class OkeiFx extends FxEntity<OkeiDto> {
 
-    private StringProperty name=new SimpleStringProperty();
+    private StringProperty name = new SimpleStringProperty();
 
-    private BooleanProperty Active=new SimpleBooleanProperty();
+    private BooleanProperty Active = new SimpleBooleanProperty();
 
     public String getName() {
         return name.get();
@@ -59,7 +58,7 @@ public class OkeiFx extends FxEntity<OkeiDto>{
 
     @Override
     public OkeiDto getEntity() {
-        OkeiDto okeiDto=new OkeiDto();
+        OkeiDto okeiDto = new OkeiDto();
         okeiDto.setName(getName());
         okeiDto.setActive(isActive());
         okeiDto.setGuid(getGuid());

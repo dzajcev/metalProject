@@ -1,6 +1,6 @@
 package ru.metal.api.nomenclature.request;
 
-import ru.metal.api.common.request.ObtainAbstractRequest;
+import ru.common.api.request.ObtainAbstractRequest;
 
 /**
  * Created by User on 29.08.2017.

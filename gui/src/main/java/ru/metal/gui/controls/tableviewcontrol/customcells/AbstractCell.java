@@ -1,7 +1,7 @@
 package ru.metal.gui.controls.tableviewcontrol.customcells;
 
 import javafx.scene.control.TableCell;
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 
 /**
  * Created by User on 02.09.2017.
@@ -31,13 +31,16 @@ public abstract class AbstractCell<T extends AbstractDto, E> extends TableCell<T
     public E getEmptyValue() {
         if (clazz == Short.class) {
             return (E) new Short(Short.MIN_VALUE);
-        } if (clazz == Integer.class) {
+        }
+        if (clazz == Integer.class) {
             return (E) new Integer(Integer.MIN_VALUE);
-        }if (clazz == Long.class) {
+        }
+        if (clazz == Long.class) {
             return (E) new Long(Long.MIN_VALUE);
-        }if (clazz == Double.class) {
+        }
+        if (clazz == Double.class) {
             return (E) new Double(Double.MIN_VALUE);
-        }else if (clazz == String.class) {
+        } else if (clazz == String.class) {
             return (E) "EMPTY";
         } else {
             return null;

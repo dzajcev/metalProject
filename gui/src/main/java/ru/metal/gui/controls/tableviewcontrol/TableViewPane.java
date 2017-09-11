@@ -20,21 +20,14 @@ import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
-import org.apache.commons.lang3.SerializationUtils;
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.TableElement;
-import ru.metal.api.common.dto.TreeviewElement;
-import ru.metal.api.contragents.dto.ContragentDto;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.TableElement;
 import ru.metal.dto.FxEntity;
-import ru.metal.gui.controls.treeviewcontrol.DraggableItem;
 import ru.metal.gui.windows.Button;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by User on 16.08.2017.
@@ -187,9 +180,9 @@ public class TableViewPane<T extends TableElement> extends VBox {
                     while (iterator.hasNext()) {
                         T next = iterator.next();
                         if (next.getGuid().equals(contentTableRow.getGuid())) {
-                            FxEntity entity=(FxEntity)next;
+                            FxEntity entity = (FxEntity) next;
                             FxEntity fxEntity = entity.getHelper().getFxEntity((AbstractDto) contentTableRow);
-                            TableElement tableElement=(TableElement)fxEntity;
+                            TableElement tableElement = (TableElement) fxEntity;
                             next.setGroup(tableElement.getGroup());
                             toSave.setValue(next);
                             iterator.remove();

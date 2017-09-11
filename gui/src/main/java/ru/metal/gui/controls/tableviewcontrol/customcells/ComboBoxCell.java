@@ -3,32 +3,28 @@ package ru.metal.gui.controls.tableviewcontrol.customcells;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.TableCell;
 import javafx.util.StringConverter;
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.ComboBoxElement;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.ComboBoxElement;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by User on 02.09.2017.
  */
-public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement>  extends AbstractCell<T,E> {
+public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement> extends AbstractCell<T, E> {
 
 
     private List<E> comboBoxData;
     private ComboBox<E> comboBox;
 
-    public E getEmpty(){
+    public E getEmpty() {
         return comboBoxData.get(0);
     }
+
     public ComboBoxCell(List<E> data, Class<E> clazz) {
         super(clazz);
-        this.comboBoxData=data;
+        this.comboBoxData = data;
     }
 
     @Override
@@ -66,10 +62,10 @@ public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement>  ext
             } else {
                 setText(getStringValue());
                 setGraphic(null);
-                if (item==null){
+                if (item == null) {
                     setIsNull(true);
                     setItem(getEmpty());
-                }else{
+                } else {
                     setIsNull(false);
                 }
 
@@ -127,9 +123,9 @@ public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement>  ext
     }
 
     public String getStringValue() {
-        if (getItem()==null){
+        if (getItem() == null) {
             return "";
-        }else {
+        } else {
             return getItem().getName();
         }
     }

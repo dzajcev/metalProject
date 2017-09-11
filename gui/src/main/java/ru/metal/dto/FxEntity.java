@@ -1,10 +1,10 @@
 package ru.metal.dto;
 
 import javafx.beans.property.Property;
+import ru.common.api.dto.AbstractDto;
 import ru.metal.dto.annotations.PredicateField;
 import ru.metal.dto.annotations.ValidatableCollection;
 import ru.metal.dto.annotations.ValidatableField;
-import ru.metal.api.common.dto.AbstractDto;
 import ru.metal.dto.helper.FxHelper;
 
 import java.lang.annotation.Annotation;
@@ -42,11 +42,12 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
         }
         return false;
     }
+
     public boolean hasError(String fieldName) {
         if (errorFields == null) {
             errorFields = validate();
         }
-        return hasError(fieldName,getTransportGuid());
+        return hasError(fieldName, getTransportGuid());
     }
 
     private Map<String, Map<String, Boolean>> validateSub(Object validatedObject, String transportGuid) {
@@ -65,7 +66,7 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
                     Collection collection = (Collection) fieldValue;
                     ValidatableCollection annotation = field.getAnnotation(ValidatableCollection.class);
                     if (annotation != null) {
-                        boolean result= resultPredicate(validatedObject,predicateFields,annotation.predicateName());
+                        boolean result = resultPredicate(validatedObject, predicateFields, annotation.predicateName());
                         if (result) {
                             int collectionSize = collection == null ? 0 : collection.size();
                             if (collectionSize > annotation.maxSize()) {
@@ -97,7 +98,7 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
                     }
                     ValidatableField annotation = field.getAnnotation(ValidatableField.class);
                     if (annotation != null) {
-                        boolean result= resultPredicate(validatedObject,predicateFields,annotation.predicateName());
+                        boolean result = resultPredicate(validatedObject, predicateFields, annotation.predicateName());
                         if (result) {
                             if (!annotation.nullable() && value == null) {
                                 hasError = true;
@@ -139,15 +140,15 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
         return errorFields;
     }
 
-    private boolean resultPredicate(Object obj, List<Field> predicates, String predicateName){
-        if (!predicateName.isEmpty()){
-            for (Field predicateField:predicates){
-                if (predicateField.getName().equals(predicateName)){
+    private boolean resultPredicate(Object obj, List<Field> predicates, String predicateName) {
+        if (!predicateName.isEmpty()) {
+            for (Field predicateField : predicates) {
+                if (predicateField.getName().equals(predicateName)) {
                     boolean accessible = predicateField.isAccessible();
                     predicateField.setAccessible(true);
                     Predicate predicate;
                     try {
-                        predicate = (Predicate)predicateField.get(obj);
+                        predicate = (Predicate) predicateField.get(obj);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }

@@ -17,22 +17,20 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import ru.metal.api.common.dto.Error;
-import ru.metal.api.common.dto.TableElement;
-import ru.metal.api.common.dto.TreeviewElement;
-import ru.metal.api.common.dto.UpdateResult;
-import ru.metal.api.common.request.DeleteTreeItemRequest;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.common.response.DeleteTreeItemResponse;
-import ru.metal.api.common.response.UpdateTreeItemResponse;
+import ru.common.api.dto.Error;
+import ru.common.api.dto.TableElement;
+import ru.common.api.dto.TreeviewElement;
+import ru.common.api.dto.UpdateResult;
+import ru.common.api.request.DeleteTreeItemRequest;
+import ru.common.api.request.ObtainTreeItemRequest;
+import ru.common.api.request.UpdateTreeItemRequest;
+import ru.common.api.response.UpdateTreeItemResponse;
 import ru.metal.dto.FxEntity;
 import ru.metal.dto.response.ObtainTreeItemResponse;
 import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
 import ru.metal.gui.windows.Button;
 import ru.metal.rest.TreeClient;
-import sun.reflect.generics.tree.Tree;
 
 import java.util.*;
 
@@ -498,10 +496,10 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         try {
                             UpdateTreeItemResponse<UpdateResult> response = treeClient.deleteItem(treeItemRequest);
                             for (UpdateResult updateResult : response.getImportResults()) {
-                                Iterator<TreeItem<T>> itemIterator=allChildren.iterator();
-                                while ((itemIterator.hasNext())){
+                                Iterator<TreeItem<T>> itemIterator = allChildren.iterator();
+                                while ((itemIterator.hasNext())) {
                                     TreeItem<T> next = itemIterator.next();
-                                    if (next.getValue().getGuid().equals(updateResult.getGuid()) && updateResult.getErrors().isEmpty()){
+                                    if (next.getValue().getGuid().equals(updateResult.getGuid()) && updateResult.getErrors().isEmpty()) {
                                         next.getParent().getChildren().remove(next);
                                         itemIterator.remove();
                                     }
@@ -539,15 +537,15 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         }
                     }
                     if (toUpdate) {
-                        List<T> requestList=new ArrayList<T>();
+                        List<T> requestList = new ArrayList<T>();
                         if (!active) {
                             for (T t : allChildrenElements) {
                                 t.setActive(active);
                                 requestList.add(t);
                             }
-                        }else{
+                        } else {
                             List<TreeItem<T>> chain = getChain(treeItem);
-                            for (TreeItem<T> item:chain) {
+                            for (TreeItem<T> item : chain) {
                                 item.getValue().setActive(active);
                                 requestList.add(item.getValue());
                             }
@@ -597,20 +595,21 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
             });
         }
 
-        private List<TreeItem<T>> getChain(TreeItem<T> leaf){
-            List<TreeItem<T>> result=new ArrayList<>();
+        private List<TreeItem<T>> getChain(TreeItem<T> leaf) {
+            List<TreeItem<T>> result = new ArrayList<>();
             result.add(leaf);
-            if (leaf.getParent()!=null && !leaf.getParent().getValue().getGuid().equals("-1")){
+            if (leaf.getParent() != null && !leaf.getParent().getValue().getGuid().equals("-1")) {
                 result.addAll(getChain(leaf.getParent()));
             }
             return result;
         }
 
         private void applyStyle(List<TreeItem<T>> items, boolean active, List<Node> cells) {
-            for (TreeItem<T> item:items){
-                applyStyle(item,active,cells);
+            for (TreeItem<T> item : items) {
+                applyStyle(item, active, cells);
             }
         }
+
         private void applyStyle(TreeItem<T> item, boolean active, List<Node> cells) {
             int row = treeView.getRow(item);
             item.setExpanded(true);

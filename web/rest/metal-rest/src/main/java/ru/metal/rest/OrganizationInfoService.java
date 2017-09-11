@@ -23,7 +23,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NEVER)
-public class OrganizationInfoService extends AbstractService implements Serializable {
+public class OrganizationInfoService implements Serializable {
 
     @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/organizationInfoFacade!ru.metal.api.organizationinfo.OrganizationInfoFacade")
     private OrganizationInfoFacade organizationInfoFacade;

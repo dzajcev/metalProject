@@ -1,6 +1,6 @@
 package ru.metal.api.order.dto;
 
-import ru.metal.api.common.dto.UpdateResult;
+import ru.common.api.dto.UpdateResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,9 @@ public class UpdateOrderResult extends UpdateResult {
     }
 
 
-
     public List<UpdateBodyResult> getBodyResults() {
-        if (bodyResults==null){
-            bodyResults=new ArrayList<>();
+        if (bodyResults == null) {
+            bodyResults = new ArrayList<>();
         }
         return bodyResults;
     }

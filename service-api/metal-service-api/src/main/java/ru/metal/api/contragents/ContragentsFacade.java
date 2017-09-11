@@ -1,8 +1,7 @@
 package ru.metal.api.contragents;
 
-import ru.metal.api.common.request.DeleteTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.common.response.DeleteTreeItemResponse;
+import ru.common.api.request.DeleteTreeItemRequest;
+import ru.common.api.request.UpdateTreeItemRequest;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
 import ru.metal.api.contragents.request.ObtainContragentGroupRequest;
 import ru.metal.api.contragents.request.ObtainContragentRequest;

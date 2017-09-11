@@ -1,7 +1,6 @@
 package ru.metal.api.contragents.request;
 
-import ru.metal.api.common.request.ObtainAbstractRequest;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
+import ru.common.api.request.ObtainTreeItemRequest;
 import ru.metal.api.contragents.dto.ContragentType;
 import ru.metal.api.contragents.dto.PersonType;
 
@@ -14,9 +13,9 @@ import java.util.List;
 public class ObtainContragentGroupRequest extends ObtainTreeItemRequest {
     private boolean active;
 
-    private List<PersonType> personTypes=new ArrayList<>();
+    private List<PersonType> personTypes = new ArrayList<>();
 
-    private List<ContragentType> contragentTypes=new ArrayList<>();
+    private List<ContragentType> contragentTypes = new ArrayList<>();
 
     public boolean getActive() {
         return active;

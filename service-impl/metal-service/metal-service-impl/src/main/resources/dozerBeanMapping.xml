@@ -26,12 +26,12 @@
 
     <mapping map-null="false">
         <class-a>ru.metal.impl.domain.persistent.BankRequisites</class-a>
-        <class-b>ru.metal.api.common.dto.BankRequisitesDto</class-b>
+        <class-b>ru.common.api.dto.BankRequisitesDto</class-b>
     </mapping>
 
     <mapping map-null="false">
         <class-a>ru.metal.impl.domain.persistent.Adress</class-a>
-        <class-b>ru.metal.api.common.dto.AdressDto</class-b>
+        <class-b>ru.common.api.dto.AdressDto</class-b>
     </mapping>
     <mapping map-null="false">
         <class-a>ru.metal.impl.domain.persistent.nomenclature.GoodGroup</class-a>

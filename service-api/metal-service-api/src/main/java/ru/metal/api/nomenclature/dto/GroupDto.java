@@ -1,14 +1,13 @@
 package ru.metal.api.nomenclature.dto;
 
-import ru.metal.api.common.dto.TableElement;
-import ru.metal.api.common.dto.TreeviewElement;
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.TreeviewElement;
 
 /**
  * Created by User on 09.08.2017.
  */
 
-public class GroupDto extends AbstractDto implements TreeviewElement{
+public class GroupDto extends AbstractDto implements TreeviewElement {
 
     private String groupGuid;
 

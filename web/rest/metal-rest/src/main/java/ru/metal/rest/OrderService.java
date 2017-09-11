@@ -1,12 +1,5 @@
 package ru.metal.rest;
 
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.contragents.dto.ContragentGroupDto;
-import ru.metal.api.contragents.request.ObtainContragentRequest;
-import ru.metal.api.contragents.request.UpdateContragentRequest;
-import ru.metal.api.contragents.request.UpdateEmployeeRequest;
-import ru.metal.api.contragents.response.*;
 import ru.metal.api.order.OrderFacade;
 import ru.metal.api.order.request.ObtainOrderRequest;
 import ru.metal.api.order.request.UpdateOrderRequest;
@@ -29,7 +22,7 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NEVER)
-public class OrderService extends AbstractService {
+public class OrderService {
 
     @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/orderFacade!ru.metal.api.order.OrderFacade")
     private OrderFacade orderFacade;

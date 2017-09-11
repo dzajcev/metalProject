@@ -1,8 +1,8 @@
 package ru.metal.impl.facade;
 
 
+import ru.common.api.dto.Error;
 import ru.lanit.hcs.convert.mapper.Mapper;
-import ru.metal.api.common.dto.Error;
 import ru.metal.api.organizationinfo.ErrorCodeEnum;
 import ru.metal.api.organizationinfo.OrganizationInfoFacade;
 import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
@@ -47,12 +47,12 @@ public class OrganizationInfoFacadeImpl implements OrganizationInfoFacade {
 
         TypedQuery<OrganizationInfo> q = entityManager.createQuery(cq);
         OrganizationInfo result;
-        ObtainOrganizationInfoResponse obtainOrganizationInfoResponse=new ObtainOrganizationInfoResponse();
+        ObtainOrganizationInfoResponse obtainOrganizationInfoResponse = new ObtainOrganizationInfoResponse();
         try {
             result = q.getSingleResult();
             obtainOrganizationInfoResponse.getDataList().add(mapper.map(result, OrganizationInfoDto.class));
-        }catch (NoResultException e){
-            Error error=new Error(ErrorCodeEnum.ORG001);
+        } catch (NoResultException e) {
+            Error error = new Error(ErrorCodeEnum.ORG001);
             obtainOrganizationInfoResponse.getErrors().add(error);
         }
 
@@ -62,21 +62,21 @@ public class OrganizationInfoFacadeImpl implements OrganizationInfoFacade {
 
     @Override
     public UpdateOrganizationResponse updateOrganizationInfo(UpdateOrganizationRequest updateOrganizationRequest) {
-        UpdateOrganizationResponse updateOrganizationResponse=new UpdateOrganizationResponse();
+        UpdateOrganizationResponse updateOrganizationResponse = new UpdateOrganizationResponse();
         ObtainOrganizationInfoResponse organizationInfoResponse = getOrganizationInfo();
         if (updateOrganizationRequest.getDataList().isEmpty()) {
             return updateOrganizationResponse;
         }
         OrganizationInfo updateOrganizationInfo = mapper.map(updateOrganizationRequest.getDataList().get(0), OrganizationInfo.class);
-        if (!organizationInfoResponse.getErrors().isEmpty()){
+        if (!organizationInfoResponse.getErrors().isEmpty()) {
             entityManager.persist(updateOrganizationInfo);
-        }else{
+        } else {
             OrganizationInfoDto organizationInfo = organizationInfoResponse.getDataList().get(0);
             updateOrganizationInfo.setGuid(organizationInfo.getGuid());
-            if (organizationInfo.getBankRequisites()!=null){
+            if (organizationInfo.getBankRequisites() != null) {
                 updateOrganizationInfo.getBankRequisites().setGuid(organizationInfo.getBankRequisites().getGuid());
             }
-            if (organizationInfo.getAdress()!=null){
+            if (organizationInfo.getAdress() != null) {
                 updateOrganizationInfo.getAdress().setGuid(organizationInfo.getAdress().getGuid());
             }
             entityManager.merge(updateOrganizationInfo);

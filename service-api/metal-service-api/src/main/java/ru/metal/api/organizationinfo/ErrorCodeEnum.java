@@ -1,6 +1,6 @@
 package ru.metal.api.organizationinfo;
 
-import ru.metal.api.OperationErrorCode;
+import ru.common.api.dto.OperationErrorCode;
 
 public enum ErrorCodeEnum implements OperationErrorCode {
 

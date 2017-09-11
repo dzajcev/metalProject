@@ -1,7 +1,6 @@
 package ru.metal.api.order.response;
 
-import ru.metal.api.common.response.ObtainAbstractResponse;
-import ru.metal.api.nomenclature.dto.OkeiDto;
+import ru.common.api.response.ObtainAbstractResponse;
 import ru.metal.api.order.dto.OrderHeaderDto;
 
 /**

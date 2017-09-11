@@ -1,37 +1,28 @@
 package ru.metal.rest;
 
-import ru.metal.api.common.dto.Error;
-import ru.metal.api.common.request.DeleteTreeItemRequest;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.common.response.DeleteTreeItemResponse;
-import ru.metal.api.common.response.UpdateTreeItemResponse;
+import ru.common.api.request.DeleteTreeItemRequest;
+import ru.common.api.request.ObtainTreeItemRequest;
+import ru.common.api.request.UpdateTreeItemRequest;
+import ru.common.api.response.UpdateTreeItemResponse;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
 import ru.metal.api.contragents.request.UpdateEmployeeRequest;
 import ru.metal.api.contragents.response.*;
-import ru.metal.api.nomenclature.dto.GroupDto;
-import ru.metal.api.nomenclature.request.ObtainGoodRequest;
-import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
-import ru.metal.api.nomenclature.response.*;
 import ru.metal.dto.ContragentGroupFx;
 import ru.metal.dto.helper.ContragentGroupHelper;
-import ru.metal.dto.helper.GoodGroupHelper;
 import ru.metal.dto.response.ObtainTreeItemResponse;
 import ru.metal.exceptions.ServerErrorException;
-
-import java.util.List;
 
 /**
  * Created by User on 08.08.2017.
  */
 
 public class ContragentsClient extends AbstractRestClient implements TreeClient<ContragentGroupFx> {
-
-    private final String pathGroup = "contragents/groups";
-    private final String pathContragent = "contragents/contragent";
-    private final String pathEmployee = "contragents/employee";
+    private final String basePath="metal";
+    private final String pathGroup = basePath+"/contragents/groups";
+    private final String pathContragent = basePath+"/contragents/contragent";
+    private final String pathEmployee = basePath+"/contragents/employee";
 
     @Override
     public ObtainTreeItemResponse<ContragentGroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) throws ServerErrorException {

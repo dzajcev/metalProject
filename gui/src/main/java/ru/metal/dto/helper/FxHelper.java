@@ -1,7 +1,7 @@
 package ru.metal.dto.helper;
 
 import javafx.collections.ObservableList;
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 import ru.metal.dto.FxEntity;
 
 import java.util.Collection;

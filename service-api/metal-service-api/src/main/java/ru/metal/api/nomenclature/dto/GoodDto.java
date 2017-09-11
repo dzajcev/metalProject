@@ -1,7 +1,7 @@
 package ru.metal.api.nomenclature.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.TableElement;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.TableElement;
 
 /**
  * Created by User on 09.08.2017.

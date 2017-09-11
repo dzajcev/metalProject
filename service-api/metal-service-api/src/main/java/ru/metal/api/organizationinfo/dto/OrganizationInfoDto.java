@@ -1,8 +1,8 @@
 package ru.metal.api.organizationinfo.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.AdressDto;
-import ru.metal.api.common.dto.BankRequisitesDto;
+import ru.common.api.dto.AbstractDto;
+import ru.common.api.dto.AdressDto;
+import ru.common.api.dto.BankRequisitesDto;
 
 /**
  * Created by d.zaitsev on 02.08.2017.

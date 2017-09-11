@@ -1,11 +1,11 @@
 package ru.metal.api.nomenclature.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 
 /**
  * Created by User on 09.08.2017.
  */
-public class OkeiDto extends AbstractDto{
+public class OkeiDto extends AbstractDto {
 
     private String name;
 

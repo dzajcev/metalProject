@@ -1,19 +1,16 @@
 package ru.metal.gui.controls.tableviewcontrol;
 
-import com.sun.javafx.binding.ExpressionHelper;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.BooleanPropertyBase;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.input.*;
-import javafx.util.Callback;
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 
 import java.util.*;
 
@@ -70,12 +67,12 @@ public class TableViewChangeProperty<T extends AbstractDto> extends BooleanPrope
                                             if (hasChangeListener) {
                                                 set(true);
                                             }
-                                        }else{
+                                        } else {
                                             if (hasChangeListener) {
                                                 set(false);
                                             }
                                         }
-                                      //  reset();
+                                        //  reset();
                                     }
                                 });
                                 colArr[0] = colArr[0] + 1;
@@ -91,7 +88,7 @@ public class TableViewChangeProperty<T extends AbstractDto> extends BooleanPrope
                             set(false);
                         }
                     }
-                //    reset();
+                    //    reset();
                 }
                 fireValueChangedEvent();
             }
@@ -101,11 +98,11 @@ public class TableViewChangeProperty<T extends AbstractDto> extends BooleanPrope
     }
 
     private void reset() {
-        for (ChangeListener listener:changeListeners){
+        for (ChangeListener listener : changeListeners) {
             TableViewChangeProperty.super.removeListener(listener);
         }
         set(false);
-        for (ChangeListener listener:changeListeners){
+        for (ChangeListener listener : changeListeners) {
             TableViewChangeProperty.super.addListener(listener);
         }
     }

@@ -1,13 +1,9 @@
 package ru.metal.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
-import ru.metal.api.common.dto.TreeviewElement;
+import ru.common.api.dto.TreeviewElement;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
-import ru.metal.api.order.dto.OrderBodyDto;
-import ru.metal.dto.FxEntity;
 import ru.metal.dto.helper.ContragentGroupHelper;
 import ru.metal.dto.helper.FxHelper;
-import ru.metal.dto.helper.OrderBodyHelper;
 
 /**
  * Created by User on 29.08.2017.
@@ -18,7 +14,7 @@ public class ContragentGroupFx extends FxEntity<ContragentGroupDto> implements T
 
     private String name;
 
-    private boolean active=true;
+    private boolean active = true;
 
     public String getGroupGuid() {
         return groupGuid;
@@ -41,12 +37,12 @@ public class ContragentGroupFx extends FxEntity<ContragentGroupDto> implements T
     }
 
     public void setActive(boolean active) {
-        this.active=active;
+        this.active = active;
     }
 
     @Override
     public ContragentGroupDto getEntity() {
-        ContragentGroupDto contragentGroup=new ContragentGroupDto();
+        ContragentGroupDto contragentGroup = new ContragentGroupDto();
         contragentGroup.setActive(getActive());
         contragentGroup.setGuid(getGuid());
         contragentGroup.setLastEditingDate(getLastEditingDate());

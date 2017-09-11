@@ -1,6 +1,6 @@
 package ru.metal.api.contragents.request;
 
-import ru.metal.api.common.request.ObtainAbstractRequest;
+import ru.common.api.request.ObtainAbstractRequest;
 import ru.metal.api.contragents.dto.ContragentType;
 import ru.metal.api.contragents.dto.PersonType;
 
@@ -15,9 +15,9 @@ public class ObtainContragentRequest extends ObtainAbstractRequest {
 
     private List<String> groupGuids;
 
-    private List<PersonType> personTypes=new ArrayList<>();
+    private List<PersonType> personTypes = new ArrayList<>();
 
-    private List<ContragentType> contragentTypes=new ArrayList<>();
+    private List<ContragentType> contragentTypes = new ArrayList<>();
 
     public boolean getActive() {
         return active;
@@ -28,8 +28,8 @@ public class ObtainContragentRequest extends ObtainAbstractRequest {
     }
 
     public List<String> getGroupGuids() {
-        if (groupGuids==null){
-            groupGuids=new ArrayList<>();
+        if (groupGuids == null) {
+            groupGuids = new ArrayList<>();
         }
         return groupGuids;
     }

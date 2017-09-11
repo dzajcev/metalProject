@@ -1,6 +1,6 @@
 package ru.metal.dto;
 
-import ru.metal.api.common.dto.TreeviewElement;
+import ru.common.api.dto.TreeviewElement;
 import ru.metal.api.nomenclature.dto.GroupDto;
 import ru.metal.dto.helper.FxHelper;
 import ru.metal.dto.helper.GoodGroupHelper;
@@ -9,13 +9,13 @@ import ru.metal.dto.helper.GoodGroupHelper;
  * Created by User on 09.08.2017.
  */
 
-public class GroupFx extends FxEntity<GroupDto> implements TreeviewElement{
+public class GroupFx extends FxEntity<GroupDto> implements TreeviewElement {
 
     private String groupGuid;
 
     private String name;
 
-    private boolean active=true;
+    private boolean active = true;
 
     public String getGroupGuid() {
         return groupGuid;
@@ -38,12 +38,12 @@ public class GroupFx extends FxEntity<GroupDto> implements TreeviewElement{
     }
 
     public void setActive(boolean active) {
-        this.active=active;
+        this.active = active;
     }
 
     @Override
     public GroupDto getEntity() {
-        GroupDto groupDto=new GroupDto();
+        GroupDto groupDto = new GroupDto();
         groupDto.setActive(getActive());
         groupDto.setGuid(getGuid());
         groupDto.setLastEditingDate(getLastEditingDate());

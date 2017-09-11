@@ -20,7 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import ru.metal.api.common.dto.CellFormats;
+import ru.common.api.dto.CellFormats;
 import ru.metal.dto.DocumentBodyFx;
 import ru.metal.dto.GoodFx;
 import ru.metal.gui.StartPage;

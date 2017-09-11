@@ -2,14 +2,6 @@ package ru.metal.impl.facade;
 
 
 import ru.lanit.hcs.convert.mapper.Mapper;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.contragents.ContragentsFacade;
-import ru.metal.api.contragents.dto.*;
-import ru.metal.api.contragents.request.ObtainContragentRequest;
-import ru.metal.api.contragents.request.UpdateContragentRequest;
-import ru.metal.api.contragents.request.UpdateEmployeeRequest;
-import ru.metal.api.contragents.response.*;
 import ru.metal.api.order.OrderFacade;
 import ru.metal.api.order.dto.OrderBodyDto;
 import ru.metal.api.order.dto.OrderHeaderDto;
@@ -19,7 +11,8 @@ import ru.metal.api.order.request.ObtainOrderRequest;
 import ru.metal.api.order.request.UpdateOrderRequest;
 import ru.metal.api.order.response.ObtainOrderResponse;
 import ru.metal.api.order.response.UpdateOrderResponse;
-import ru.metal.impl.domain.persistent.contragents.*;
+import ru.metal.impl.domain.persistent.contragents.Contragent;
+import ru.metal.impl.domain.persistent.contragents.Contragent_;
 import ru.metal.impl.domain.persistent.order.*;
 
 import javax.ejb.Remote;
@@ -33,9 +26,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by d.zaitsev on 02.08.2017.
@@ -123,33 +114,35 @@ public class OrderFacadeImpl implements OrderFacade {
         return response;
     }
 
-    private void incrementOrderNumber(OrderNumber number){
-        number.setOrderNumber(number.getOrderNumber()+1);
+    private void incrementOrderNumber(OrderNumber number) {
+        number.setOrderNumber(number.getOrderNumber() + 1);
         entityManager.merge(number);
 
     }
-    private OrderNumber getOrderNumber(String suffix){
+
+    private OrderNumber getOrderNumber(String suffix) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<OrderNumber> cq = cb.createQuery(OrderNumber.class);
 
         Root<OrderNumber> root = cq.from(OrderNumber.class);
-        if (suffix!=null){
-            cq.where(cb.equal(root.get(OrderNumber_.suffix),suffix));
-        }else{
+        if (suffix != null) {
+            cq.where(cb.equal(root.get(OrderNumber_.suffix), suffix));
+        } else {
             cq.where(cb.isNull(root.get(OrderNumber_.suffix)));
         }
         TypedQuery<OrderNumber> q = entityManager.createQuery(cq).setLockMode(LockModeType.PESSIMISTIC_WRITE);
         OrderNumber orderNumber = q.getSingleResult();
-        System.out.println(orderNumber.getNumber()+Thread.currentThread().getName());
+        System.out.println(orderNumber.getNumber() + Thread.currentThread().getName());
         return orderNumber;
     }
+
     @Override
     public UpdateOrderResponse updateOrders(UpdateOrderRequest updateOrderRequest) {
-        UpdateOrderResponse response=new UpdateOrderResponse();
-        for (OrderHeaderDto dto:updateOrderRequest.getDataList()){
+        UpdateOrderResponse response = new UpdateOrderResponse();
+        for (OrderHeaderDto dto : updateOrderRequest.getDataList()) {
             OrderHeader orderHeader = mapper.map(dto, OrderHeader.class);
-            for (OrderBody body:orderHeader.getBody()){
+            for (OrderBody body : orderHeader.getBody()) {
                 body.setOrder(orderHeader);
             }
 
@@ -158,14 +151,14 @@ public class OrderFacadeImpl implements OrderFacade {
             orderHeader.setNumber(orderNumber.getNumber());
             OrderHeader merge = entityManager.merge(orderHeader);
             incrementOrderNumber(orderNumber);
-            UpdateOrderResult updateOrderResult=new UpdateOrderResult();
+            UpdateOrderResult updateOrderResult = new UpdateOrderResult();
             updateOrderResult.setGuid(merge.getGuid());
             updateOrderResult.setTransportGuid(dto.getTransportGuid());
             updateOrderResult.setOrderNumber(merge.getNumber());
-            for (OrderBodyDto bodyDto:dto.getBody()){
-                UpdateBodyResult updateBodyResult=new UpdateBodyResult();
-                for (OrderBody body:merge.getBody()){
-                    if (body.getGood().getGuid().equals(bodyDto.getGood().getGuid())){
+            for (OrderBodyDto bodyDto : dto.getBody()) {
+                UpdateBodyResult updateBodyResult = new UpdateBodyResult();
+                for (OrderBody body : merge.getBody()) {
+                    if (body.getGood().getGuid().equals(bodyDto.getGood().getGuid())) {
                         updateBodyResult.setTransportGuid(bodyDto.getTransportGuid());
                         updateBodyResult.setGuid(body.getGuid());
                         updateOrderResult.getBodyResults().add(updateBodyResult);

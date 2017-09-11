@@ -1,6 +1,6 @@
 package ru.metal.api.order.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 import ru.metal.api.nomenclature.dto.GoodDto;
 
 /**

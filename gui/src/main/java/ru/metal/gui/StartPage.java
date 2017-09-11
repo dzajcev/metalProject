@@ -1,6 +1,8 @@
 package ru.metal.gui;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
@@ -8,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
@@ -17,6 +20,7 @@ import ru.metal.api.order.dto.OrderHeaderDto;
 import ru.metal.dto.OrderHeaderFx;
 import ru.metal.exceptions.ExceptionShower;
 import ru.metal.gui.controllers.AbstractController;
+import ru.metal.gui.controllers.auth.RegisterController;
 import ru.metal.gui.controllers.contragents.ContragentsForm;
 import ru.metal.gui.controllers.nomenclature.NomenclatureForm;
 import ru.metal.gui.controllers.order.OrderController;
@@ -31,6 +35,27 @@ public class StartPage extends Application {
     private final static MainFrame mainFrame = new MainFrame();
 
     private void init(Stage primaryStage) {
+//        FXMLLoader loader = new FXMLLoader(StartPage.class.getResource("/fxml/Register.fxml"));
+//        primaryStage.setTitle("Регистрация");
+//        Parent load = null;
+//        RegisterController registerController = null;
+//        try {
+//            load = loader.load();
+//            registerController = loader.getController();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        registerController.doneProperty().addListener(new ChangeListener<Boolean>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//                if (newValue){
+//                    primaryStage.close();
+//                }
+//            }
+//        });
+//        Scene scene = new Scene(load, 400, 320);
+//        primaryStage.setScene(scene);
+//        primaryStage.show();
 //        Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> showErrorDialog(t, e)));
 //        Thread.currentThread().setUncaughtExceptionHandler(this::showErrorDialog);
         primaryStage.setTitle("Управление");

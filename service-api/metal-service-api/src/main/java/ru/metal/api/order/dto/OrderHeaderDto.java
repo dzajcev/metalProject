@@ -1,6 +1,6 @@
 package ru.metal.api.order.dto;
 
-import ru.metal.api.common.dto.AbstractDto;
+import ru.common.api.dto.AbstractDto;
 import ru.metal.api.contragents.dto.ContragentDto;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class OrderHeaderDto extends AbstractDto {
 
-    protected Date createDate=new Date();
+    protected Date createDate = new Date();
 
     private String number;
 
@@ -26,7 +26,7 @@ public class OrderHeaderDto extends AbstractDto {
 
     private String userGuid;
 
-    private boolean active=true;
+    private boolean active = true;
 
     private List<OrderBodyDto> body;
 
@@ -95,8 +95,8 @@ public class OrderHeaderDto extends AbstractDto {
     }
 
     public List<OrderBodyDto> getBody() {
-        if (body==null){
-            body=new ArrayList<>();
+        if (body == null) {
+            body = new ArrayList<>();
         }
         return body;
     }

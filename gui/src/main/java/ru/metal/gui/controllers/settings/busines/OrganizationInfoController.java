@@ -2,13 +2,11 @@ package ru.metal.gui.controllers.settings.busines;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import ru.metal.api.common.dto.AdressDto;
-import ru.metal.api.common.dto.BankRequisitesDto;
+import ru.common.api.dto.AdressDto;
+import ru.common.api.dto.BankRequisitesDto;
 import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
 import ru.metal.api.organizationinfo.request.UpdateOrganizationRequest;
-import ru.metal.exceptions.ExceptionShower;
 import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
@@ -65,8 +63,8 @@ public class OrganizationInfoController extends AbstractController {
         organizationClient = new OrganizationClient();
         try {
             List<OrganizationInfoDto> dataList = organizationClient.getOrganizationInfo().getDataList();
-            if (!dataList.isEmpty()){
-                organizationInfo=dataList.get(0);
+            if (!dataList.isEmpty()) {
+                organizationInfo = dataList.get(0);
             }
         } catch (ServerErrorException e) {
             return;
@@ -143,7 +141,7 @@ public class OrganizationInfoController extends AbstractController {
         bankRequisitesDto.setKpp(kpp.getText());
         bankRequisitesDto.setRecipientName(recipientName.getText());
 
-        UpdateOrganizationRequest updateOrganizationRequest=new UpdateOrganizationRequest();
+        UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest();
         updateOrganizationRequest.getDataList().add(organizationInfo);
         try {
             organizationClient.updateOrganizationInfo(updateOrganizationRequest);

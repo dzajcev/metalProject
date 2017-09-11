@@ -1,9 +1,7 @@
 package ru.metal.rest;
 
-import ru.metal.api.common.request.DeleteTreeItemRequest;
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.common.response.DeleteTreeItemResponse;
+import ru.common.api.request.DeleteTreeItemRequest;
+import ru.common.api.request.UpdateTreeItemRequest;
 import ru.metal.api.contragents.ContragentsFacade;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
 import ru.metal.api.contragents.request.ObtainContragentGroupRequest;
@@ -11,7 +9,6 @@ import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
 import ru.metal.api.contragents.request.UpdateEmployeeRequest;
 import ru.metal.api.contragents.response.*;
-import ru.metal.api.nomenclature.dto.GroupDto;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -29,7 +26,7 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NEVER)
-public class ContragentsService extends AbstractService {
+public class ContragentsService {
 
     @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/contragentsFacade!ru.metal.api.contragents.ContragentsFacade")
     private ContragentsFacade contragentsFacade;
@@ -47,12 +44,14 @@ public class ContragentsService extends AbstractService {
         UpdateContragentGroupResponse updateContragentGroupResponse = contragentsFacade.updateGroups(request);
         return Response.ok(updateContragentGroupResponse).build();
     }
+
     @POST
     @Path("/groups/delete")
     public Response deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request) throws Exception {
         UpdateContragentGroupResponse groupUpdateResponse = contragentsFacade.deleteGroups(request);
         return Response.ok(groupUpdateResponse).build();
     }
+
     @POST
     @Path("/contragent/get")
     public Response getContragents(ObtainContragentRequest obtainContragentRequest) throws Exception {

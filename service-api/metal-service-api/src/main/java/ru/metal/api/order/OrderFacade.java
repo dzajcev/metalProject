@@ -1,12 +1,5 @@
 package ru.metal.api.order;
 
-import ru.metal.api.common.request.ObtainTreeItemRequest;
-import ru.metal.api.common.request.UpdateTreeItemRequest;
-import ru.metal.api.contragents.dto.ContragentGroupDto;
-import ru.metal.api.contragents.request.ObtainContragentRequest;
-import ru.metal.api.contragents.request.UpdateContragentRequest;
-import ru.metal.api.contragents.request.UpdateEmployeeRequest;
-import ru.metal.api.contragents.response.*;
 import ru.metal.api.order.request.ObtainOrderRequest;
 import ru.metal.api.order.request.UpdateOrderRequest;
 import ru.metal.api.order.response.ObtainOrderResponse;
