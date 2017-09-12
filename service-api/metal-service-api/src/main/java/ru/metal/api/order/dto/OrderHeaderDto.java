@@ -1,6 +1,6 @@
 package ru.metal.api.order.dto;
 
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.metal.api.contragents.dto.ContragentDto;
 
 import java.util.ArrayList;

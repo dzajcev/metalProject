@@ -1,7 +1,7 @@
 package ru.metal.api.auth.dto;
 
 
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

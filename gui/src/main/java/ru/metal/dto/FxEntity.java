@@ -1,7 +1,7 @@
 package ru.metal.dto;
 
 import javafx.beans.property.Property;
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.metal.dto.annotations.PredicateField;
 import ru.metal.dto.annotations.ValidatableCollection;
 import ru.metal.dto.annotations.ValidatableField;

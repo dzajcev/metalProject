@@ -30,7 +30,7 @@
     </mapping>
     <mapping map-null="false">
         <class-a>ru.metal.auth.impl.domain.persistent.UserData</class-a>
-        <class-b>ru.metal.api.auth.dto.PermissionContextData</class-b>
+        <class-b>ru.metal.crypto.ejb.PermissionContextData</class-b>
         <field>
             <a>guid</a>
             <b>userGuid</b>

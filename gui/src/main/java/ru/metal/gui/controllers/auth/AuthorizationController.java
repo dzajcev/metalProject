@@ -9,12 +9,14 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.codec.binary.Hex;
+import ru.common.api.CryptoPacket;
 import ru.metal.api.auth.request.AuthorizationRequest;
 import ru.metal.api.auth.response.AuthorizationResponse;
+import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.crypto.service.AsymmetricCipher;
 import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.StartPage;
 import ru.metal.rest.AuthorizationClient;
-import ru.metal.crypto.service.UserContextHolder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -44,20 +46,24 @@ public class AuthorizationController {
 
     @FXML
     private void login() {
-        AuthorizationClient authorizationClient=new AuthorizationClient();
+        AuthorizationClient authorizationClient = new AuthorizationClient();
         try {
-            AuthorizationRequest request=new AuthorizationRequest();
+            AuthorizationRequest request = new AuthorizationRequest();
             byte[] bytesOfMessage = (login.getText() + "_" + pass.getText()).getBytes("UTF-8");
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] theDigest = md.digest(bytesOfMessage);
             request.setToken(Hex.encodeHexString(theDigest));
 
-            UserContextHolder.loadKeyPair("d:\\private.key","d:\\public.key");
+            UserContextHolder.loadKeyPair("d:\\private.key", "d:\\public.key");
             AuthorizationResponse login = authorizationClient.login(request);
-            if (login.getPermissionContextData()!=null) {
+            if (login.getPermissionContextData() != null) {
                 UserContextHolder.setUserPermissionDataThreadLocal(login.getPermissionContextData());
                 done.set(AUTHORIZATION_ACCEPT);
             }
+//            String s="привет раиплвоатпжщвтпршоьавзлпрьбзщвоьрщшжаотзршльапзщрлощапоьр";
+//            CryptoPacket cryptoPacket = AsymmetricCipher.ecryptPacket(s.getBytes(), UserContextHolder.getPublicKey());
+//            Object o = AsymmetricCipher.decryptPacket(cryptoPacket, UserContextHolder.getPrivateKey());
+//            System.out.println(o);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | ServerErrorException e) {
             throw new RuntimeException(e);
         }

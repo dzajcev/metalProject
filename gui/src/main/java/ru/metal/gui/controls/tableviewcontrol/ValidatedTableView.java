@@ -12,7 +12,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.metal.dto.FxEntity;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.gui.controls.tableviewcontrol.customcells.AbstractCell;

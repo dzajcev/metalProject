@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	
+    <changeSet author="d.zaitsev" id="auth_user-01">
+		<preConditions onFail="MARK_RAN" onFailMessage="User mt_user already exists">
+			<sqlCheck expectedResult="0">SELECT COUNT(1) FROM pg_user WHERE usename = 'auth_user'</sqlCheck>
+		</preConditions>
+		<comment>пользователь auth_user</comment>
+		<sql>create user auth_user password 'auth_user'</sql>
+		<rollback>DROP user auth_user</rollback>
+    </changeSet>
+
+    <changeSet author="d.zaitsev" id="authdb-02" runInTransaction="false">
+		<preConditions onFail="MARK_RAN" onFailMessage="Database authdb already exists">
+			<sqlCheck expectedResult="0">SELECT COUNT(1) FROM pg_database where datname = 'authdb'</sqlCheck>
+		</preConditions>
+		<comment>база данных authdb</comment>
+		<sql>create database authdb owner auth_user tablespace pg_default</sql>
+		<rollback>DROP database authdb</rollback>
+    </changeSet>
+	
+    <changeSet author="d.zaitsev" id="auth-userdbgrants-06">
+		<comment>гранты на поключение к authdb для auth_user</comment>
+		<sql>grant connect on database authdb to auth_user</sql>
+		<rollback>revoke connect on database authdb from auth_user</rollback>
+    </changeSet>
+
+    <changeSet author="d.zaitsev" id="auth-publicgrants-07">
+		<comment>отбор public грантов на поключение к authdb</comment>
+		<sql>revoke connect on database authdb from public</sql>
+		<rollback>grant connect on database authdb to public</rollback>
+    </changeSet>
+
+</databaseChangeLog>

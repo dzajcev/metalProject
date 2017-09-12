@@ -1,6 +1,9 @@
 package ru.metal.api.auth.dto;
 
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.Position;
+import ru.metal.crypto.ejb.dto.Privilege;
+import ru.metal.crypto.ejb.dto.Role;
 
 import java.util.ArrayList;
 import java.util.List;

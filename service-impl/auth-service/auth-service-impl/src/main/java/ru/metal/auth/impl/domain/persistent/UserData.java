@@ -1,7 +1,7 @@
 package ru.metal.auth.impl.domain.persistent;
 
-import ru.metal.api.auth.dto.Privilege;
-import ru.metal.api.auth.dto.Role;
+import ru.metal.crypto.ejb.dto.Privilege;
+import ru.metal.crypto.ejb.dto.Role;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -44,13 +44,13 @@ public class UserData extends BaseEntity {
     private byte[] privateServerKey;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
-    @CollectionTable(name="Roles")
+    @CollectionTable(name = "Roles")
     @Column(name = "ROLE_GUID", nullable = false)
     @Enumerated(EnumType.STRING)
     private List<Role> roles;
 
     @ElementCollection(targetClass = Privilege.class, fetch = FetchType.LAZY)
-    @CollectionTable(name="PRIVILEGES")
+    @CollectionTable(name = "PRIVILEGES")
     @Column(name = "PRIVILEGE_GUID", nullable = false)
     @Enumerated(EnumType.STRING)
     private List<Privilege> privileges;
@@ -128,8 +128,8 @@ public class UserData extends BaseEntity {
     }
 
     public List<Role> getRoles() {
-        if (roles ==null){
-            roles =new ArrayList<>();
+        if (roles == null) {
+            roles = new ArrayList<>();
         }
         return roles;
     }
@@ -139,8 +139,8 @@ public class UserData extends BaseEntity {
     }
 
     public List<Privilege> getPrivileges() {
-        if (privileges==null){
-            privileges=new ArrayList<>();
+        if (privileges == null) {
+            privileges = new ArrayList<>();
         }
         return privileges;
     }

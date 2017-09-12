@@ -1,0 +1,14 @@
+# Check if exist
+if (outcome!=success) of /subsystem=datasources/xa-data-source=authds:read-resource
+# Add a XA datasource to authdb
+/subsystem=datasources/xa-data-source=authds:add(driver-name=postgresql, jndi-name="${jndi}", use-java-context=true, min-pool-size=10, max-pool-size=100, blocking-timeout-wait-millis=5000, user-name="${user}", password="${password}")
+/subsystem=datasources/xa-data-source=authds/xa-datasource-properties=ServerName:add(value="${databaseHost}")
+/subsystem=datasources/xa-data-source=authds/xa-datasource-properties=PortNumber:add(value="${databasePort}")
+/subsystem=datasources/xa-data-source=authds/xa-datasource-properties=DatabaseName:add(value="${databaseName}")
+/subsystem=datasources/xa-data-source=authds:enable
+end-if
+# Check Connection
+/subsystem=datasources/xa-data-source=authds:test-connection-in-pool
+
+
+

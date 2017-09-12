@@ -1,0 +1,14 @@
+1.
+Connect to authdb and run:
+
+DROP SCHEMA authsm CASCADE;
+DROP TABLE public.databasechangelog;
+DROP TABLE public.databasechangeloglock;
+
+
+2.
+Connect to edb and run:
+
+DROP database authdb;
+DROP user auth_user;
+delete from public.databasechangelog where id like 'mt-%'

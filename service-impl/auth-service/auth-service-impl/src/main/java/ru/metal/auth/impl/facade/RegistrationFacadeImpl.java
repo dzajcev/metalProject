@@ -1,13 +1,10 @@
 package ru.metal.auth.impl.facade;
 
-import org.apache.commons.lang3.SerializationUtils;
 import ru.common.api.dto.Error;
 import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.ErrorCodeEnum;
 import ru.metal.api.auth.RegistrationFacade;
-import ru.metal.api.auth.dto.Privilege;
-import ru.metal.api.auth.dto.Role;
 import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.exceptions.FieldValidationException;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
@@ -19,6 +16,8 @@ import ru.metal.api.auth.response.RegistrationResponse;
 import ru.metal.auth.impl.domain.persistent.Position;
 import ru.metal.auth.impl.domain.persistent.RegistrationRequestData;
 import ru.metal.auth.impl.domain.persistent.UserData;
+import ru.metal.crypto.ejb.dto.Privilege;
+import ru.metal.crypto.ejb.dto.Role;
 
 import javax.ejb.*;
 import javax.inject.Inject;

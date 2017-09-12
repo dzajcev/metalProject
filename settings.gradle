@@ -12,7 +12,8 @@ include ":service-impl:metal-service",
         ":utils:rest-utils",
 		":utils:crypto-utils",
 		":utils:convert-utils",
-
+		":utils:security-utils",
+		
         ":web:rest:auth-rest",
 		":web:rest:metal-rest",
 		":web:rest:report-rest",

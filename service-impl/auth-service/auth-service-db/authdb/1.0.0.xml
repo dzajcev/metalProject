@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <preConditions>
+        <dbms type="postgresql"/>
+        <sqlCheck expectedResult="1">SELECT COUNT(1) FROM pg_extension WHERE extname = 'uuid-ossp';</sqlCheck>
+    </preConditions>
+
+
+    <!--changeSet author="d.zaitsev" id="20170804-7">
+        <comment>заполнение справочника okei</comment>
+        <sql>
+            INSERT INTO mtsm.okei(guid, last_editing_date, is_active, name) VALUES (uuid_generate_v4(), now(), true, 'шт');
+            INSERT INTO mtsm.okei(guid, last_editing_date, is_active, name) VALUES (uuid_generate_v4(), now(), true, 'тн');
+            INSERT INTO mtsm.okei(guid, last_editing_date, is_active, name) VALUES (uuid_generate_v4(), now(), true, 'лист');
+            INSERT INTO mtsm.okei(guid, last_editing_date, is_active, name) VALUES (uuid_generate_v4(), now(), true, 'м');
+        </sql>
+        <rollback>
+            DELETE FROM mtsm.okei;
+        </rollback>
+    </changeSet-->
+</databaseChangeLog>

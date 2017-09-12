@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	
+	<preConditions>
+		<dbms type="postgresql" />
+	</preConditions>	
+	
+    <changeSet author="d.zaitsev" id="20171109-01">
+		<comment>Схема авторизации</comment>
+		<sql>
+	    	CREATE SCHEMA IF NOT EXISTS AUTHSM AUTHORIZATION auth_user;
+	    	GRANT USAGE ON SCHEMA AUTHSM TO auth_user;
+		</sql>
+		<rollback>
+		    DROP SCHEMA AUTHSM;
+		</rollback>
+    </changeSet>
+
+	
+    <changeSet author="d.zaitsev" id="20171109-02">
+		<comment>прописываем для пользователя auth_user схему authsm</comment>
+		<sql>alter user auth_user SET search_path = authsm,public</sql>
+		<rollback>alter user auth_user SET search_path = public</rollback>
+    </changeSet>
+
+
+	<changeSet author="d.zaitsev" id="20171109-03">
+        <comment>Создание расширения "UUID-OSSP" для генерации UUID</comment>
+        <sql>CREATE EXTENSION IF NOT EXISTS "uuid-ossp"</sql>
+        <rollback>DROP EXTENSION "uuid-ossp"</rollback>
+    </changeSet>
+			
+</databaseChangeLog>

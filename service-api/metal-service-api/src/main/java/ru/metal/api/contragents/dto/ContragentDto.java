@@ -1,6 +1,6 @@
 package ru.metal.api.contragents.dto;
 
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.common.api.dto.TableElement;
 
 import java.util.ArrayList;

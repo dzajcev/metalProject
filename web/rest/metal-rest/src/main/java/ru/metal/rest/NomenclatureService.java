@@ -9,7 +9,6 @@ import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.*;
-import ru.metal.crypto.service.UserContextHolder;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

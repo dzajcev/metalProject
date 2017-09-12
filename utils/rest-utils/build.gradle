@@ -2,6 +2,8 @@
 dependencies {
 	compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
 	compile(project(":utils:crypto-utils"));
+	compile(project(":utils:security-utils"));
+	compile(project(":service-api:auth-service-api"));
 	providedCompile("javax.ws.rs:javax.ws.rs-api:${javax_ws_rs_javax_ws_rs_api_version}")
 	providedCompile("org.jboss.spec:jboss-javaee-6.0:${org_jboss_spec_jboss_javaee_6_0_version}")
 	providedCompile("org.jboss.resteasy:resteasy-jaxrs:${org_jboss_resteasy_resteasy_jaxrs_version}")
@@ -9,8 +11,5 @@ dependencies {
 	providedCompile("org.jboss.as:jboss-as-security:${org_jboss_as_jboss_as_security_version}")
 	providedCompile("org.jboss.resteasy:resteasy-jackson-provider:${org_jboss_resteasy_resteasy_jackson_provider_version}")
 	compile("org.apache.commons:commons-lang3:${org_apache_commons_commons_lang3_version}")
-	compile("org.owasp.encoder:encoder:${org_owasp_encoder_encoder_version}")
 	testCompile("junit:junit:${junit_junit_version}")
-
-	compile group: 'org.springframework', name: 'spring-web', version: '3.0.4.RELEASE'
 }

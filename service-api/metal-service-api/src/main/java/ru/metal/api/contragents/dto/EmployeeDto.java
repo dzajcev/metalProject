@@ -2,7 +2,7 @@ package ru.metal.api.contragents.dto;
 
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 
 import java.util.ArrayList;
 import java.util.List;

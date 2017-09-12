@@ -1,0 +1,8 @@
+dependencies {
+    providedCompile("javax.ws.rs:javax.ws.rs-api:${javax_ws_rs_javax_ws_rs_api_version}")
+    providedCompile("org.jboss.spec:jboss-javaee-6.0:${org_jboss_spec_jboss_javaee_6_0_version}")
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    compile(project(":service-api:common-api"));
+    providedCompile("org.jboss.as:jboss-as-security:${org_jboss_as_jboss_as_security_version}")
+    compile("org.apache.commons:commons-lang3:${org_apache_commons_commons_lang3_version}")
+}

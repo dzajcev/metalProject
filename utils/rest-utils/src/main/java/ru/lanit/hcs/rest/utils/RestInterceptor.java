@@ -2,6 +2,7 @@ package ru.lanit.hcs.rest.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ResourceMethod;
@@ -9,12 +10,15 @@ import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.*;
+import ru.common.api.CryptoPacket;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.dto.KeyPair;
-import ru.metal.api.auth.dto.PermissionContextData;
 import ru.metal.api.auth.dto.SessionDto;
-import ru.metal.crypto.service.CryptoPacket;
-import ru.metal.crypto.service.UserContextHolder;
+import ru.metal.api.auth.response.AuthorizationResponse;
+import ru.metal.api.auth.response.RegistrationResponse;
+import ru.metal.crypto.ejb.PermissionContextData;
+import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.crypto.service.AsymmetricCipher;
 
 import javax.ejb.Singleton;
 import javax.naming.Context;
@@ -23,9 +27,7 @@ import javax.naming.NamingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Properties;
 
@@ -35,8 +37,9 @@ import java.util.Properties;
 @Provider
 @ServerInterceptor
 @Singleton
-public class RestInterceptor implements MessageBodyReaderInterceptor, MessageBodyWriterInterceptor, PreProcessInterceptor {
+public class RestInterceptor implements MessageBodyReaderInterceptor, MessageBodyWriterInterceptor, PreProcessInterceptor, PostProcessInterceptor {
     AuthorizationFacade authorizationFacade;
+
     {
         try {
             Properties jndiProperties = new Properties();
@@ -57,7 +60,7 @@ public class RestInterceptor implements MessageBodyReaderInterceptor, MessageBod
                 Object o = SerializationUtils.deserialize(bytes);
                 if (o instanceof CryptoPacket) {
                     CryptoPacket cryptoPacket = (CryptoPacket) o;
-                    String stringValue = UserContextHolder.decryptPacket(cryptoPacket);
+                    String stringValue = AsymmetricCipher.decryptPacket(cryptoPacket, UserContextHolder.getPrivateKey());
                     context.setInputStream(new ByteArrayInputStream(stringValue.getBytes("UTF-8")));
                 } else {
                     byte[] bytes1 = IOUtils.toByteArray(context.getInputStream());
@@ -74,8 +77,30 @@ public class RestInterceptor implements MessageBodyReaderInterceptor, MessageBod
 
     @Override
     public void write(MessageBodyWriterContext context) throws IOException, WebApplicationException {
-        PermissionContextData permissionContextDataThreadLocal = UserContextHolder.getPermissionContextDataThreadLocal();
-        System.out.println();
+        OutputStream old = context.getOutputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        Serializable entity = (Serializable) context.getEntity();
+
+        if (entity instanceof AuthorizationResponse){
+            AuthorizationResponse authorizationResponse=(AuthorizationResponse)entity;
+            if (authorizationResponse.getPermissionContextData()!=null) {
+                KeyPair keyPair = authorizationFacade.getKeyPair(authorizationResponse.getPermissionContextData().getUserGuid());
+                UserContextHolder.loadKeyPair(keyPair.getPrivateKey(), keyPair.getPublicKey());
+            }else{
+
+            }
+        }else if (entity instanceof RegistrationResponse){
+            context.setOutputStream(old);
+            context.proceed();
+            return;
+        }
+        //если сущность это контекст, то прям тут получаем ключи и шифруем
+        String value = mapper.writeValueAsString(entity);
+        CryptoPacket cryptoPacket = AsymmetricCipher.ecryptPacket(value, UserContextHolder.getPublicKey());
+        context.setEntity(cryptoPacket);
+        old.write(SerializationUtils.serialize(cryptoPacket));
+        context.setOutputStream(old);
+
         context.proceed();
     }
 
@@ -120,20 +145,11 @@ public class RestInterceptor implements MessageBodyReaderInterceptor, MessageBod
         KeyPair keyPair = authorizationFacade.getKeyPair(session.getUser().getGuid());
         UserContextHolder.loadKeyPair(keyPair.getPrivateKey(), keyPair.getPublicKey());
         UserContextHolder.setUserPermissionDataThreadLocal(p);
-
-
-        //    try {
-//            // Pythagoras
-//            boolean isValid = false;
-//            if (!isValid) {
-//                response = new ServerResponse("Not a valid right triangle",
-//                        400, new Headers<>());
-//            }
-//        } catch (Exception e) {
-//            response = new ServerResponse(
-//                    "Please verify the sent parameters, can't convert for use",
-//                    400, new Headers<Object>());
-//        }
         return response;
+    }
+
+    @Override
+    public void postProcess(ServerResponse response) {
+
     }
 }

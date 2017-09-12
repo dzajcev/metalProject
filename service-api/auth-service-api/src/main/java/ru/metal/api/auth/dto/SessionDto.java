@@ -1,6 +1,6 @@
 package ru.metal.api.auth.dto;
 
-import ru.common.api.dto.AbstractDto;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 
 import java.util.Date;
 

@@ -3,7 +3,6 @@ package ru.metal.auth.impl.facade;
 import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.dto.KeyPair;
-import ru.metal.api.auth.dto.PermissionContextData;
 import ru.metal.api.auth.dto.SessionDto;
 import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.exceptions.FieldValidationException;
@@ -19,6 +18,8 @@ import ru.metal.auth.impl.domain.persistent.Session;
 import ru.metal.auth.impl.domain.persistent.Session_;
 import ru.metal.auth.impl.domain.persistent.UserData;
 import ru.metal.auth.impl.domain.persistent.UserData_;
+import ru.metal.crypto.ejb.PermissionContextData;
+import ru.metal.crypto.ejb.UserContextHolder;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -29,7 +30,10 @@ import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by User on 11.09.2017.
