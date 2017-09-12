@@ -9,15 +9,18 @@ import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.*;
+import ru.metal.crypto.service.UserContextHolder;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -33,7 +36,7 @@ public class NomenclatureService {
 
     @POST
     @Path("/groups/get")
-    public Response getGroups(ObtainTreeItemRequest obtainTreeItemRequest) throws Exception {
+    public Response getGroups(@Context ServletContext context, ObtainTreeItemRequest obtainTreeItemRequest) throws Exception {
         ObtainGroupReponse groupResponse = nomenclatureFacade.getGroups(obtainTreeItemRequest);
         return Response.ok(groupResponse).build();
     }

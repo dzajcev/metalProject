@@ -7,22 +7,28 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SerializationUtils;
-import ru.metal.api.auth.RegisterRequest;
-import ru.metal.crypto.org.apache.commons.codec_1_9.binary.Base64;
-import ru.metal.crypto.service.AsymmetricCipher;
-import ru.metal.crypto.service.CryptoException;
-import ru.metal.crypto.service.CryptoPacket;
-import ru.metal.crypto.service.CryptoPacketConverter;
+import ru.metal.api.auth.request.RegistrationRequest;
+import ru.metal.api.auth.dto.RegistrationData;
+import ru.metal.api.auth.response.RegistrationResponse;
+import ru.metal.exceptions.ServerErrorException;
+import ru.metal.rest.RegistrationClient;
 
 import javax.crypto.Cipher;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
 
 /**
  * Created by User on 10.09.2017.
  */
 public class RegisterController {
+    private BooleanProperty done = new SimpleBooleanProperty();
+    public static final String ALGORITHM = "RSA";
+    public static final String PRIVATE_KEY_FILE = "private.key";
+    public static final String PUBLIC_KEY_FILE = "public.key";
 
     @FXML
     private TextField login;
@@ -40,12 +46,11 @@ public class RegisterController {
     @FXML
     private PasswordField rePass;
 
-    private BooleanProperty done = new SimpleBooleanProperty();
-    public static final String ALGORITHM = "RSA";
-    public static final String PRIVATE_KEY_FILE = "private.key";
-    public static final String PUBLIC_KEY_FILE = "public.key";
+    private RegistrationClient registrationClient;
+
     @FXML
     private void register() {
+        registrationClient=new RegistrationClient();
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
@@ -53,37 +58,39 @@ public class RegisterController {
             PublicKey publicKey = keyPair.getPublic();
             PrivateKey privateKey = keyPair.getPrivate();
 
-            RegisterRequest registerRequest = new RegisterRequest();
-            registerRequest.setLogin(login.getText());
-            registerRequest.setFirstName(firstName.getText());
-            registerRequest.setSecondName(secondName.getText());
-            registerRequest.setMiddleName(middleName.getText());
-            registerRequest.setEmail(email.getText());
-            registerRequest.setPublicKey(SerializationUtils.serialize(publicKey));
+            RegistrationRequest registrationRequest = new RegistrationRequest();
+
+            RegistrationData registrationData=new RegistrationData();
+            registrationData.setLogin(login.getText());
+            registrationData.setFirstName(firstName.getText());
+            registrationData.setSecondName(secondName.getText());
+            registrationData.setMiddleName(middleName.getText());
+            registrationData.setEmail(email.getText());
             try {
                 byte[] bytesOfMessage = (login.getText() + "_" + pass.getText()).getBytes("UTF-8");
                 MessageDigest md = MessageDigest.getInstance("MD5");
                 byte[] theDigest = md.digest(bytesOfMessage);
-                registerRequest.setToken(Hex.encodeHexString(theDigest));
+                registrationData.setToken(Hex.encodeHexString(theDigest));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-            final AsymmetricCipher cipher = new AsymmetricCipher();
+//            final AsymmetricCipher cipher = new AsymmetricCipher();
+//            final CryptoPacket cryptoPacket = cipher.encrypt(SerializationUtils.serialize(registrationData), publicKey);
+            registrationData.setPublicUserKey(publicKey.getEncoded());
+            registrationRequest.setRegistrationData(registrationData);
 
-            // Encrypt the data and the random symmetric key.
-            final CryptoPacket cryptoPacket = cipher.encrypt(SerializationUtils.serialize(registerRequest), privateKey);
+            RegistrationResponse registration = registrationClient.createRegistration(registrationRequest);
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
+                    privateKey.getEncoded());
+            try {
+                FileOutputStream fos = new FileOutputStream("d:\\private.key");
+                fos.write(pkcs8EncodedKeySpec.getEncoded());
+                fos.close();
+            }catch (IOException e){
 
-//            // Convert the CryptoPacket into a Base64 String that can be readily reconstituted at the other end.
-//            final CryptoPacketConverter cryptoPacketConverter = new CryptoPacketConverter();
-//            final String base64EncryptedData = cryptoPacketConverter.convert(cryptoPacket);
-
-            // Decrypt the Base64 encoded (and encrypted) String.
-            final byte[] outputData = cipher.decrypt(cryptoPacket, publicKey);
-            Object deserialize = SerializationUtils.deserialize(outputData);
+            }
             done.set(true);
-        } catch (NoSuchAlgorithmException e) {
-
-        } catch (CryptoException e) {
+        } catch (ServerErrorException |NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }

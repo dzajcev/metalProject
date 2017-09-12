@@ -2,6 +2,7 @@ package ru.lanit.hcs.convert.mapper;
 
 import org.dozer.DozerBeanMapperSingletonWrapper;
 
+import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.List;
 @Named
 @Singleton
 public class MapperImpl implements Mapper {
-
     private org.dozer.Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
 
     @Override

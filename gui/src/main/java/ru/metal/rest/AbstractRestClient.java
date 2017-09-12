@@ -7,12 +7,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
-import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
 import ru.metal.exceptions.ExceptionShower;
 import ru.metal.exceptions.ServerErrorException;
+import ru.metal.rest.providers.RestInterceptor;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
@@ -20,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  * Created by User on 08.08.2017.
  */
 public abstract class AbstractRestClient {
-    public ResteasyWebTarget createTarget(String additionalPath){
+    protected ResteasyWebTarget createTarget(String additionalPath){
         PoolingHttpClientConnectionManager poolingHttpClientConnectionManager=new PoolingHttpClientConnectionManager();
         CloseableHttpClient closeableHttpClient =
                 HttpClientBuilder.create().setConnectionManager(poolingHttpClientConnectionManager).build();
@@ -28,13 +26,15 @@ public abstract class AbstractRestClient {
                 new ApacheHttpClient4Engine(closeableHttpClient);
 
         ResteasyClient client = new ResteasyClientBuilder().httpEngine(engine).build();
+        client.abortIfClosed();
+        final ResteasyWebTarget target = client.target(ApplicationSettingsSingleton.getInstance().getServerAddress())
+                .register(RestInterceptor.class);
 
-        final ResteasyWebTarget target = client.target(ApplicationSettingsSingleton.getInstance().getServerAddress());
         ResteasyWebTarget path = target.path(additionalPath);
         return path;
     }
 
-    public <T> T execute(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) throws ServerErrorException{
+    protected <T> T execute(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) throws ServerErrorException{
         try {
             return executeQuery(additionalPath, requestType, object, resultClass);
         }catch (ServerErrorException e){
@@ -43,8 +43,8 @@ public abstract class AbstractRestClient {
         }
     }
     private  <T> T executeQuery(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) throws ServerErrorException{
+        ResteasyWebTarget target = createTarget(additionalPath);
         try {
-            ResteasyWebTarget target = createTarget(additionalPath);
             switch (requestType) {
                 case GET: {
                     T result = target.request(MediaType.APPLICATION_JSON_TYPE).get(resultClass);
@@ -61,6 +61,8 @@ public abstract class AbstractRestClient {
             }
         }catch (Exception e){
             throw new ServerErrorException(e);
+        }finally {
+            target.getResteasyClient().close();
         }
 
     }

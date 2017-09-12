@@ -33,16 +33,21 @@ compile group: 'net.sf.jasperreports', name: 'jasperreports-fonts', version: '6.
 	compile (project(":service-api:report-service-api"));
     compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.4.1'
     compile "org.jboss.spec:jboss-javaee-6.0:3.0.3.Final",
-            "org.jboss.resteasy:resteasy-jaxrs:3.0.9.Final",
-            "org.jboss.resteasy:resteasy-multipart-provider:3.0.9.Final",
-            "org.jboss.resteasy:resteasy-jackson-provider:3.0.9.Final",
-            "org.jboss.resteasy:resteasy-jaxb-provider:3.0.9.Final",
+               "org.jboss.resteasy:resteasy-jaxrs:2.3.10.Final-redhat-1",
+            "org.jboss.resteasy:resteasy-multipart-provider:2.3.10.Final-redhat-1",
+            "org.jboss.resteasy:resteasy-jackson-provider:2.3.10.Final-redhat-1",
+            "org.jboss.resteasy:resteasy-jaxb-provider:2.3.10.Final-redhat-1",
 			"org.apache.commons:commons-lang3:3.5",
             "org.apache.httpcomponents:httpclient:4.4.1",
             "org.apache.cxf:cxf-rt-frontend-jaxws:3.1.8",
             "org.apache.cxf:cxf-rt-transports-http:3.1.8"
     // https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1-m09'
+	// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client
+// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client
+compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.0.0.Final'
+
+
 
 
 }
