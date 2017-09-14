@@ -147,10 +147,13 @@ public class OrderFacadeImpl implements OrderFacade {
             }
 
             //todo: может и введу разделение по суффиксам
-            OrderNumber orderNumber = getOrderNumber(null);
-            orderHeader.setNumber(orderNumber.getNumber());
+            if (orderHeader.getNumber()==null) {
+                OrderNumber orderNumber = getOrderNumber(null);
+                orderHeader.setNumber(orderNumber.getNumber());
+                incrementOrderNumber(orderNumber);
+            }
             OrderHeader merge = entityManager.merge(orderHeader);
-            incrementOrderNumber(orderNumber);
+
             UpdateOrderResult updateOrderResult = new UpdateOrderResult();
             updateOrderResult.setGuid(merge.getGuid());
             updateOrderResult.setTransportGuid(dto.getTransportGuid());

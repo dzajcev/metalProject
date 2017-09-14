@@ -1,9 +1,6 @@
-package ru.metal.rest.utils;
+package ru.auth.utils;
 
-import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.module.SimpleModule;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -11,7 +8,6 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * @author d.oskin

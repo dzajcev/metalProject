@@ -12,7 +12,6 @@ import ru.metal.api.contragents.response.*;
 import ru.metal.dto.ContragentGroupFx;
 import ru.metal.dto.helper.ContragentGroupHelper;
 import ru.metal.dto.response.ObtainTreeItemResponse;
-import ru.metal.exceptions.ServerErrorException;
 
 /**
  * Created by User on 08.08.2017.
@@ -25,7 +24,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     private final String pathEmployee = basePath+"/contragents/employee";
 
     @Override
-    public ObtainTreeItemResponse<ContragentGroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) throws ServerErrorException {
+    public ObtainTreeItemResponse<ContragentGroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest){
         ObtainContragentGroupReponse execute = execute(pathGroup + "/get", RequestType.POST, obtainTreeItemRequest, ObtainContragentGroupReponse.class);
         ObtainTreeItemResponse<ContragentGroupFx> response = new ObtainTreeItemResponse<ContragentGroupFx>();
         response.setErrors(execute.getErrors());
@@ -34,33 +33,33 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     }
 
     @Override
-    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<ContragentGroupFx> updateTreeItemRequest) throws ServerErrorException {
+    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<ContragentGroupFx> updateTreeItemRequest) {
         UpdateTreeItemRequest<ContragentGroupDto> request = new UpdateTreeItemRequest<>();
         request.setDataList(ContragentGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
         UpdateContragentGroupResponse execute = execute(pathGroup + "/update", RequestType.POST, request, UpdateContragentGroupResponse.class);
         UpdateTreeItemResponse response = new UpdateTreeItemResponse();
-        response.setError(execute.getError());
+        response.getErrors().addAll(execute.getErrors());
         response.setImportResults(execute.getImportResults());
         return response;
     }
 
     @Override
-    public UpdateTreeItemResponse deleteItem(DeleteTreeItemRequest<ContragentGroupFx> deleteTreeItemRequest) throws ServerErrorException {
+    public UpdateTreeItemResponse deleteItem(DeleteTreeItemRequest<ContragentGroupFx> deleteTreeItemRequest) {
         UpdateContragentGroupResponse execute = execute(pathGroup + "/delete", RequestType.POST, deleteTreeItemRequest, UpdateContragentGroupResponse.class);
         return execute;
     }
 
-    public ObtainContragentResponse getContragents(ObtainContragentRequest obtainContragentRequest) throws ServerErrorException {
+    public ObtainContragentResponse getContragents(ObtainContragentRequest obtainContragentRequest){
         ObtainContragentResponse execute = execute(pathContragent + "/get", RequestType.POST, obtainContragentRequest, ObtainContragentResponse.class);
         return execute;
     }
 
-    public UpdateContragentResponse updateContragents(UpdateContragentRequest updateContragentRequest) throws ServerErrorException {
+    public UpdateContragentResponse updateContragents(UpdateContragentRequest updateContragentRequest){
         UpdateContragentResponse execute = execute(pathContragent + "/update", RequestType.POST, updateContragentRequest, UpdateContragentResponse.class);
         return execute;
     }
 
-    public UpdateEmployeeResponse updateEmployee(UpdateEmployeeRequest updateEmployeeRequest) throws ServerErrorException {
+    public UpdateEmployeeResponse updateEmployee(UpdateEmployeeRequest updateEmployeeRequest) {
         UpdateEmployeeResponse execute = execute(pathEmployee + "/update", RequestType.POST, updateEmployeeRequest, UpdateEmployeeResponse.class);
         return execute;
     }

@@ -34,43 +34,50 @@ public class UserContextHolder {
         return keyPairThreadLocal.get().getPublic();
     }
 
-    public static void loadKeyPair(byte[] privateKey, byte[] publicKey) {
-        try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
-                    publicKey);
-            PublicKey publicKey1 = keyFactory.generatePublic(publicKeySpec);
+    public static void loadKeyPair(byte[] privateKey, byte[] publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException {
 
-            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKey);
-            PrivateKey privateKey1 = keyFactory.generatePrivate(privateKeySpec);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
+                publicKey);
+        PublicKey publicKey1 = keyFactory.generatePublic(publicKeySpec);
 
-            keyPairThreadLocal.set(new KeyPair(publicKey1, privateKey1));
-            KeyPair keyPair = keyPairThreadLocal.get();
-            System.out.println();
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKey);
+        PrivateKey privateKey1 = keyFactory.generatePrivate(privateKeySpec);
+
+        keyPairThreadLocal.set(new KeyPair(publicKey1, privateKey1));
     }
 
-    public static void loadKeyPair(String privateKeyPath, String publicKeyPath) {
-        try {
-            // Read Public Key.
-            File filePublicKey = new File(publicKeyPath);
-            FileInputStream fis = new FileInputStream(publicKeyPath);
-            byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
-            fis.read(encodedPublicKey);
-            fis.close();
+    public static void loadKeyPair(File privateKey, File publicKey) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        // Read Public Key.
+        FileInputStream fis = new FileInputStream(publicKey);
+        byte[] encodedPublicKey = new byte[(int) publicKey.length()];
+        fis.read(encodedPublicKey);
+        fis.close();
 
-            // Read Private Key.
-            File filePrivateKey = new File(privateKeyPath);
-            fis = new FileInputStream(privateKeyPath);
-            byte[] encodedPrivateKey = new byte[(int) filePrivateKey.length()];
-            fis.read(encodedPrivateKey);
-            fis.close();
+        // Read Private Key.
+        fis = new FileInputStream(privateKey);
+        byte[] encodedPrivateKey = new byte[(int) privateKey.length()];
+        fis.read(encodedPrivateKey);
+        fis.close();
 
-            loadKeyPair(encodedPrivateKey, encodedPublicKey);
-        } catch (IOException e) {
+        loadKeyPair(encodedPrivateKey, encodedPublicKey);
+    }
 
-        }
+    public static void loadKeyPair(String privateKeyPath, String publicKeyPath) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        // Read Public Key.
+        File filePublicKey = new File(publicKeyPath);
+        FileInputStream fis = new FileInputStream(publicKeyPath);
+        byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
+        fis.read(encodedPublicKey);
+        fis.close();
+
+        // Read Private Key.
+        File filePrivateKey = new File(privateKeyPath);
+        fis = new FileInputStream(privateKeyPath);
+        byte[] encodedPrivateKey = new byte[(int) filePrivateKey.length()];
+        fis.read(encodedPrivateKey);
+        fis.close();
+
+        loadKeyPair(encodedPrivateKey, encodedPublicKey);
     }
 }

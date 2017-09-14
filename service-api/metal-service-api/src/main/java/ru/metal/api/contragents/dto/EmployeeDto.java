@@ -79,7 +79,7 @@ public class EmployeeDto extends AbstractDto {
 
     public String getShortName() {
         StringBuilder stringBuilder = new StringBuilder(secondName).append(" ");
-        stringBuilder.append(secondName.substring(0, 1)).append(". ");
+        stringBuilder.append(firstName.substring(0, 1)).append(". ");
         if (middleName != null) {
             stringBuilder.append(middleName.substring(0, 1)).append(". ");
         }

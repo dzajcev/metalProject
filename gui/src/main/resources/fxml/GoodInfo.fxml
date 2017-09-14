@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.layout.AnchorPane?>
 <?import ru.metal.gui.windows.SaveButton?>
-
 <AnchorPane id="goodInfo" prefHeight="150.0" prefWidth="522.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.nomenclature.GoodInfoController">
    <children>
       <TextField fx:id="name" layoutX="9.0" layoutY="31.0" prefHeight="25.0" prefWidth="504.0" />

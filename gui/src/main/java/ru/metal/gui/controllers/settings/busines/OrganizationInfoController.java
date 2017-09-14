@@ -7,7 +7,6 @@ import ru.common.api.dto.AdressDto;
 import ru.common.api.dto.BankRequisitesDto;
 import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
 import ru.metal.api.organizationinfo.request.UpdateOrganizationRequest;
-import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
 import ru.metal.rest.OrganizationClient;
@@ -61,14 +60,12 @@ public class OrganizationInfoController extends AbstractController {
     @FXML
     private void initialize() {
         organizationClient = new OrganizationClient();
-        try {
-            List<OrganizationInfoDto> dataList = organizationClient.getOrganizationInfo().getDataList();
-            if (!dataList.isEmpty()) {
-                organizationInfo = dataList.get(0);
-            }
-        } catch (ServerErrorException e) {
-            return;
+
+        List<OrganizationInfoDto> dataList = organizationClient.getOrganizationInfo().getDataList();
+        if (!dataList.isEmpty()) {
+            organizationInfo = dataList.get(0);
         }
+
         if (organizationInfo != null) {
             organizationName.setText(organizationInfo.getOrganizationName());
             director.setText(organizationInfo.getDirector());
@@ -143,11 +140,9 @@ public class OrganizationInfoController extends AbstractController {
 
         UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest();
         updateOrganizationRequest.getDataList().add(organizationInfo);
-        try {
-            organizationClient.updateOrganizationInfo(updateOrganizationRequest);
-        } catch (ServerErrorException e) {
-            return false;
-        }
+
+        organizationClient.updateOrganizationInfo(updateOrganizationRequest);
+
         return true;
     }
 }

@@ -33,7 +33,6 @@ import ru.metal.dto.DocumentBodyFx;
 import ru.metal.dto.OrderHeaderFx;
 import ru.metal.dto.helper.ContragentHelper;
 import ru.metal.dto.helper.OrderHeaderHelper;
-import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.controllers.contragents.ContragentsForm;
@@ -45,6 +44,7 @@ import ru.metal.rest.OrderClient;
 import ru.metal.rest.ReportClient;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -100,7 +100,6 @@ public class OrderController extends AbstractController {
         contragentsClient = new ContragentsClient();
         orderClient = new OrderClient();
         reportClient = new ReportClient();
-
         savePrint.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -195,57 +194,50 @@ public class OrderController extends AbstractController {
         obtainContragentRequest.getContragentTypes().add(ContragentType.BUYER);
         obtainContragentRequest.getContragentTypes().add(ContragentType.SOURCE);
         obtainContragentRequest.setActive(true);
-        try {
-            ObtainContragentResponse contragents = contragentsClient.getContragents(obtainContragentRequest);
+        ObtainContragentResponse contragents = contragentsClient.getContragents(obtainContragentRequest);
 
-            ObservableList<ContragentFx> fxBuyers = FXCollections.observableArrayList();
-            ObservableList<ContragentFx> fxSources = FXCollections.observableArrayList();
-            for (ContragentDto contragentDto : contragents.getDataList()) {
-                if (contragentDto.getContragentTypes().contains(ContragentType.BUYER)) {
-                    fxBuyers.add(ContragentHelper.getInstance().getFxEntity(contragentDto));
-                }
-                if (contragentDto.getContragentTypes().contains(ContragentType.SOURCE)) {
-                    fxSources.add(ContragentHelper.getInstance().getFxEntity(contragentDto));
+        ObservableList<ContragentFx> fxBuyers = FXCollections.observableArrayList();
+        ObservableList<ContragentFx> fxSources = FXCollections.observableArrayList();
+        for (ContragentDto contragentDto : contragents.getDataList()) {
+            if (contragentDto.getContragentTypes().contains(ContragentType.BUYER)) {
+                fxBuyers.add(ContragentHelper.getInstance().getFxEntity(contragentDto));
+            }
+            if (contragentDto.getContragentTypes().contains(ContragentType.SOURCE)) {
+                fxSources.add(ContragentHelper.getInstance().getFxEntity(contragentDto));
+            }
+        }
+        final Comparator<ContragentFx> comparator = new Comparator<ContragentFx>() {
+            @Override
+            public int compare(ContragentFx o1, ContragentFx o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        };
+
+        Collections.sort(fxBuyers, comparator);
+        Collections.sort(fxSources, comparator);
+        shipper.setItems(fxSources);
+
+        shipper.setConverter(stringConverter);
+        buyer.setItems(fxBuyers);
+        buyer.setConverter(stringConverter);
+
+        shipper.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    createContragentForm(shipper);
                 }
             }
-            final Comparator<ContragentFx> comparator = new Comparator<ContragentFx>() {
-                @Override
-                public int compare(ContragentFx o1, ContragentFx o2) {
-                    return o1.getName().compareTo(o2.getName());
+        });
+
+        buyer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    createContragentForm(buyer);
                 }
-            };
-
-            Collections.sort(fxBuyers, comparator);
-            Collections.sort(fxSources, comparator);
-            shipper.setItems(fxSources);
-
-            shipper.setConverter(stringConverter);
-            buyer.setItems(fxBuyers);
-            buyer.setConverter(stringConverter);
-
-            shipper.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        createContragentForm(shipper);
-                    }
-                }
-            });
-
-            buyer.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        createContragentForm(buyer);
-                    }
-                }
-            });
-
-
-        } catch (ServerErrorException e) {
-            e.printStackTrace();
-        }
-
+            }
+        });
     }
 
     final Window[] windows = new Window[1];
@@ -346,7 +338,9 @@ public class OrderController extends AbstractController {
         orderNumber.textProperty().bindBidirectional(orderHeaderFx.numberProperty());
         orderDate.valueProperty().bindBidirectional(orderHeaderFx.dateOrderProperty());
         comment.textProperty().bindBidirectional(orderHeaderFx.commentProperty());
-
+        if (orderHeaderFx.getGuid()==null){
+            orderDate.setValue(LocalDate.now());
+        }
         registerControlsProperties(save, shipper.valueProperty(), buyer.valueProperty(), orderDate.valueProperty(),
                 comment.textProperty(), orderBody.orderBodyTableViewChangePropertyProperty());
     }
@@ -373,22 +367,21 @@ public class OrderController extends AbstractController {
         UpdateOrderRequest updateOrderRequest = new UpdateOrderRequest();
 
         updateOrderRequest.getDataList().add(orderHeaderFx.getEntity());
-        try {
-            UpdateOrderResponse response = orderClient.updateOrders(updateOrderRequest);
-            UpdateOrderResult updateOrderResult = response.getImportResults().get(0);
-            orderHeaderFx.setGuid(updateOrderResult.getGuid());
-            orderHeaderFx.setNumber(updateOrderResult.getOrderNumber());
+        UpdateOrderResponse response = null;
 
-            for (UpdateBodyResult result : updateOrderResult.getBodyResults()) {
-                for (DocumentBodyFx bodyFx : orderHeaderFx.getOrderBody()) {
-                    if (bodyFx.getTransportGuid().equals(result.getTransportGuid())) {
-                        bodyFx.setGuid(result.getGuid());
-                        break;
-                    }
+        response = orderClient.updateOrders(updateOrderRequest);
+
+        UpdateOrderResult updateOrderResult = response.getImportResults().get(0);
+        orderHeaderFx.setGuid(updateOrderResult.getGuid());
+        orderHeaderFx.setNumber(updateOrderResult.getOrderNumber());
+
+        for (UpdateBodyResult result : updateOrderResult.getBodyResults()) {
+            for (DocumentBodyFx bodyFx : orderHeaderFx.getOrderBody()) {
+                if (bodyFx.getTransportGuid().equals(result.getTransportGuid())) {
+                    bodyFx.setGuid(result.getGuid());
+                    break;
                 }
             }
-        } catch (ServerErrorException e) {
-            return false;
         }
         return true;
     }

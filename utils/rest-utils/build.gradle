@@ -9,7 +9,7 @@ dependencies {
 	providedCompile("org.jboss.resteasy:resteasy-jaxrs:${org_jboss_resteasy_resteasy_jaxrs_version}")
 	providedCompile("org.jboss.resteasy:resteasy-multipart-provider:${org_jboss_resteasy_resteasy_multipart_provider_version}")
 	providedCompile("org.jboss.as:jboss-as-security:${org_jboss_as_jboss_as_security_version}")
-	providedCompile("org.jboss.resteasy:resteasy-jackson-provider:${org_jboss_resteasy_resteasy_jackson_provider_version}")
 	compile("org.apache.commons:commons-lang3:${org_apache_commons_commons_lang3_version}")
+	compile("org.jboss.resteasy:resteasy-jackson-provider:${org_jboss_resteasy_resteasy_jackson_provider_version}")
 	testCompile("junit:junit:${junit_junit_version}")
 }

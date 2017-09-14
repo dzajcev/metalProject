@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
@@ -19,7 +18,6 @@ import ru.metal.api.contragents.response.ObtainContragentResponse;
 import ru.metal.dto.ContragentFx;
 import ru.metal.dto.ContragentGroupFx;
 import ru.metal.dto.helper.ContragentHelper;
-import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
 import ru.metal.gui.controls.treeviewcontrol.TreeViewPane;
@@ -96,6 +94,7 @@ public class ContragentsForm extends AnchorPane {
                 tableViewPane.setEditable(!root);
             }
         });
+        treeView.selectRoot();
         treeView.selectedGroupsProperty().addListener(new ChangeListener<List<String>>() {
             @Override
             public void changed(ObservableValue<? extends List<String>> observable, List<String> oldValue, List<String> newValue) {
@@ -120,7 +119,7 @@ public class ContragentsForm extends AnchorPane {
 
             }
         });
-        treeView.selectRoot();
+
         TableColumn name = new TableColumn("Название");
         name.setMinWidth(100);
         name.setCellValueFactory(
@@ -162,11 +161,8 @@ public class ContragentsForm extends AnchorPane {
                 if (newValue != null) {
                     UpdateContragentRequest request = new UpdateContragentRequest();
                     request.getDataList().add(newValue.getEntity());
-                    try {
+
                         contragentsClient.updateContragents(request);
-                    } catch (ServerErrorException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         });
@@ -184,12 +180,9 @@ public class ContragentsForm extends AnchorPane {
     }
 
     private ObservableList<ContragentFx> obtainContragents(ObtainContragentRequest obtainContragentRequest) {
-        try {
             ObtainContragentResponse response = contragentsClient.getContragents(obtainContragentRequest);
             return ContragentHelper.getInstance().getFxCollection(response.getDataList());
-        } catch (ServerErrorException e) {
-            return FXCollections.emptyObservableList();
-        }
+
     }
 
     public void setObtainMode(boolean obtainMode) {

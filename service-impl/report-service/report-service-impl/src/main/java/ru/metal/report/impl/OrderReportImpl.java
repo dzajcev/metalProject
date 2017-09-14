@@ -5,6 +5,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import ru.common.api.dto.CellFormats;
+import ru.metal.api.auth.AuthorizationFacade;
+import ru.metal.api.auth.dto.User;
+import ru.metal.api.auth.request.ObtainUserRequest;
+import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.contragents.dto.ContragentDto;
 import ru.metal.api.contragents.dto.EmployeeDto;
 import ru.metal.api.contragents.dto.PersonType;
@@ -17,6 +21,7 @@ import ru.metal.api.report.OrderReport;
 import ru.metal.api.report.dto.order.OrderData;
 import ru.metal.api.report.request.OrderReportRequest;
 import ru.metal.api.report.response.OrderReportResponse;
+import ru.metal.crypto.ejb.UserContextHolder;
 import ru.metal.report.dto.OrderBody;
 import ru.metal.report.utils.RussianMoney;
 
@@ -40,6 +45,8 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
     @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/orderFacade!ru.metal.api.order.OrderFacade")
     private OrderFacade orderFacade;
 
+    @EJB(lookup = "ejb:auth-service-ear/auth-service-impl/authorizationFacade!ru.metal.api.auth.AuthorizationFacade")
+    private AuthorizationFacade authorizationFacade;
     @Override
     public OrderReportResponse createJasperReport(OrderReportRequest reportRequest) {
 
@@ -73,20 +80,20 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
             params.put("buyerFull", createFullName(dto.getRecipient()));
             params.put("shipperBuyerFull", createFullName(dto.getRecipient().getShipper() != null ? dto.getRecipient().getShipper() : dto.getRecipient()));
 
-            params.put("directorPosition", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getDirector().getPosition() : "");
-            params.put("directorFIO", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getDirector().getShortName() : "");
-
-            params.put("accountantFIO", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getAccountant().getShortName() : "");
-
-            boolean employeeExist = false;
-            for (EmployeeDto employee : dto.getSource().getEmployees()) {
-                if (employee.getGuid().equals(dto.getUserGuid())) {
-                    params.put("employeeFIO", employee.getShortName());
-                    employeeExist = true;
-                }
+            if (dto.getSource().getDirector() != null) {
+                params.put("directorPosition", dto.getSource().getDirector().getPosition() != null ? dto.getSource().getDirector().getPosition() : "");
+            } else {
+                params.put("directorPosition", "");
             }
-            if (!employeeExist) {
-                params.put("employeeFIO", "");
+
+            params.put("directorFIO", dto.getSource().getDirector() != null ? dto.getSource().getDirector().getShortName() : "");
+            params.put("accountantFIO", dto.getSource().getAccountant() != null ? dto.getSource().getAccountant().getShortName() : "");
+            ObtainUserRequest obtainUserRequest=new ObtainUserRequest();
+            obtainUserRequest.setGuid(dto.getUserGuid());
+            ObtainUserResponse obtainUserResponse = authorizationFacade.obtainUser(obtainUserRequest);
+            if (!obtainUserResponse.getDataList().isEmpty()){
+                User user = obtainUserResponse.getDataList().get(0);
+                params.put("employeeFIO",user.getShortName());
             }
             List<OrderBody> body = new ArrayList<>();
             int i = 1;

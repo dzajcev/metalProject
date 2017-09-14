@@ -4,4 +4,5 @@ dependencies {
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
     providedCompile("org.jboss.as:jboss-as-security:${org_jboss_as_jboss_as_security_version}")
     compile("org.apache.commons:commons-lang3:${org_apache_commons_commons_lang3_version}")
+    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
 }

@@ -3,10 +3,8 @@ package ru.metal.dto;
 import javafx.beans.property.*;
 import ru.metal.api.contragents.dto.DocumentDto;
 import ru.metal.api.contragents.dto.DocumentType;
-import ru.metal.api.contragents.dto.EmployeeDto;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.DocumentHelper;
-import ru.metal.dto.helper.EmployeeHelper;
 import ru.metal.dto.helper.FxHelper;
 
 import java.util.Date;

@@ -200,23 +200,15 @@ public final class AsymmetricCipher {
         }
     }
 
-    public static CryptoPacket ecryptPacket(Serializable serializable, PublicKey publicKey) {
+    public static CryptoPacket ecryptPacket(Serializable serializable, PublicKey publicKey) throws CryptoException{
         final AsymmetricCipher cipher = new AsymmetricCipher();
-        try {
             final CryptoPacket cryptoPacket = cipher.encrypt(SerializationUtils.serialize(serializable), publicKey);
             return cryptoPacket;
-        } catch (CryptoException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    public static <T> T decryptPacket(CryptoPacket packet, PrivateKey privateKey) {
+    public static <T> T decryptPacket(CryptoPacket packet, PrivateKey privateKey) throws CryptoException{
         final AsymmetricCipher cipher = new AsymmetricCipher();
-        try {
             byte[] decrypt = cipher.decrypt(packet, privateKey);
             return SerializationUtils.deserialize(decrypt);
-        } catch (CryptoException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

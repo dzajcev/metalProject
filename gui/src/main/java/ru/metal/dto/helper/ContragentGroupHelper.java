@@ -2,9 +2,7 @@ package ru.metal.dto.helper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.contragents.dto.ContragentDto;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
-import ru.metal.dto.ContragentFx;
 import ru.metal.dto.ContragentGroupFx;
 
 import java.util.ArrayList;

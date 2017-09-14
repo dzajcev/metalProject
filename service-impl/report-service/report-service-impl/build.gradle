@@ -1,5 +1,6 @@
 dependencies {
 	compile(project(":service-api:report-service-api"));
+	compile(project(":service-api:auth-service-api"));
 	compile files('libs/customFont.jar');
     compile(project(":utils:convert-utils"));
 compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.4.1'

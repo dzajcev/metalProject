@@ -12,7 +12,6 @@ import ru.metal.api.nomenclature.response.*;
 import ru.metal.dto.GroupFx;
 import ru.metal.dto.helper.GoodGroupHelper;
 import ru.metal.dto.response.ObtainTreeItemResponse;
-import ru.metal.exceptions.ServerErrorException;
 
 /**
  * Created by User on 08.08.2017.
@@ -25,7 +24,7 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     private final String pathOkei = basePath+"/nomenclature/okei";
 
     @Override
-    public ObtainTreeItemResponse<GroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) throws ServerErrorException {
+    public ObtainTreeItemResponse<GroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) {
         ObtainGroupReponse execute = execute(pathGroup + "/get", RequestType.POST, obtainTreeItemRequest, ObtainGroupReponse.class);
         ObtainTreeItemResponse<GroupFx> response = new ObtainTreeItemResponse<>();
         response.setErrors(execute.getErrors());
@@ -34,34 +33,34 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     }
 
     @Override
-    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest) throws ServerErrorException {
+    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest){
         UpdateTreeItemRequest<GroupDto> request = new UpdateTreeItemRequest<>();
         request.setDataList(GoodGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
         UpdateGoodGroupResponse execute = execute(pathGroup + "/update", RequestType.POST, request, UpdateGoodGroupResponse.class);
         UpdateTreeItemResponse response = new UpdateTreeItemResponse();
-        response.setError(execute.getError());
+        response.getErrors().addAll(execute.getErrors());
         response.setImportResults(execute.getImportResults());
         return response;
     }
 
     @Override
-    public UpdateGoodGroupResponse deleteItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) throws ServerErrorException {
+    public UpdateGoodGroupResponse deleteItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) {
         return execute(pathGroup + "/delete", RequestType.POST, deleteTreeItemRequest, UpdateGoodGroupResponse.class);
     }
 
 
-    public ObtainGoodResponse getGoods(ObtainGoodRequest obtainGoodRequest) throws ServerErrorException {
+    public ObtainGoodResponse getGoods(ObtainGoodRequest obtainGoodRequest) {
         ObtainGoodResponse execute = execute(pathGood + "/get", RequestType.POST, obtainGoodRequest, ObtainGoodResponse.class);
         return execute;
     }
 
 
-    public UpdateGoodsResponse updateGoods(UpdateGoodsRequest updateGoodsRequest) throws ServerErrorException {
+    public UpdateGoodsResponse updateGoods(UpdateGoodsRequest updateGoodsRequest){
         UpdateGoodsResponse execute = execute(pathGood + "/update", RequestType.POST, updateGoodsRequest, UpdateGoodsResponse.class);
         return execute;
     }
 
-    public ObtainOkeiResponse getOkei(ObtainOkeiRequest obtainOkeiRequest) throws ServerErrorException {
+    public ObtainOkeiResponse getOkei(ObtainOkeiRequest obtainOkeiRequest){
         ObtainOkeiResponse execute = execute(pathOkei + "/get", RequestType.POST, obtainOkeiRequest, ObtainOkeiResponse.class);
         return execute;
     }

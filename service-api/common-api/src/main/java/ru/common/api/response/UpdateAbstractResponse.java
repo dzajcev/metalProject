@@ -1,6 +1,7 @@
 package ru.common.api.response;
 
 
+import ru.common.api.dto.Error;
 import ru.common.api.dto.UpdateResult;
 
 import java.util.ArrayList;
@@ -11,22 +12,9 @@ import java.util.List;
  */
 public abstract class UpdateAbstractResponse<RESULT extends UpdateResult> extends AbstractResponse {
     /**
-     * Информация об ошибке
-     */
-    private Error error;
-    /**
      * Результат импорта сведений по каждой записи
      */
     private List<RESULT> importResults;
-
-
-    public Error getError() {
-        return error;
-    }
-
-    public void setError(Error error) {
-        this.error = error;
-    }
 
     public List<RESULT> getImportResults() {
         if (importResults == null) {

@@ -5,13 +5,15 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyEvent;
-import ru.metal.api.contragents.dto.*;
+import ru.metal.api.contragents.dto.ContragentType;
+import ru.metal.api.contragents.dto.UpdateContragentResult;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
 import ru.metal.api.contragents.response.UpdateContragentResponse;
 import ru.metal.dto.ContragentFx;
-import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
 import ru.metal.rest.ContragentsClient;
@@ -154,13 +156,10 @@ public class ShipperController extends AbstractController {
 
         }
         request.getDataList().add(shipper.getEntity());
-        try {
-            UpdateContragentResponse updateContragentResponse = contragentsClient.updateContragents(request);
-            UpdateContragentResult updateContragentResult = updateContragentResponse.getImportResults().get(0);
-            shipper.setGuid(updateContragentResult.getGuid());
-        } catch (ServerErrorException e) {
-            return false;
-        }
+        UpdateContragentResponse updateContragentResponse = contragentsClient.updateContragents(request);
+        UpdateContragentResult updateContragentResult = updateContragentResponse.getImportResults().get(0);
+        shipper.setGuid(updateContragentResult.getGuid());
+
         setSavedObject(shipper);
         setSavedObject(null);
         setCloseRequest(true);

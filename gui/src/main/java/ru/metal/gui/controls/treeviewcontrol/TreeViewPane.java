@@ -27,9 +27,8 @@ import ru.common.api.request.UpdateTreeItemRequest;
 import ru.common.api.response.UpdateTreeItemResponse;
 import ru.metal.dto.FxEntity;
 import ru.metal.dto.response.ObtainTreeItemResponse;
-import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
-import ru.metal.gui.windows.Button;
+import ru.metal.gui.windows.LabelButton;
 import ru.metal.rest.TreeClient;
 
 import java.util.*;
@@ -60,12 +59,9 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
     public void setRequest(ObtainTreeItemRequest obtainTreeItemRequest) {
         this.obtainTreeItemRequest = obtainTreeItemRequest;
         this.obtainTreeItemRequest.setActive(true);
-        try {
-            ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
-            fillTree(treeView.getRoot(), items.getDataList());
-        } catch (ServerErrorException e) {
+        ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
+        fillTree(treeView.getRoot(), items.getDataList());
 
-        }
     }
 
     public TreeViewPane(TreeClient<T> treeClient, String name, Class<T> clazz) {
@@ -95,11 +91,9 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                     onlyActive = false;
                 }
                 treeView.getRoot().getChildren().clear();
-                try {
-                    ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
-                    fillTree(treeView.getRoot(), items.getDataList());
-                } catch (ServerErrorException e) {
-                }
+                ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
+                fillTree(treeView.getRoot(), items.getDataList());
+
 
                 List<TreeItem<T>> allChildren = getAllChildren(treeView.getSelectionModel().getSelectedItem());
                 List<String> result = new ArrayList();
@@ -110,7 +104,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
 
             }
         });
-        Button expandAll = new Button(null, new Image(getClass().getResourceAsStream("/icons/tree_expand.png")));
+        LabelButton expandAll = new LabelButton(null, new Image(getClass().getResourceAsStream("/icons/tree_expand.png")));
         expandAll.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -119,7 +113,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                 }
             }
         });
-        Button collapseAll = new Button(null, new Image(getClass().getResourceAsStream("/icons/collapse_tree.png")));
+        LabelButton collapseAll = new LabelButton(null, new Image(getClass().getResourceAsStream("/icons/collapse_tree.png")));
 
         collapseAll.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -256,10 +250,9 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
 
                             UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
                             updateTreeItemRequest.getDataList().add(itemToMove.getValue());
-                            try {
-                                treeClient.updateItems(updateTreeItemRequest);
-                            } catch (ServerErrorException e) {
-                            }
+
+                            treeClient.updateItems(updateTreeItemRequest);
+
                             newParent.getChildren().sort(new Comparator<TreeItem<T>>() {
                                 @Override
                                 public int compare(TreeItem<T> o1, TreeItem<T> o2) {
@@ -464,8 +457,6 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
-                    } catch (ServerErrorException e) {
-                        e.printStackTrace();
                     }
 
                 }
@@ -493,29 +484,25 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         DeleteTreeItemRequest<T> treeItemRequest = new DeleteTreeItemRequest<T>();
                         treeItemRequest.setGuids(groupGuids);
                         StringBuilder errorText = new StringBuilder();
-                        try {
-                            UpdateTreeItemResponse<UpdateResult> response = treeClient.deleteItem(treeItemRequest);
-                            for (UpdateResult updateResult : response.getImportResults()) {
-                                Iterator<TreeItem<T>> itemIterator = allChildren.iterator();
-                                while ((itemIterator.hasNext())) {
-                                    TreeItem<T> next = itemIterator.next();
-                                    if (next.getValue().getGuid().equals(updateResult.getGuid()) && updateResult.getErrors().isEmpty()) {
-                                        next.getParent().getChildren().remove(next);
-                                        itemIterator.remove();
-                                    }
-                                }
-                                if (!updateResult.getErrors().isEmpty()) {
-                                    hasError = true;
-                                    for (Error error : updateResult.getErrors()) {
-                                        errorText.append(error.getDescription()).append("\n");
-                                    }
+                        UpdateTreeItemResponse<UpdateResult> response = treeClient.deleteItem(treeItemRequest);
+                        for (UpdateResult updateResult : response.getImportResults()) {
+                            Iterator<TreeItem<T>> itemIterator = allChildren.iterator();
+                            while ((itemIterator.hasNext())) {
+                                TreeItem<T> next = itemIterator.next();
+                                if (next.getValue().getGuid().equals(updateResult.getGuid()) && updateResult.getErrors().isEmpty()) {
+                                    next.getParent().getChildren().remove(next);
+                                    itemIterator.remove();
                                 }
                             }
-                            for (TreeItem<T> item : allChildren) {
-                                allChildrenElements.add(item.getValue());
+                            if (!updateResult.getErrors().isEmpty()) {
+                                hasError = true;
+                                for (Error error : updateResult.getErrors()) {
+                                    errorText.append(error.getDescription()).append("\n");
+                                }
                             }
-                        } catch (ServerErrorException e) {
-                            e.printStackTrace();
+                        }
+                        for (TreeItem<T> item : allChildren) {
+                            allChildrenElements.add(item.getValue());
                         }
                         if (hasError) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -553,11 +540,9 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         UpdateTreeItemRequest<T> request = new UpdateTreeItemRequest();
 
                         request.setDataList(requestList);
-                        try {
-                            treeClient.updateItems(request);
-                        } catch (ServerErrorException e) {
-                            e.printStackTrace();
-                        }
+
+                        treeClient.updateItems(request);
+
                     }
                     if (toUpdate) {
                         if (active) {
@@ -688,11 +673,9 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
             getTreeView().getSelectionModel().select(getTreeItem());
             UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
             updateTreeItemRequest.getDataList().add(item);
-            try {
-                treeClient.updateItems(updateTreeItemRequest);
-            } catch (ServerErrorException e) {
-                e.printStackTrace();
-            }
+
+            treeClient.updateItems(updateTreeItemRequest);
+
         }
 
         private void createTextField() {

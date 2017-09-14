@@ -1,4 +1,4 @@
-package ru.metal.rest.handlers;
+package ru.auth.handlers;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

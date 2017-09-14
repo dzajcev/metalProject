@@ -20,10 +20,10 @@ import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.common.api.dto.TableElement;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.metal.dto.FxEntity;
-import ru.metal.gui.windows.Button;
+import ru.metal.gui.windows.LabelButton;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,7 +66,7 @@ public class TableViewPane<T extends TableElement> extends VBox {
             }
         });
 
-        Button add = new Button(null, new Image(getClass().getResourceAsStream("/icons/add.png")));
+        LabelButton add = new LabelButton(null, new Image(getClass().getResourceAsStream("/icons/add.png")));
         add.setDisable(true);
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -81,7 +81,7 @@ public class TableViewPane<T extends TableElement> extends VBox {
 
             }
         });
-        Button edit = new Button(null, new Image(getClass().getResourceAsStream("/icons/edit.png")));
+        LabelButton edit = new LabelButton(null, new Image(getClass().getResourceAsStream("/icons/edit.png")));
         edit.setDisable(true);
         edit.setOnAction(new EventHandler<ActionEvent>() {
             @Override

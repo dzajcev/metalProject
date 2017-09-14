@@ -4,8 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.util.StringConverter;
-import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.common.api.dto.ComboBoxElement;
+import ru.metal.crypto.ejb.dto.AbstractDto;
 
 import java.util.List;
 

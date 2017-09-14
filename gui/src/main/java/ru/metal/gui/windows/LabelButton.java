@@ -2,13 +2,10 @@ package ru.metal.gui.windows;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -17,8 +14,8 @@ import javafx.scene.input.MouseEvent;
 /**
  * Created by User on 15.08.2017.
  */
-public class Button extends Label{
-    public Button(){
+public class LabelButton extends Label{
+    public LabelButton(){
         setPrefSize(20,20);
         setStyle("-fx-background-radius: 3 3 3 3; -fx-border-radius: 3 3 3 3;" +
                 "-fx-background-color: transparent");
@@ -54,7 +51,7 @@ public class Button extends Label{
             }
         });
     }
-    public Button(String text, Image image){
+    public LabelButton(String text, Image image){
         this();
         if (text!=null){
             setText(text);
@@ -74,7 +71,7 @@ public class Button extends Label{
 
         @Override
         public Object getBean() {
-            return Button.this;
+            return LabelButton.this;
         }
 
         @Override

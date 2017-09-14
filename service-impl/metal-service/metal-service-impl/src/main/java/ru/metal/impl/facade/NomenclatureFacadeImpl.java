@@ -16,6 +16,8 @@ import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.*;
+import ru.metal.crypto.ejb.PermissionContextData;
+import ru.metal.crypto.ejb.UserContextHolder;
 import ru.metal.impl.domain.persistent.nomenclature.*;
 
 import javax.ejb.Remote;

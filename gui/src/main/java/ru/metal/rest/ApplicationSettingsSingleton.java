@@ -15,6 +15,10 @@ public class ApplicationSettingsSingleton {
 
     private String serverAddress;
 
+    private String publicKey;
+
+    private String privateKey;
+
     private final String workApplicationName="MetalControl";
 
     private final String settingFileName="config.properties";
@@ -29,6 +33,22 @@ public class ApplicationSettingsSingleton {
 
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public String getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
     }
 
     public String getWorkApplicationName() {
@@ -57,7 +77,8 @@ public class ApplicationSettingsSingleton {
 
             // set the properties value
             prop.setProperty("serverAddress", serverAddress);
-
+            prop.setProperty("privateKey", privateKey);
+            prop.setProperty("publicKey",publicKey);
             // save properties to project root folder
             prop.store(output, null);
 
@@ -93,7 +114,8 @@ public class ApplicationSettingsSingleton {
             prop.load(input);
 
             setServerAddress(prop.getProperty("serverAddress"));
-
+            setPrivateKey(prop.getProperty("privateKey"));
+            setPublicKey(prop.getProperty("publicKey"));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

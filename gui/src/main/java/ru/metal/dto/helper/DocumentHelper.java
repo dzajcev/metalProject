@@ -3,9 +3,7 @@ package ru.metal.dto.helper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.metal.api.contragents.dto.DocumentDto;
-import ru.metal.api.contragents.dto.EmployeeDto;
 import ru.metal.dto.DocumentFx;
-import ru.metal.dto.EmployeeFx;
 
 import java.util.ArrayList;
 import java.util.Collection;

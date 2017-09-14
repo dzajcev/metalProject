@@ -44,7 +44,7 @@ import java.util.Set;
 public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     //1 час=3600 секунд*1000 миллисекунд
-    private final long sessionLifeTime = 3600 * 1000;
+    private final long sessionLifeTime = 3600*1000 ;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -146,6 +146,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             UserData result = q.getSingleResult();
             PermissionContextData permissionContextData = mapper.map(result, PermissionContextData.class);
             permissionContextData.setSessionGuid(createSession(mapper.map(result, User.class)));
+            permissionContextData.setToken(authorizationRequest.getToken());
             authorizationResponse.setPermissionContextData(permissionContextData);
         } catch (NoResultException e) {
         }
@@ -158,17 +159,17 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> cq = cb.createTupleQuery();
         Root<UserData> root = cq.from(UserData.class);
+        cq.where(cb.equal(root.get(UserData_.guid), userGuid));
         cq.multiselect(root.get(UserData_.privateServerKey), root.get(UserData_.publicUserKey));
-        List<Tuple> tupleResult = entityManager.createQuery(cq).getResultList();
+        Tuple tupleResult = entityManager.createQuery(cq).getSingleResult();
         KeyPair keyPair = new KeyPair();
-        for (Tuple t : tupleResult) {
-            if (t.get(0) != null) {
-                keyPair.setPrivateKey((byte[]) t.get(0));
-            }
-            if (t.get(1) != null) {
-                keyPair.setPublicKey((byte[]) t.get(1));
-            }
+        if (tupleResult.get(0) != null) {
+            keyPair.setPrivateKey((byte[]) tupleResult.get(0));
         }
+        if (tupleResult.get(1) != null) {
+            keyPair.setPublicKey((byte[]) tupleResult.get(1));
+        }
+
         return keyPair;
     }
 

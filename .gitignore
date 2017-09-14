@@ -24,7 +24,7 @@ build/
 ######################
 *.log
 *.sqlite
-
+*_.java
 *.iws
 *.ipr
 *.iml

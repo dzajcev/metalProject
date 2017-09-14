@@ -1,6 +1,6 @@
 dependencies {
 // https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl
-    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+
     // https://mvnrepository.com/artifact/javax.validation/validation-api
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
 

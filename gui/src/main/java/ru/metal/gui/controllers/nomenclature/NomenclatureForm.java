@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
@@ -20,7 +19,6 @@ import ru.metal.api.nomenclature.response.ObtainGoodResponse;
 import ru.metal.dto.GoodFx;
 import ru.metal.dto.GroupFx;
 import ru.metal.dto.helper.GoodHelper;
-import ru.metal.exceptions.ServerErrorException;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
 import ru.metal.gui.controls.treeviewcontrol.TreeViewPane;
@@ -146,11 +144,9 @@ public class NomenclatureForm extends AnchorPane {
                 if (newValue != null) {
                     UpdateGoodsRequest updateGoodsRequest = new UpdateGoodsRequest();
                     updateGoodsRequest.getDataList().add(newValue.getEntity());
-                    try {
-                        nomenclatureClient.updateGoods(updateGoodsRequest);
-                    } catch (ServerErrorException e) {
-                        e.printStackTrace();
-                    }
+
+                    nomenclatureClient.updateGoods(updateGoodsRequest);
+
                 }
             }
         });
@@ -158,12 +154,8 @@ public class NomenclatureForm extends AnchorPane {
     }
 
     private ObservableList<GoodFx> obtainGoods(ObtainGoodRequest obtainGoodRequest) {
-        try {
-            ObtainGoodResponse response = nomenclatureClient.getGoods(obtainGoodRequest);
-            return GoodHelper.getInstance().getFxCollection(response.getDataList());
-        } catch (ServerErrorException e) {
-            return FXCollections.emptyObservableList();
-        }
+        ObtainGoodResponse response = nomenclatureClient.getGoods(obtainGoodRequest);
+        return GoodHelper.getInstance().getFxCollection(response.getDataList());
     }
 
     public void setObtainMode(boolean obtainMode) {

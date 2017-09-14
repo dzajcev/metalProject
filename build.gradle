@@ -51,10 +51,10 @@ ext{
     org_hibernate_hibernate_entitymanager_version='4.2.18.Final-redhat-2';
     org_hibernate_hibernate_validator_version='4.3.2.Final-redhat-2';//TODO ReflectionHelper (org.hibernate.validator.util.ReflectionHelper) in Hibernate Validator 4.1.0 before 4.2.1, 4.3.x before 4.3.2, and 5.x before 5.1.2 allows attackers to bypass Java Security Manager (JSM) restrictions and execute restricted reflection calls via a crafted application.
     org_jboss_as_jboss_as_security_version='7.3.0.Final-redhat-14'; //TODO почему все его у себя используют напрямую?
-    org_jboss_resteasy_resteasy_client_version='2.3.10.Final-redhat-1';
-    org_jboss_resteasy_resteasy_jackson_provider_version='2.3.10.Final-redhat-1';
-    org_jboss_resteasy_resteasy_jaxrs_version='2.3.10.Final-redhat-1';
-    org_jboss_resteasy_resteasy_multipart_provider_version='2.3.10.Final-redhat-1';
+    org_jboss_resteasy_resteasy_client_version='3.1.4.Final';
+    org_jboss_resteasy_resteasy_jackson_provider_version='3.1.4.Final';
+    org_jboss_resteasy_resteasy_jaxrs_version='3.1.4.Final';
+    org_jboss_resteasy_resteasy_multipart_provider_version='3.1.4.Final';
     org_jboss_spec_javax_ejb_jboss_ejb_api_3_1_spec_version='1.0.2.Final-redhat-2';
     org_jboss_spec_javax_servlet_jboss_servlet_api_3_1_spec_version='1.0.0.Final';
     org_jboss_spec_jboss_javaee_6_0_version='3.0.3.Final';

@@ -1,4 +1,4 @@
-package ru.metal.rest.utils;
+package ru.report.rest.utils;
 
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;

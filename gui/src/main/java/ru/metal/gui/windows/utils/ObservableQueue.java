@@ -3,11 +3,12 @@ package ru.metal.gui.windows.utils;
 /**
  * Created by User on 08.08.2017.
  */
+
+import javafx.collections.ObservableListBase;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import javafx.collections.ObservableListBase;
 
 
 public class ObservableQueue<E> extends ObservableListBase<E> implements Queue<E> {

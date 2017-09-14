@@ -19,14 +19,18 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import ru.metal.api.contragents.dto.*;
+import ru.metal.api.contragents.dto.ContragentType;
+import ru.metal.api.contragents.dto.DocumentType;
+import ru.metal.api.contragents.dto.PersonType;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
-import ru.metal.dto.*;
-import ru.metal.exceptions.ServerErrorException;
+import ru.metal.dto.ContragentFx;
+import ru.metal.dto.DocumentFx;
+import ru.metal.dto.EmployeeFx;
+import ru.metal.dto.EntrepreneurFx;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controllers.AbstractController;
-import ru.metal.gui.controls.tableviewcontrol.ValidatedTableView;
 import ru.metal.gui.controls.tableviewcontrol.TableViewChangeProperty;
+import ru.metal.gui.controls.tableviewcontrol.ValidatedTableView;
 import ru.metal.gui.windows.SaveButton;
 import ru.metal.gui.windows.Window;
 import ru.metal.rest.ContragentsClient;
@@ -34,7 +38,9 @@ import ru.metal.rest.ContragentsClient;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -544,13 +550,13 @@ public class ContragentInfoController extends AbstractController {
         contragentFx.setComment(comment.getText());
         contragentFx.setComment(comment.getText());
         contragentFx.getContragentTypes().clear();
-        if (buyer.isSelected()){
+        if (buyer.isSelected()) {
             contragentFx.getContragentTypes().add(ContragentType.BUYER);
         }
-        if (source.isSelected()){
+        if (source.isSelected()) {
             contragentFx.getContragentTypes().add(ContragentType.SOURCE);
         }
-        if (driver.isSelected()){
+        if (driver.isSelected()) {
             contragentFx.getContragentTypes().add(ContragentType.DRIVER);
         }
         contragentFx.setInn(inn.getText());
@@ -587,7 +593,7 @@ public class ContragentInfoController extends AbstractController {
             certificate.setNumber(sNumber.getText());
             certificate.setVidan(sVidan.getText());
             LocalDate localDateSertificate = sDate.getValue();
-            if (localDateSertificate!=null) {
+            if (localDateSertificate != null) {
                 Instant instantCertificate = Instant.from(localDateSertificate.atStartOfDay(ZoneId.systemDefault()));
                 Date dateCertificate = Date.from(instantCertificate);
                 certificate.setDate(dateCertificate);
@@ -601,7 +607,7 @@ public class ContragentInfoController extends AbstractController {
             passport.setNumber(pNumber.getText());
             passport.setVidan(pVidan.getText());
             LocalDate localDatePassport = pDate.getValue();
-            if (localDatePassport!=null) {
+            if (localDatePassport != null) {
                 Instant instantPassport = Instant.from(localDatePassport.atStartOfDay(ZoneId.systemDefault()));
                 Date datePassport = Date.from(instantPassport);
                 passport.setDate(datePassport);
@@ -642,20 +648,20 @@ public class ContragentInfoController extends AbstractController {
                 setError(kpp, "kpp", contragentFx);
             } else if (toggleGroup.getSelectedToggle() == ip) {
                 ObservableList<DocumentFx> documents = contragentFx.getEntrepreneur().getDocuments();
-                for (DocumentFx documentFx:documents){
-                    if (documentFx.getDocumentType()==DocumentType.CERTIFICATE){
+                for (DocumentFx documentFx : documents) {
+                    if (documentFx.getDocumentType() == DocumentType.CERTIFICATE) {
                         setError(sSerie, "serie", contragentFx, documentFx.getTransportGuid());
                         setError(sNumber, "number", contragentFx, documentFx.getTransportGuid());
                         setError(sVidan, "vidan", contragentFx, documentFx.getTransportGuid());
                         setError(sDate, "date", contragentFx, documentFx.getTransportGuid());
-                    }else if (documentFx.getDocumentType()==DocumentType.PASSPORT){
+                    } else if (documentFx.getDocumentType() == DocumentType.PASSPORT) {
                         setError(pSerie, "serie", contragentFx, documentFx.getTransportGuid());
                         setError(pNumber, "number", contragentFx, documentFx.getTransportGuid());
                         setError(pVidan, "vidan", contragentFx, documentFx.getTransportGuid());
                         setError(pDate, "date", contragentFx, documentFx.getTransportGuid());
                     }
                 }
-                if (contragentFx.getContragentTypes().isEmpty()){
+                if (contragentFx.getContragentTypes().isEmpty()) {
                     buyer.setStyle("-fx-background-color: lightcoral");
                     source.setStyle("-fx-background-color: lightcoral");
                     driver.setStyle("-fx-background-color: lightcoral");
@@ -665,11 +671,9 @@ public class ContragentInfoController extends AbstractController {
             documents.checkError();
             return false;
         }
-        try {
-            contragentsClient.updateContragents(request);
-        } catch (ServerErrorException e) {
-            e.printStackTrace();
-        }
+
+        contragentsClient.updateContragents(request);
+
         saved.setValue(true);
         setCloseRequest(true);
         return true;
@@ -746,7 +750,7 @@ public class ContragentInfoController extends AbstractController {
                     sSerie.setText(certificate.getSerie());
                     sNumber.setText(certificate.getNumber());
                     sVidan.setText(certificate.getVidan());
-                    if (certificate.getDate()!=null) {
+                    if (certificate.getDate() != null) {
                         sDate.setValue(certificate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                     }
                 }
@@ -754,7 +758,7 @@ public class ContragentInfoController extends AbstractController {
                     pSerie.setText(passport.getSerie());
                     pNumber.setText(passport.getNumber());
                     pVidan.setText(passport.getVidan());
-                    if (passport.getDate()!=null) {
+                    if (passport.getDate() != null) {
                         pDate.setValue(passport.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                     }
                 }

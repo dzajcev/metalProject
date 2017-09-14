@@ -2,20 +2,11 @@ package ru.metal.dto;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.contragents.dto.DocumentDto;
 import ru.metal.api.contragents.dto.EntrepreneurDto;
-import ru.metal.api.nomenclature.dto.GoodDto;
-import ru.metal.dto.DocumentFx;
-import ru.metal.dto.FxEntity;
 import ru.metal.dto.annotations.ValidatableCollection;
 import ru.metal.dto.helper.DocumentHelper;
 import ru.metal.dto.helper.EntrepreneurHelper;
 import ru.metal.dto.helper.FxHelper;
-import ru.metal.dto.helper.GoodHelper;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by User on 31.08.2017.

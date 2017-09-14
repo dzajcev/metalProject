@@ -10,18 +10,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.order.dto.OrderHeaderDto;
-import ru.metal.dto.OrderHeaderFx;
+import ru.metal.crypto.ejb.UserContextHolder;
 import ru.metal.exceptions.ExceptionShower;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.controllers.auth.AuthorizationController;
-import ru.metal.gui.controllers.auth.RegisterController;
 import ru.metal.gui.controllers.contragents.ContragentsForm;
 import ru.metal.gui.controllers.nomenclature.NomenclatureForm;
 import ru.metal.gui.controllers.order.OrderController;
@@ -35,7 +33,10 @@ public class StartPage extends Application {
 
     private final static MainFrame mainFrame = new MainFrame();
 
+    public static Stage primaryStage;
+
     private void init(Stage primaryStage) {
+        this.primaryStage=primaryStage;
         FXMLLoader loader = new FXMLLoader(StartPage.class.getResource("/fxml/Authorization.fxml"));
         primaryStage.setTitle("Авторизация");
         Parent load = null;
@@ -54,8 +55,9 @@ public class StartPage extends Application {
                 }
             }
         });
-        Scene scene = new Scene(load, 400, 320);
+        Scene scene = new Scene(load, 350, 280);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
 
     }
@@ -138,6 +140,9 @@ public class StartPage extends Application {
         return null;
     }
 
+    public static MainFrame getMainFrame(){
+        return mainFrame;
+    }
     public static Window openContent(Node form, AbstractController controller, Stage primaryStage) {
         if (controller != null) {
             controller.setPrimaryStage(primaryStage);
@@ -170,9 +175,8 @@ public class StartPage extends Application {
     }
 
     private void authorizationAccept(Stage primaryStage){
-        //        Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> showErrorDialog(t, e)));
-//        Thread.currentThread().setUncaughtExceptionHandler(this::showErrorDialog);
-        primaryStage.setTitle("Управление");
+        primaryStage.setResizable(true);
+        primaryStage.setTitle("Управление ("+ UserContextHolder.getPermissionContextDataThreadLocal().getShortName()+")");
         Menu menuFile = new Menu("Файл");
         Menu create = new Menu("Создать");
         MenuItem createOrder = new MenuItem("Счет на оплату");

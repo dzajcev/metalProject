@@ -1,5 +1,6 @@
 package ru.metal.api.auth.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import ru.metal.crypto.ejb.dto.AbstractDto;
 import ru.metal.crypto.ejb.dto.Position;
 import ru.metal.crypto.ejb.dto.Privilege;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Created by User on 11.09.2017.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends AbstractDto {
     private String login;
 
@@ -106,5 +108,13 @@ public class User extends AbstractDto {
 
     public void setPrivileges(List<Privilege> privileges) {
         this.privileges = privileges;
+    }
+    public String getShortName() {
+        StringBuilder stringBuilder = new StringBuilder(secondName).append(" ");
+        stringBuilder.append(firstName.substring(0, 1)).append(". ");
+        if (middleName != null) {
+            stringBuilder.append(middleName.substring(0, 1)).append(". ");
+        }
+        return stringBuilder.toString();
     }
 }

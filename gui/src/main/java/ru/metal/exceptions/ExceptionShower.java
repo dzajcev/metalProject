@@ -1,6 +1,5 @@
 package ru.metal.exceptions;
 
-import javafx.application.Application;
 import javafx.scene.control.Alert;
 
 /**

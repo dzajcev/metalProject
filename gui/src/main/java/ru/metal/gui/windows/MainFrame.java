@@ -10,13 +10,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.util.Iterator;
 import java.util.List;
@@ -39,23 +40,6 @@ public class MainFrame extends VBox {
 
     private void init() {
         setPrefSize(800, 600);
-        sceneProperty().addListener(new ChangeListener<Scene>() {
-            @Override
-            public void changed(ObservableValue<? extends Scene> observable, Scene oldValue, Scene newValue) {
-                if (newValue != null) {
-                    newValue.windowProperty().addListener(new ChangeListener<javafx.stage.Window>() {
-                        @Override
-                        public void changed(ObservableValue<? extends javafx.stage.Window> observable, javafx.stage.Window oldValue, javafx.stage.Window newValue) {
-                            if (newValue != null) {
-                                Stage stage = (Stage) newValue;
-                                stage.setMaximized(true);
-                            }
-                        }
-                    });
-
-                }
-            }
-        });
         initMenuBar();
         initContentPane();
         initBottomPane();

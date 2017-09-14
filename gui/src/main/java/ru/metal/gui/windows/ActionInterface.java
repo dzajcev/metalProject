@@ -1,6 +1,5 @@
 package ru.metal.gui.windows;
 
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;

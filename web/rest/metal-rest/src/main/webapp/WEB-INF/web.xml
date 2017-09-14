@@ -29,10 +29,6 @@
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <!--context-param>
-        <param-name>resteasy.providers</param-name>
-        <param-varu.metal.rest.utils.RestInterceptor</param-value>
-    </context-param-->
 
     <servlet-mapping>
         <servlet-name>resteasy-servlet</servlet-name>

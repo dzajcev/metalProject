@@ -2,9 +2,7 @@ package ru.metal.dto.helper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.contragents.dto.EmployeeDto;
 import ru.metal.api.nomenclature.dto.OkeiDto;
-import ru.metal.dto.EmployeeFx;
 import ru.metal.dto.OkeiFx;
 
 import java.util.ArrayList;

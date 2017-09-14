@@ -1,4 +1,4 @@
-package ru.metal.rest;
+package ru.report.rest;
 
 import ru.metal.api.report.OrderReport;
 import ru.metal.api.report.request.OrderReportRequest;

@@ -10,8 +10,6 @@ import java.util.List;
  */
 public abstract class ObtainAbstractResponse<DATA> extends AbstractResponse {
 
-    private List<Error> errors;
-
     private List<DATA> responseData;
 
     public List<DATA> getDataList() {
@@ -25,14 +23,4 @@ public abstract class ObtainAbstractResponse<DATA> extends AbstractResponse {
         this.responseData = dataList;
     }
 
-    public List<Error> getErrors() {
-        if (errors == null) {
-            errors = new ArrayList<>();
-        }
-        return errors;
-    }
-
-    public void setErrors(List<Error> errors) {
-        this.errors = errors;
-    }
 }

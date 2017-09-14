@@ -21,7 +21,8 @@ public class SecurityClientInterceptor implements EJBClientInterceptor {
         }
         PermissionContextData permissionContextData = UserContextHolder.getPermissionContextDataThreadLocal();
         if (permissionContextData != null) {
-            contextData.put(UserContextHolder.DELEGATED_USER_KEY, permissionContextData);
+            contextData.put(UserContextHolder.DELEGATED_USER_KEY, permissionContextData.serialize());
+
         }
         context.sendRequest();
 

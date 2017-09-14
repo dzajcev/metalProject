@@ -5,19 +5,14 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.*;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import ru.metal.api.contragents.dto.ContragentDto;
 import ru.metal.dto.FxEntity;
-import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.gui.windows.ActionInterface;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**

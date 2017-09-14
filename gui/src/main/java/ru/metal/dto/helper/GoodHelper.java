@@ -3,9 +3,7 @@ package ru.metal.dto.helper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.metal.api.nomenclature.dto.GoodDto;
-import ru.metal.api.nomenclature.dto.GroupDto;
 import ru.metal.dto.GoodFx;
-import ru.metal.dto.GroupFx;
 
 import java.util.ArrayList;
 import java.util.Collection;

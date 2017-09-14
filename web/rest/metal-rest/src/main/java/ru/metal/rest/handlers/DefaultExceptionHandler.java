@@ -1,5 +1,8 @@
 package ru.metal.rest.handlers;
 
+import ru.lanit.hcs.rest.utils.ExceptionUtils;
+import ru.metal.crypto.service.CryptoException;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -11,13 +14,13 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class DefaultExceptionHandler implements ExceptionMapper<Exception> {
 
-
     @Override
     public Response toResponse(Exception e) {
-        StringBuilder response = new StringBuilder("<response>");
-        response.append("<status>ERROR</status>");
-        response.append("<message>" + e.getMessage() + "</message>");
-        response.append("</response>");
-        return Response.serverError().entity(response.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        Throwable throwable = ExceptionUtils.containThrowable(e, CryptoException.class);
+        if (throwable != null) {
+            return Response.status(Response.Status.FORBIDDEN).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } else {
+            return Response.serverError().type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
     }
 }
