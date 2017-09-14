@@ -1,6 +1,5 @@
 package ru.metal.auth.impl.facade;
 
-import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.dto.KeyPair;
 import ru.metal.api.auth.dto.SessionDto;
@@ -18,8 +17,8 @@ import ru.metal.auth.impl.domain.persistent.Session;
 import ru.metal.auth.impl.domain.persistent.Session_;
 import ru.metal.auth.impl.domain.persistent.UserData;
 import ru.metal.auth.impl.domain.persistent.UserData_;
+import ru.metal.convert.mapper.Mapper;
 import ru.metal.crypto.ejb.PermissionContextData;
-import ru.metal.crypto.ejb.UserContextHolder;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -44,7 +43,7 @@ import java.util.Set;
 public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     //1 час=3600 секунд*1000 миллисекунд
-    private final long sessionLifeTime = 3600*1000 ;
+    private final long sessionLifeTime = 3600 * 1000;
     @PersistenceContext
     private EntityManager entityManager;
 

@@ -13,6 +13,7 @@ include ":service-impl:metal-service",
 		":utils:crypto-utils",
 		":utils:convert-utils",
 		":utils:security-utils",
+		":utils:email-utils",
 		
         ":web:rest:auth-rest",
 		":web:rest:metal-rest",

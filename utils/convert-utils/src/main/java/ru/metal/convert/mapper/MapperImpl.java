@@ -1,4 +1,4 @@
-package ru.lanit.hcs.convert.mapper;
+package ru.metal.convert.mapper;
 
 import org.dozer.DozerBeanMapperSingletonWrapper;
 

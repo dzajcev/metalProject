@@ -5,7 +5,6 @@ import ru.common.api.dto.Error;
 import ru.common.api.request.DeleteTreeItemRequest;
 import ru.common.api.request.ObtainTreeItemRequest;
 import ru.common.api.request.UpdateTreeItemRequest;
-import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.nomenclature.ErrorCodeEnum;
 import ru.metal.api.nomenclature.NomenclatureFacade;
 import ru.metal.api.nomenclature.dto.GoodDto;
@@ -16,8 +15,7 @@ import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.*;
-import ru.metal.crypto.ejb.PermissionContextData;
-import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.convert.mapper.Mapper;
 import ru.metal.impl.domain.persistent.nomenclature.*;
 
 import javax.ejb.Remote;

@@ -1,7 +1,6 @@
 package ru.metal.auth.impl.facade;
 
 import ru.common.api.dto.Error;
-import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.ErrorCodeEnum;
 import ru.metal.api.auth.RegistrationFacade;
@@ -16,6 +15,7 @@ import ru.metal.api.auth.response.RegistrationResponse;
 import ru.metal.auth.impl.domain.persistent.Position;
 import ru.metal.auth.impl.domain.persistent.RegistrationRequestData;
 import ru.metal.auth.impl.domain.persistent.UserData;
+import ru.metal.convert.mapper.Mapper;
 import ru.metal.crypto.ejb.dto.Privilege;
 import ru.metal.crypto.ejb.dto.Role;
 

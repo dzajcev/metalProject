@@ -2,13 +2,13 @@ package ru.metal.impl.facade;
 
 
 import ru.common.api.dto.Error;
-import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.organizationinfo.ErrorCodeEnum;
 import ru.metal.api.organizationinfo.OrganizationInfoFacade;
 import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
 import ru.metal.api.organizationinfo.request.UpdateOrganizationRequest;
 import ru.metal.api.organizationinfo.response.ObtainOrganizationInfoResponse;
 import ru.metal.api.organizationinfo.response.UpdateOrganizationResponse;
+import ru.metal.convert.mapper.Mapper;
 import ru.metal.impl.domain.persistent.organizationinfo.OrganizationInfo;
 
 import javax.ejb.Remote;

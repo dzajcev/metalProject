@@ -4,7 +4,6 @@ package ru.metal.impl.facade;
 import ru.common.api.dto.Error;
 import ru.common.api.request.DeleteTreeItemRequest;
 import ru.common.api.request.UpdateTreeItemRequest;
-import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.contragents.ContragentsFacade;
 import ru.metal.api.contragents.ErrorCodeEnum;
 import ru.metal.api.contragents.dto.*;
@@ -13,6 +12,7 @@ import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
 import ru.metal.api.contragents.request.UpdateEmployeeRequest;
 import ru.metal.api.contragents.response.*;
+import ru.metal.convert.mapper.Mapper;
 import ru.metal.impl.domain.persistent.contragents.*;
 
 import javax.ejb.Remote;

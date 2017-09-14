@@ -1,7 +1,6 @@
 package ru.metal.impl.facade;
 
 
-import ru.lanit.hcs.convert.mapper.Mapper;
 import ru.metal.api.order.OrderFacade;
 import ru.metal.api.order.dto.OrderBodyDto;
 import ru.metal.api.order.dto.OrderHeaderDto;
@@ -11,6 +10,7 @@ import ru.metal.api.order.request.ObtainOrderRequest;
 import ru.metal.api.order.request.UpdateOrderRequest;
 import ru.metal.api.order.response.ObtainOrderResponse;
 import ru.metal.api.order.response.UpdateOrderResponse;
+import ru.metal.convert.mapper.Mapper;
 import ru.metal.impl.domain.persistent.contragents.Contragent;
 import ru.metal.impl.domain.persistent.contragents.Contragent_;
 import ru.metal.impl.domain.persistent.order.*;
@@ -147,7 +147,7 @@ public class OrderFacadeImpl implements OrderFacade {
             }
 
             //todo: может и введу разделение по суффиксам
-            if (orderHeader.getNumber()==null) {
+            if (orderHeader.getNumber() == null) {
                 OrderNumber orderNumber = getOrderNumber(null);
                 orderHeader.setNumber(orderNumber.getNumber());
                 incrementOrderNumber(orderNumber);

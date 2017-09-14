@@ -1,4 +1,4 @@
-package ru.lanit.hcs.convert.converters;
+package ru.metal.convert.converters;
 
 import org.dozer.DozerConverter;
 
