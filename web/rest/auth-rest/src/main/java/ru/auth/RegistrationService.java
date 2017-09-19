@@ -1,7 +1,10 @@
 package ru.auth;
 
 import ru.metal.api.auth.RegistrationFacade;
+import ru.metal.api.auth.request.AcceptRegistrationRequest;
 import ru.metal.api.auth.request.RegistrationRequest;
+import ru.metal.api.auth.response.AcceptRegistrationResponse;
+import ru.metal.api.auth.response.ObtainRegistrationRequestsResponse;
 import ru.metal.api.auth.response.RegistrationResponse;
 
 import javax.ejb.EJB;

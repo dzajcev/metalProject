@@ -1,16 +1,19 @@
 package ru.metal.auth.impl.facade;
 
+import ru.common.api.dto.Error;
 import ru.metal.api.auth.AuthorizationFacade;
+import ru.metal.api.auth.ErrorCodeEnum;
 import ru.metal.api.auth.dto.KeyPair;
 import ru.metal.api.auth.dto.SessionDto;
 import ru.metal.api.auth.dto.User;
+import ru.metal.api.auth.dto.UserUpdateResult;
 import ru.metal.api.auth.exceptions.FieldValidationException;
-import ru.metal.api.auth.request.AdminExistRequest;
 import ru.metal.api.auth.request.AuthorizationRequest;
+import ru.metal.api.auth.request.ChangePasswordRequest;
 import ru.metal.api.auth.request.ObtainUserRequest;
 import ru.metal.api.auth.request.UpdateUserRequest;
-import ru.metal.api.auth.response.AdminExistResponse;
 import ru.metal.api.auth.response.AuthorizationResponse;
+import ru.metal.api.auth.response.ChangePasswordResponse;
 import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.auth.response.UpdateUserResponse;
 import ru.metal.auth.impl.domain.persistent.Session;
@@ -18,7 +21,7 @@ import ru.metal.auth.impl.domain.persistent.Session_;
 import ru.metal.auth.impl.domain.persistent.UserData;
 import ru.metal.auth.impl.domain.persistent.UserData_;
 import ru.metal.convert.mapper.Mapper;
-import ru.metal.crypto.ejb.PermissionContextData;
+import ru.metal.security.ejb.PermissionContextData;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -41,7 +44,6 @@ import java.util.Set;
 @Stateless(name = "authorizationFacade")
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class AuthorizationFacadeImpl implements AuthorizationFacade {
-
     //1 час=3600 секунд*1000 миллисекунд
     private final long sessionLifeTime = 3600 * 1000;
     @PersistenceContext
@@ -52,12 +54,6 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     @Inject
     private Validator validator;
-
-
-    @Override
-    public AdminExistResponse adminExist(AdminExistRequest adminExistRequest) {
-        return null;
-    }
 
     @Override
     public ObtainUserResponse obtainUser(ObtainUserRequest obtainUserRequest) {
@@ -113,13 +109,48 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             } else {
                 session.setLastAction(new Date());
             }
-            return mapper.map(entityManager.merge(session), SessionDto.class);
+            Session merge = entityManager.merge(session);
+            SessionDto map = mapper.map(merge, SessionDto.class);
+            return map;
         }
     }
 
     @Override
+    public ChangePasswordResponse changePassword(ChangePasswordRequest request) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserData> cq = cb.createQuery(UserData.class);
+        Root<UserData> root = cq.from(UserData.class);
+        cq.where(cb.equal(root.get(UserData_.token), request.getToken()));
+        TypedQuery<UserData> q = entityManager.createQuery(cq);
+        ChangePasswordResponse changePasswordResponse = new ChangePasswordResponse();
+        try {
+            UserData userData = q.getSingleResult();
+            if (!userData.getToChangePassword()) {
+                changePasswordResponse.getErrors().add(new Error(ErrorCodeEnum.AUTH002));
+            } else {
+                userData.setToken(request.getNewToken());
+                userData.setToChangePassword(false);
+            }
+        } catch (NoResultException e) {
+            changePasswordResponse.getErrors().add(new Error(ErrorCodeEnum.AUTH001));
+        }
+        return changePasswordResponse;
+    }
+
+    @Override
     public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
-        return null;
+        UpdateUserResponse updateUserResponse = new UpdateUserResponse();
+        UserData map = mapper.map(updateUserRequest.getUser(), UserData.class);
+
+        map.setToChangePassword(updateUserRequest.isToChangePassword());
+        map.setToChangeKeys(updateUserRequest.isNeedGenerateKeys());
+
+        UserData merge = entityManager.merge(map);
+        UserUpdateResult userUpdateResult = new UserUpdateResult();
+        userUpdateResult.setGuid(merge.getGuid());
+        userUpdateResult.setTransportGuid(updateUserRequest.getUser().getTransportGuid());
+        updateUserResponse.getImportResults().add(userUpdateResult);
+        return updateUserResponse;
     }
 
     private String createSession(User user) {

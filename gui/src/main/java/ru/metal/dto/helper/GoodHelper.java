@@ -40,7 +40,6 @@ public class GoodHelper implements FxHelper<GoodFx,GoodDto> {
         goodFx.setLastEditingDate(dto.getLastEditingDate());
         goodFx.setTransportGuid(dto.getTransportGuid());
 
-        goodFx.setActive(dto.getActive());
         goodFx.setGroup(GoodGroupHelper.getInstance().getFxEntity(dto.getGroup()));
         goodFx.setName(dto.getName());
         goodFx.setNds(dto.getNds());

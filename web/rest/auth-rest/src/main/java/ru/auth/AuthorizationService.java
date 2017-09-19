@@ -1,20 +1,17 @@
 package ru.auth;
 
 import ru.metal.api.auth.AuthorizationFacade;
-import ru.metal.api.auth.RegistrationFacade;
 import ru.metal.api.auth.request.AuthorizationRequest;
-import ru.metal.api.auth.request.RegistrationRequest;
+import ru.metal.api.auth.request.ChangePasswordRequest;
 import ru.metal.api.auth.response.AuthorizationResponse;
-import ru.metal.api.auth.response.RegistrationResponse;
+import ru.metal.api.auth.response.ChangePasswordResponse;
+import ru.metal.security.ejb.UserContextHolder;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -33,8 +30,13 @@ public class AuthorizationService {
     @POST
     @Path("/authorize")
     public Response authorize(AuthorizationRequest authorizationRequest) throws Exception {
-        AuthorizationResponse response = authorizationFacade.authorization(authorizationRequest);
+        AuthorizationResponse response =new AuthorizationResponse();
+        response.setPermissionContextData(UserContextHolder.getPermissionContextDataThreadLocal());
         return Response.ok(response).build();
     }
-
+    @POST
+    @Path("/changePassword")
+    public Response changePassword(ChangePasswordRequest changePasswordRequest) throws Exception {
+        return Response.ok(authorizationFacade.changePassword(changePasswordRequest)).build();
+    }
 }

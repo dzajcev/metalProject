@@ -1,6 +1,6 @@
 package ru.metal.api.contragents.dto;
 
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 import java.util.Date;
 

@@ -1,6 +1,6 @@
 package ru.metal.api.organizationinfo.dto;
 
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 import ru.common.api.dto.AdressDto;
 import ru.common.api.dto.BankRequisitesDto;
 

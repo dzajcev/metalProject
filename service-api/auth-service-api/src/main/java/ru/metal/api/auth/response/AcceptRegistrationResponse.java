@@ -11,4 +11,13 @@ import java.util.List;
  */
 public class AcceptRegistrationResponse extends AbstractResponse {
 
+    private byte[] publicServerKey;
+
+    public byte[] getPublicServerKey() {
+        return publicServerKey;
+    }
+
+    public void setPublicServerKey(byte[] publicServerKey) {
+        this.publicServerKey = publicServerKey;
+    }
 }

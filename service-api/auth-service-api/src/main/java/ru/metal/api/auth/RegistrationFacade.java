@@ -3,6 +3,7 @@ package ru.metal.api.auth;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
 import ru.metal.api.auth.request.RegistrationRequest;
 import ru.metal.api.auth.response.AcceptRegistrationResponse;
+import ru.metal.api.auth.response.ObtainRegistrationRequestsResponse;
 import ru.metal.api.auth.response.RegistrationResponse;
 
 /**
@@ -10,8 +11,9 @@ import ru.metal.api.auth.response.RegistrationResponse;
  */
 public interface RegistrationFacade {
 
-RegistrationResponse createRegistration(RegistrationRequest registrationRequest);
+    RegistrationResponse createRegistration(RegistrationRequest registrationRequest);
 
-AcceptRegistrationResponse acceptRegistration(AcceptRegistrationRequest acceptRegistrationRequest);
+    AcceptRegistrationResponse acceptRegistration(AcceptRegistrationRequest acceptRegistrationRequest, boolean firstRun);
 
+    ObtainRegistrationRequestsResponse getRegistrationRequests();
 }

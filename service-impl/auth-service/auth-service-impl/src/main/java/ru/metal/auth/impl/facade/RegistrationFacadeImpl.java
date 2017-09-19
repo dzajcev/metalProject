@@ -1,33 +1,41 @@
 package ru.metal.auth.impl.facade;
 
 import ru.common.api.dto.Error;
+import ru.common.api.dto.Pair;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.ErrorCodeEnum;
 import ru.metal.api.auth.RegistrationFacade;
+import ru.metal.api.auth.dto.RegistrationData;
 import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.exceptions.FieldValidationException;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
 import ru.metal.api.auth.request.ObtainUserRequest;
 import ru.metal.api.auth.request.RegistrationRequest;
 import ru.metal.api.auth.response.AcceptRegistrationResponse;
+import ru.metal.api.auth.response.ObtainRegistrationRequestsResponse;
 import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.auth.response.RegistrationResponse;
-import ru.metal.auth.impl.domain.persistent.Position;
 import ru.metal.auth.impl.domain.persistent.RegistrationRequestData;
+import ru.metal.auth.impl.domain.persistent.RegistrationRequestData_;
 import ru.metal.auth.impl.domain.persistent.UserData;
+import ru.metal.auth.impl.domain.persistent.UserData_;
 import ru.metal.convert.mapper.Mapper;
-import ru.metal.crypto.ejb.dto.Privilege;
-import ru.metal.crypto.ejb.dto.Role;
+import ru.metal.security.ejb.dto.Privilege;
+import ru.metal.security.ejb.dto.Role;
+import ru.metal.email.Email;
+import ru.metal.email.EmailSender;
 
 import javax.ejb.*;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
@@ -50,6 +58,9 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
 
     @Inject
     private Mapper mapper;
+
+    @Inject
+    private EmailSender emailSender;
 
     @Inject
     private Validator validator;
@@ -97,18 +108,54 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
             return response;
         }
 
+        boolean firstRun = firstRun();
         RegistrationRequestData registrationRequestData = mapper.map(registrationRequest.getRegistrationData(), RegistrationRequestData.class);
         registrationRequestData.setAccepted(false);
         RegistrationRequestData merge = entityManager.merge(registrationRequestData);
-        AcceptRegistrationRequest request=new AcceptRegistrationRequest();
+        AcceptRegistrationRequest request = new AcceptRegistrationRequest();
         request.setRegistrationRequestGuid(merge.getGuid());
-        AcceptRegistrationResponse acceptRegistrationResponse = acceptRegistration(request);
+        request.getRoles().add(Role.ADMIN);
 
+
+        if (firstRun) {
+            AcceptRegistrationResponse acceptRegistrationResponse = acceptRegistration(request, true);
+            response.setPublicServerKey(acceptRegistrationResponse.getPublicServerKey());
+        }
         return response;
     }
 
+    private Pair<UserData, PublicKey> createUser(RegistrationRequestData registrationRequestData, List<Role> roles, List<Privilege> privileges) {
+        UserData userData = new UserData();
+        userData.setActive(true);
+        userData.setEmail(registrationRequestData.getEmail());
+        userData.setFirstName(registrationRequestData.getFirstName());
+        userData.setSecondName(registrationRequestData.getSecondName());
+        userData.setLogin(registrationRequestData.getLogin());
+        userData.setMiddleName(registrationRequestData.getMiddleName());
+        userData.setToken(registrationRequestData.getToken());
+        userData.setPublicUserKey(registrationRequestData.getPublicUserKey());
+        userData.setPrivileges(privileges);
+        userData.setRoles(roles);
+        PublicKey publicKey;
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+            publicKey = keyPair.getPublic();
+            PrivateKey privateKey = keyPair.getPrivate();
+
+            userData.setPrivateServerKey(privateKey.getEncoded());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        UserData merge = entityManager.merge(userData);
+
+        Pair<UserData, PublicKey> pair = new Pair<>(merge, publicKey);
+        return pair;
+    }
+
     @Override
-    public AcceptRegistrationResponse acceptRegistration(AcceptRegistrationRequest acceptRegistrationRequest) {
+    public AcceptRegistrationResponse acceptRegistration(AcceptRegistrationRequest acceptRegistrationRequest, boolean fistRun) {
         AcceptRegistrationResponse acceptRegistrationResponse = new AcceptRegistrationResponse();
         try {
             validateRequest(acceptRegistrationRequest);
@@ -125,43 +172,40 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
             return acceptRegistrationResponse;
         }
 
-        UserData userData = new UserData();
-        userData.setEmail(registrationRequestData.getEmail());
-        userData.setFirstName(registrationRequestData.getFirstName());
-        userData.setSecondName(registrationRequestData.getSecondName());
-        userData.setLogin(registrationRequestData.getLogin());
-        userData.setMiddleName(registrationRequestData.getMiddleName());
-        Position pos = new Position();
-        pos.setGuid("f6084674-a0cb-4e72-8d1f-2142675e344e");
-        userData.setPosition(pos);
-        userData.getPrivileges().add(Privilege.WRITE_ORDERS);
-        userData.getRoles().add(Role.ADMIN);
-        userData.setToken(registrationRequestData.getToken());
-        userData.setPublicUserKey(registrationRequestData.getPublicUserKey());
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            PublicKey publicKey = keyPair.getPublic();
-            PrivateKey privateKey = keyPair.getPrivate();
-
-            userData.setPrivateServerKey(privateKey.getEncoded());
-            //todo:send to user public key
-            X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
-                    publicKey.getEncoded());
-            FileOutputStream fos = new FileOutputStream("D:\\public.key");
-            fos.write(x509EncodedKeySpec.getEncoded());
-            fos.close();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        Pair<UserData, PublicKey> user = createUser(registrationRequestData, acceptRegistrationRequest.getRoles(),acceptRegistrationRequest.getPrivileges());
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
+                user.getRight().getEncoded());
+        registrationRequestData.setAccepted(true);
+        entityManager.merge(registrationRequestData);
+        if (fistRun) {
+            acceptRegistrationResponse.setPublicServerKey(x509EncodedKeySpec.getEncoded());
+        } else {
+            byte[] encoded = x509EncodedKeySpec.getEncoded();
+            Email email = new Email();
+            email.getRecipients().add(user.getLeft().getEmail());
+            email.getAttachments().put("public.key", encoded);
+            email.setTheme("Ключ доступа");
+            email.setMessage("Сохраните полученный ключ. Он будет использоваться для доступа к программе");
+            emailSender.send(email);
         }
-        entityManager.persist(userData);
 
-        return null;
+        return acceptRegistrationResponse;
+    }
+
+    @Override
+    public ObtainRegistrationRequestsResponse getRegistrationRequests() {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<RegistrationRequestData> cq = cb.createQuery(RegistrationRequestData.class);
+        Root<RegistrationRequestData> root = cq.from(RegistrationRequestData.class);
+        cq.where(cb.equal(root.get(RegistrationRequestData_.accepted), false));
+
+        TypedQuery<RegistrationRequestData> q = entityManager.createQuery(cq);
+        List<RegistrationRequestData> results = q.getResultList();
+        List<RegistrationData> registrationRequests = mapper.mapCollections(results, RegistrationData.class);
+        ObtainRegistrationRequestsResponse obtainRegistrationRequestsResponse = new ObtainRegistrationRequestsResponse();
+        obtainRegistrationRequestsResponse.setDataList(registrationRequests);
+        return obtainRegistrationRequestsResponse;
     }
 
 
@@ -174,5 +218,12 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
             }
             throw new FieldValidationException(fieldNames);
         }
+    }
+
+    private boolean firstRun() {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        cq.select(cb.count(cq.from(UserData.class)));
+        return entityManager.createQuery(cq).getSingleResult() == 0;
     }
 }

@@ -22,7 +22,7 @@
         <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
     </listener>
     <listener>
-        <listener-class>ru.metal.crypto.ejb.PropagationInitializerListener</listener-class>
+        <listener-class>ru.metal.security.ejb.PropagationInitializerListener</listener-class>
     </listener>
     <servlet>
         <servlet-name>resteasy-servlet</servlet-name>

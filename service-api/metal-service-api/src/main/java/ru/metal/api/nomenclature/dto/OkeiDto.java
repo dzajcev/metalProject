@@ -1,6 +1,6 @@
 package ru.metal.api.nomenclature.dto;
 
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 /**
  * Created by User on 09.08.2017.

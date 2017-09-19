@@ -21,7 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import ru.common.api.dto.TableElement;
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 import ru.metal.dto.FxEntity;
 import ru.metal.gui.windows.LabelButton;
 

@@ -10,7 +10,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 import java.util.*;
 

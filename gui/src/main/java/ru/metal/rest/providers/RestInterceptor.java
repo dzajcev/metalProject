@@ -4,17 +4,18 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationException;
 import org.apache.commons.lang3.SerializationUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jboss.resteasy.spi.HttpResponse;
 import ru.common.api.CryptoPacket;
 import ru.metal.api.auth.request.AuthorizationRequest;
+import ru.metal.api.auth.request.ChangePasswordRequest;
 import ru.metal.api.auth.request.RegistrationRequest;
-import ru.metal.crypto.ejb.PermissionContextData;
-import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.security.ejb.PermissionContextData;
+import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.crypto.service.AsymmetricCipher;
 import ru.metal.crypto.service.CryptoException;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.ext.*;
 import java.io.*;
 
@@ -23,24 +24,15 @@ import java.io.*;
  */
 
 @Provider
-public class RestInterceptor implements WriterInterceptor, ReaderInterceptor {
+public class RestInterceptor implements WriterInterceptor, ReaderInterceptor, ClientRequestFilter {
 
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
         OutputStream old = context.getOutputStream();
-
-        if (isAuthorization(context.getType())) {
-            AuthorizationRequest authorizationRequest = (AuthorizationRequest) context.getEntity();
-            context.getHeaders().putSingle("token", authorizationRequest.getToken());
-        }
-        if (isRegistration(context.getType())) {
-            context.getHeaders().putSingle("registration", true);
-        }
         PermissionContextData permissionContextData = UserContextHolder.getPermissionContextDataThreadLocal();
         if (permissionContextData == null) {
             context.setOutputStream(old);
         } else {
-            context.getHeaders().putSingle("sessionGuid", permissionContextData.getSessionGuid());
             ObjectMapper mapper = new ObjectMapper();
             Serializable entity = (Serializable) context.getEntity();
             String value = mapper.writeValueAsString(entity);
@@ -84,9 +76,25 @@ public class RestInterceptor implements WriterInterceptor, ReaderInterceptor {
     private boolean isAuthorization(Class<?> type) {
         return type == AuthorizationRequest.class;
     }
-
+    private boolean isChangePassword(Class<?> type) {
+        return type == ChangePasswordRequest.class;
+    }
     private boolean isRegistration(Class<?> type) {
         return type == RegistrationRequest.class;
     }
 
+    @Override
+    public void filter(ClientRequestContext requestContext) throws IOException {
+        PermissionContextData permissionContextData = UserContextHolder.getPermissionContextDataThreadLocal();
+        if (isAuthorization(requestContext.getEntityClass()) || isChangePassword(requestContext.getEntityClass())) {
+            AuthorizationRequest authorizationRequest = (AuthorizationRequest) requestContext.getEntity();
+            requestContext.getHeaders().putSingle("token", authorizationRequest.getToken());
+        }
+        if (isRegistration(requestContext.getEntityClass())) {
+            requestContext.getHeaders().putSingle("registration", true);
+        }
+        if (permissionContextData!=null) {
+            requestContext.getHeaders().putSingle("sessionGuid", permissionContextData.getSessionGuid());
+        }
+    }
 }

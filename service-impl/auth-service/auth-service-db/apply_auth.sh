@@ -14,7 +14,7 @@ logn()
 }
 
 log "+-----------------+"
-log "|      METAL      |"
+log "|      AUTH      |"
 log "|     UPDATE      |"
 log "+-----------------+"
 

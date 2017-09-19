@@ -11,17 +11,13 @@ import java.util.List;
  */
 public class RegistrationResponse extends AbstractResponse {
 
-    private List<Error> errors;
+    private byte[] publicServerKey;
 
-    public List<Error> getErrors() {
-        if (errors==null){
-            errors=new ArrayList<>();
-        }
-
-        return errors;
+    public byte[] getPublicServerKey() {
+        return publicServerKey;
     }
 
-    public void setError(List<Error> errors) {
-        this.errors = errors;
+    public void setPublicServerKey(byte[] publicServerKey) {
+        this.publicServerKey = publicServerKey;
     }
 }

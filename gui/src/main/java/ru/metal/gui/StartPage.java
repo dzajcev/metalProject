@@ -12,11 +12,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
 import ru.metal.api.order.dto.OrderHeaderDto;
-import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.gui.controllers.auth.RegistrationRequestsController;
+import ru.metal.gui.utils.SecurityChecker;
+import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.exceptions.ExceptionShower;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.controllers.auth.AuthorizationController;
@@ -25,6 +28,7 @@ import ru.metal.gui.controllers.nomenclature.NomenclatureForm;
 import ru.metal.gui.controllers.order.OrderController;
 import ru.metal.gui.windows.MainFrame;
 import ru.metal.gui.windows.Window;
+import ru.metal.security.ejb.dto.Role;
 
 import java.io.IOException;
 
@@ -36,7 +40,7 @@ public class StartPage extends Application {
     public static Stage primaryStage;
 
     private void init(Stage primaryStage) {
-        this.primaryStage=primaryStage;
+        this.primaryStage = primaryStage;
         FXMLLoader loader = new FXMLLoader(StartPage.class.getResource("/fxml/Authorization.fxml"));
         primaryStage.setTitle("Авторизация");
         Parent load = null;
@@ -50,12 +54,12 @@ public class StartPage extends Application {
         authorizationController.doneProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (newValue.equals(AuthorizationController.AUTHORIZATION_ACCEPT)){
+                if (newValue.equals(AuthorizationController.AUTHORIZATION_ACCEPT)) {
                     authorizationAccept(primaryStage);
                 }
             }
         });
-        Scene scene = new Scene(load, 350, 280);
+        Scene scene = new Scene(load, 350, 300);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -140,9 +144,10 @@ public class StartPage extends Application {
         return null;
     }
 
-    public static MainFrame getMainFrame(){
+    public static MainFrame getMainFrame() {
         return mainFrame;
     }
+
     public static Window openContent(Node form, AbstractController controller, Stage primaryStage) {
         if (controller != null) {
             controller.setPrimaryStage(primaryStage);
@@ -174,9 +179,9 @@ public class StartPage extends Application {
         return window;
     }
 
-    private void authorizationAccept(Stage primaryStage){
+    private void authorizationAccept(Stage primaryStage) {
         primaryStage.setResizable(true);
-        primaryStage.setTitle("Управление ("+ UserContextHolder.getPermissionContextDataThreadLocal().getShortName()+")");
+        primaryStage.setTitle("Управление (" + UserContextHolder.getPermissionContextDataThreadLocal().getShortName() + ")");
         Menu menuFile = new Menu("Файл");
         Menu create = new Menu("Создать");
         MenuItem createOrder = new MenuItem("Счет на оплату");
@@ -240,9 +245,9 @@ public class StartPage extends Application {
 
                 if (window != null && window.getContent().isObtainMode()) {
                     window.setCloseRequest(true);
-                    window=null;
+                    window = null;
                 }
-                if (window==null) {
+                if (window == null) {
                     NomenclatureForm nomenclatureForm = new NomenclatureForm(true);
                     window = openContent(nomenclatureForm, null, primaryStage);
                 }
@@ -268,9 +273,9 @@ public class StartPage extends Application {
 
                 if (window != null && window.getContent().isObtainMode()) {
                     window.setCloseRequest(true);
-                    window=null;
+                    window = null;
                 }
-                if (window==null) {
+                if (window == null) {
                     ContragentsForm contragentsForm = new ContragentsForm(true, obtainContragentRequest);
                     window = openContent(contragentsForm, null, primaryStage);
                 }
@@ -286,6 +291,28 @@ public class StartPage extends Application {
         });
         menuDictionaries.getItems().addAll(nomenclature, contragents);
 
+        if (SecurityChecker.checkRole(Role.ADMIN)) {
+            if (!menuDictionaries.getItems().isEmpty()) {
+                menuDictionaries.getItems().add(new SeparatorMenuItem());
+            }
+            MenuItem registrationRequestsMenuItem = new MenuItem("Журнал запросов на регистрацию");
+            registrationRequestsMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Window window = openContent("/fxml/RegistrationRequests.fxml", primaryStage);
+
+                    if (window != null) {
+                        window.setTitle("Журнал запросов на регистрацию");
+                        window.setClosable(true);
+                        window.setMinimizable(true);
+                        window.setMaximizable(true);
+                        addWindow(window);
+                    }
+
+                }
+            });
+            menuDictionaries.getItems().add(registrationRequestsMenuItem);
+        }
         mainFrame.addMenuItem(menuFile);
         mainFrame.addMenuItem(menuDictionaries);
         final Scene scene = new Scene(mainFrame);
@@ -311,6 +338,7 @@ public class StartPage extends Application {
         });
         primaryStage.setScene(scene);
     }
+
     private void showErrorDialog(Thread t, Throwable e) {
         ExceptionShower.showException("Произошла ошибка выполнения", e.getMessage());
     }

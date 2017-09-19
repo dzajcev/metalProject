@@ -1,7 +1,7 @@
 package ru.metal.auth.impl.domain.persistent;
 
-import ru.metal.crypto.ejb.dto.Privilege;
-import ru.metal.crypto.ejb.dto.Role;
+import ru.metal.security.ejb.dto.Privilege;
+import ru.metal.security.ejb.dto.Role;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +15,9 @@ import java.util.List;
         @UniqueConstraint(columnNames = {"EMAIL"})})
 public class UserData extends BaseEntity {
 
+    @Column(name = "IS_ACTIVE")
+    private boolean active;
+
     @Column(name = "LOGIN", nullable = false)
     private String login;
 
@@ -27,15 +30,17 @@ public class UserData extends BaseEntity {
     @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
 
-    @ManyToOne
-    @JoinColumn(name = "POSITION")
-    private Position position;
-
     @Column(name = "EMAIL", nullable = false)
     private String email;
 
     @Column(name = "TOKEN", nullable = false)
     private String token;
+
+    @Column(name = "TO_CHANGE_PASSWORD")
+    private boolean toChangePassword=false;
+
+    @Column(name = "TO_CHANGE_KEYS")
+    private boolean toChangeKeys=false;
 
     @Column(name = "PUBLIC_USER_KEY", nullable = false)
     private byte[] publicUserKey;
@@ -87,14 +92,6 @@ public class UserData extends BaseEntity {
         this.firstName = firstName;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -127,6 +124,15 @@ public class UserData extends BaseEntity {
         this.privateServerKey = privateServerKey;
     }
 
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public List<Role> getRoles() {
         if (roles == null) {
             roles = new ArrayList<>();
@@ -147,5 +153,21 @@ public class UserData extends BaseEntity {
 
     public void setPrivileges(List<Privilege> privileges) {
         this.privileges = privileges;
+    }
+
+    public boolean getToChangePassword() {
+        return toChangePassword;
+    }
+
+    public void setToChangePassword(boolean toChangePassword) {
+        this.toChangePassword = toChangePassword;
+    }
+
+    public boolean isToChangeKeys() {
+        return toChangeKeys;
+    }
+
+    public void setToChangeKeys(boolean toChangeKeys) {
+        this.toChangeKeys = toChangeKeys;
     }
 }

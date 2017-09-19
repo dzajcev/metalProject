@@ -19,7 +19,7 @@ set sql_name=%sql_name: =0%.sql
 echo ******************************* >> %log_name%
 echo TEMP = %TEMP%
 call :logger %DATE% %TIME% "+-----------------+"
-call :logger %DATE% %TIME% "|      METAL      |"
+call :logger %DATE% %TIME% "|      AUTH      |"
 call :logger %DATE% %TIME% "|    UPDATESQL    |"
 call :logger %DATE% %TIME% "+-----------------+"
 echo .

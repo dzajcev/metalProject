@@ -1,6 +1,8 @@
 package ru.metal.rest;
 
+import ru.metal.api.auth.request.AcceptRegistrationRequest;
 import ru.metal.api.auth.request.RegistrationRequest;
+import ru.metal.api.auth.response.AcceptRegistrationResponse;
 import ru.metal.api.auth.response.RegistrationResponse;
 
 /**
@@ -14,4 +16,6 @@ public class RegistrationClient extends AbstractRestClient {
         RegistrationResponse execute = execute(pathRegistration + "/create", RequestType.POST, request, RegistrationResponse.class);
         return execute;
     }
+
+
 }

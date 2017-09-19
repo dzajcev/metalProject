@@ -18,7 +18,7 @@ include ":service-impl:metal-service",
         ":web:rest:auth-rest",
 		":web:rest:metal-rest",
 		":web:rest:report-rest",
-		
+		":web:rest:admin-rest",
 		
 		":gui"
 

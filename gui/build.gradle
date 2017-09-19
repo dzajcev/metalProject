@@ -33,10 +33,10 @@ compile group: 'net.sf.jasperreports', name: 'jasperreports-fonts', version: '6.
 	compile (project(":service-api:report-service-api"));
     compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.4.1'
     compile "org.jboss.spec:jboss-javaee-6.0:3.0.3.Final",
-		    "org.jboss.resteasy:resteasy-jaxrs:3.0.19.Final",
-            "org.jboss.resteasy:resteasy-multipart-provider:3.0.19.Final",
-            "org.jboss.resteasy:resteasy-jackson-provider:3.0.19.Final",
-            "org.jboss.resteasy:resteasy-jaxb-provider:3.0.19.Final",
+		    "org.jboss.resteasy:resteasy-jaxrs:3.1.4.Final",
+            "org.jboss.resteasy:resteasy-multipart-provider:3.1.4.Final",
+            "org.jboss.resteasy:resteasy-jackson-provider:3.1.4.Final",
+            "org.jboss.resteasy:resteasy-jaxb-provider:3.1.4.Final",
 			"org.apache.commons:commons-lang3:3.5",
             "org.apache.httpcomponents:httpclient:4.4.1",
             "org.apache.cxf:cxf-rt-frontend-jaxws:3.1.8",

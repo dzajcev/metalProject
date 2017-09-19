@@ -1,24 +1,17 @@
 package ru.metal.rest;
 
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -28,22 +21,19 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import ru.common.api.dto.Error;
 import ru.common.api.response.AbstractResponse;
-import ru.metal.crypto.ejb.UserContextHolder;
 import ru.metal.crypto.service.CryptoException;
 import ru.metal.dto.ErrorCodeEnum;
 import ru.metal.exceptions.ExceptionUtils;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controllers.auth.AuthorizationController;
-import ru.metal.gui.windows.Window;
 import ru.metal.rest.providers.RestInterceptor;
 
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.concurrent.*;
 
 /**
  * Created by User on 08.08.2017.
@@ -68,7 +58,9 @@ public abstract class AbstractRestClient {
     protected <T extends AbstractResponse> T execute(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) {
         return executeQuery(additionalPath, requestType, object, resultClass);
     }
-
+    protected <T extends AbstractResponse> T execute(String additionalPath, RequestType requestType, Class<T> resultClass) {
+        return executeQuery(additionalPath, requestType, null, resultClass);
+    }
     private <T extends AbstractResponse> T executeQuery(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) {
         ResteasyWebTarget target = createTarget(additionalPath);
         try {
@@ -153,7 +145,9 @@ public abstract class AbstractRestClient {
             } else {
                 if (ExceptionUtils.containThrowable(e, CryptoException.class)) {
                     throw new RuntimeException(e);
-                } else {
+                } else if (ExceptionUtils.containThrowable(e, ProcessingException.class)){
+                    throw new RuntimeException(e);
+                } else{
                     response.getValue().getErrors().add(new Error(ErrorCodeEnum.ERR000, e.getMessage()));
                 }
             }

@@ -6,11 +6,11 @@
 
     <configuration>
         <custom-converters>
-            <converter type="ru.lanit.hcs.convert.converters.StringDozerConverter">
+            <converter type="ru.metal.convert.converters.StringDozerConverter">
                 <class-a>java.lang.String</class-a>
                 <class-b>java.lang.String</class-b>
             </converter>
-            <converter type="ru.lanit.hcs.convert.converters.StringToBooleanConverter">
+            <converter type="ru.metal.convert.converters.StringToBooleanConverter">
                 <class-a>java.lang.String</class-a>
                 <class-b>java.lang.Boolean</class-b>
             </converter>

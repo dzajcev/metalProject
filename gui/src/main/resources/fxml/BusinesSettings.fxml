@@ -1,27 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+
 <?import ru.metal.gui.windows.SaveButton?>
-<AnchorPane id="systemSettings" prefHeight="98.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.settings.system.BusinesSettingsController">
-   <children>
-      <TabPane layoutX="109.0" layoutY="-22.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <tabs>
-          <Tab text="Адрес сервера">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="77.0" prefWidth="330.0">
-                     <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="Адрес сервера" />
-                        <TextField fx:id="serverAddress" layoutX="103.0" layoutY="10.0" prefHeight="25.0" prefWidth="216.0" />
-                        <SaveButton fx:id="save" layoutX="245.0" layoutY="39.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
-   </children>
+<AnchorPane id="systemSettings" prefHeight="276.0" prefWidth="341.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.metal.gui.controllers.settings.system.BusinesSettingsController">
+    <children>
+        <TabPane layoutX="109.0" layoutY="-22.0" prefHeight="210.0" prefWidth="341.0" tabClosingPolicy="UNAVAILABLE"
+                 AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
+            <tabs>
+                <Tab text="Почта">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="208.0" prefWidth="341.0">
+                            <children>
+                                <Label layoutX="14.0" layoutY="21.0" text="Сервер"/>
+                                <Label fx:id="smtpHost" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="117.0"
+                                       layoutY="17.0" prefHeight="25.0" prefWidth="209.0"
+                                       style="-fx-border-color: grey; -fx-border-width: 0 1 1 0; -fx-border-radius: 0 0 3 0;">
+                                    <padding>
+                                        <Insets right="5.0"/>
+                                    </padding>
+                                </Label>
+                                <Label fx:id="smtpPort" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="258.0"
+                                       layoutY="50.0" prefHeight="25.0" prefWidth="68.0"
+                                       style="-fx-border-color: grey; -fx-border-width: 0 1 1 0; -fx-border-radius: 0 0 3 0;">
+                                    <padding>
+                                        <Insets right="5.0"/>
+                                    </padding>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="54.0" text="Порт"/>
+                                <Label fx:id="sender" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="117.0"
+                                       layoutY="81.0" prefHeight="25.0" prefWidth="209.0"
+                                       style="-fx-border-color: grey; -fx-border-width: 0 1 1 0; -fx-border-radius: 0 0 3 0;">
+                                    <padding>
+                                        <Insets right="5.0"/>
+                                    </padding>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="85.0" text="Отправитель"/>
+                                <Label layoutX="14.0" layoutY="117.0" text="Логин"/>
+                                <Label fx:id="login" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="117.0"
+                                       layoutY="113.0" prefHeight="25.0" prefWidth="209.0"
+                                       style="-fx-border-color: grey; -fx-border-width: 0 1 1 0; -fx-border-radius: 0 0 3 0;">
+                                    <padding>
+                                        <Insets right="5.0"/>
+                                    </padding>
+                                </Label>
+                                <Label fx:id="pass" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="117.0"
+                                       layoutY="145.0" prefHeight="25.0" prefWidth="209.0"
+                                       style="-fx-border-color: grey; -fx-border-width: 0 1 1 0; -fx-border-radius: 0 0 3 0;">
+                                    <padding>
+                                        <Insets right="5.0"/>
+                                    </padding>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="149.0" text="Пароль"/>
+                                <Label layoutX="14.0" layoutY="170.0" prefHeight="17.0" prefWidth="316.0"
+                                       text="Учетные данные email меняются в настройках сервера"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <SaveButton fx:id="save" layoutX="249.0" layoutY="240.0" mnemonicParsing="false" onAction="#saveAction"
+                    text="Сохранить"/>
+    </children>
 </AnchorPane>

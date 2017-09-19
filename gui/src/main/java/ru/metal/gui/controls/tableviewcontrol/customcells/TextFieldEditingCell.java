@@ -2,7 +2,7 @@ package ru.metal.gui.controls.tableviewcontrol.customcells;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 import java.text.*;
 import java.util.Date;

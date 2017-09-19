@@ -10,7 +10,6 @@ import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.request.ObtainUserRequest;
 import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.contragents.dto.ContragentDto;
-import ru.metal.api.contragents.dto.EmployeeDto;
 import ru.metal.api.contragents.dto.PersonType;
 import ru.metal.api.order.OrderFacade;
 import ru.metal.api.order.dto.OrderBodyDto;
@@ -21,7 +20,6 @@ import ru.metal.api.report.OrderReport;
 import ru.metal.api.report.dto.order.OrderData;
 import ru.metal.api.report.request.OrderReportRequest;
 import ru.metal.api.report.response.OrderReportResponse;
-import ru.metal.crypto.ejb.UserContextHolder;
 import ru.metal.report.dto.OrderBody;
 import ru.metal.report.utils.RussianMoney;
 

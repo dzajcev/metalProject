@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
+
 <?import ru.metal.gui.windows.LabelButton?>
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.auth.AuthorizationController">
-   <children>
-      <Label layoutX="14.0" layoutY="18.0" text="Логин" />
-      <TextField fx:id="login" layoutX="77.0" layoutY="14.0" prefHeight="25.0" prefWidth="265.0" />
-      <Label layoutX="14.0" layoutY="51.0" text="Пароль" />
-      <PasswordField fx:id="pass" layoutX="77.0" layoutY="47.0" prefHeight="25.0" prefWidth="265.0" />
-      <Button layoutX="208.0" layoutY="250.0" mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="128.0" text="Войти" />
-      <Button fx:id="registration" layoutX="14.0" layoutY="250.0" mnemonicParsing="false"  prefHeight="25.0" prefWidth="128.0"  text="Регистрация" />
-      <AnchorPane layoutX="8.0" layoutY="86.0" prefHeight="84.0" prefWidth="335.0" style="-fx-border-color: grey; -fx-border-width: 1 0 0 1; -fx-border-radius: 5 0 0 0;">
-         <children>
-            <Label layoutX="14.0" layoutY="20.0" text="Закрытый ключ" />
-            <TextField fx:id="privateKeyText" layoutX="145.0" layoutY="17.0" prefHeight="25.0" prefWidth="155.0" />
-            <LabelButton fx:id="privateKey" layoutX="301.0" layoutY="17.0" mnemonicParsing="false" onAction="#openPrivateKey" prefHeight="25.0" prefWidth="25.0" text="" />
-            <LabelButton fx:id="publicKey" layoutX="301.0" layoutY="50.0" mnemonicParsing="false" onAction="#openPublicKey" prefHeight="25.0" prefWidth="25.0" text="" />
-            <TextField fx:id="publicKeyText" layoutX="145.0" layoutY="50.0" prefHeight="25.0" prefWidth="155.0" />
-            <Label layoutX="14.0" layoutY="53.0" text="Открытый ключ" />
-         </children>
-      </AnchorPane>
-      <Label fx:id="message" alignment="TOP_LEFT" layoutX="8.0" layoutY="187.0" prefHeight="50.0" prefWidth="335.0" wrapText="true" />
-   </children>
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="304.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.auth.AuthorizationController">
+    <children>
+        <Label layoutX="14.0" layoutY="18.0" text="Логин" />
+        <TextField fx:id="login" layoutX="77.0" layoutY="14.0" prefHeight="25.0" prefWidth="265.0" />
+        <Label layoutX="14.0" layoutY="51.0" text="Пароль" />
+        <PasswordField fx:id="password" layoutX="77.0" layoutY="47.0" prefHeight="25.0" prefWidth="265.0" />
+        <Button layoutX="208.0" layoutY="265.0" mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="128.0" text="Войти" />
+        <Button fx:id="registration" layoutX="14.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="128.0" text="Регистрация" />
+        <AnchorPane layoutX="8.0" layoutY="86.0" prefHeight="84.0" prefWidth="335.0" style="-fx-border-color: grey; -fx-border-width: 1 0 0 1; -fx-border-radius: 5 0 0 0;">
+            <children>
+                <Label layoutX="14.0" layoutY="20.0" text="Закрытый ключ" />
+                <TextField fx:id="privateKeyText" layoutX="145.0" layoutY="17.0" prefHeight="25.0" prefWidth="155.0" />
+                <LabelButton fx:id="privateKey" layoutX="301.0" layoutY="17.0" mnemonicParsing="false" onAction="#openPrivateKey" prefHeight="25.0" prefWidth="25.0" text="" />
+                <LabelButton fx:id="publicKey" layoutX="301.0" layoutY="50.0" mnemonicParsing="false" onAction="#openPublicKey" prefHeight="25.0" prefWidth="25.0" text="" />
+                <TextField fx:id="publicKeyText" layoutX="145.0" layoutY="50.0" prefHeight="25.0" prefWidth="155.0" />
+                <Label layoutX="14.0" layoutY="53.0" text="Открытый ключ" />
+            </children>
+        </AnchorPane>
+        <Label fx:id="message" alignment="TOP_LEFT" layoutX="8.0" layoutY="217.0" prefHeight="41.0" prefWidth="335.0" wrapText="true" />
+      <Label layoutX="20.0" layoutY="186.0" text="Сервер" />
+      <TextField fx:id="serverPath" layoutX="83.0" layoutY="183.0" prefHeight="25.0" prefWidth="253.0" />
+    </children>
 </AnchorPane>

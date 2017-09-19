@@ -1,6 +1,6 @@
 package ru.common.api.dto;
 
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 /**
  * Created by User on 04.08.2017.

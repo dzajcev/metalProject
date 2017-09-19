@@ -1,7 +1,7 @@
 package ru.metal.api.auth.response;
 
 import ru.common.api.response.AbstractResponse;
-import ru.metal.crypto.ejb.PermissionContextData;
+import ru.metal.security.ejb.PermissionContextData;
 
 /**
  * Created by User on 10.09.2017.

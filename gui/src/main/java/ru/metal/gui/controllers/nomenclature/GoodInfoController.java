@@ -44,6 +44,7 @@ public class GoodInfoController extends AbstractController {
 
     @FXML
     private ComboBox<OkeiFx> okei;
+
     NomenclatureClient nomenclatureClient;
 
     @FXML

@@ -151,7 +151,15 @@ public class RegisterController {
             registrationRequest.setRegistrationData(registrationData);
 
             RegistrationResponse registration = registrationClient.createRegistration(registrationRequest);
-
+            if (!registration.getErrors().isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                alert.setTitle("регистрация");
+                alert.setHeaderText("Произошла ошибка при регистрации.");
+                alert.initOwner(StartPage.primaryStage);
+                alert.setContentText(registration.getErrors().get(0).getDescription());
+                alert.showAndWait();
+                return;
+            }
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialFileName("privateKey");
             FileChooser.ExtensionFilter key = new FileChooser.ExtensionFilter("Файл ключа", "*.key");
@@ -162,37 +170,39 @@ public class RegisterController {
             PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
                     privateKey.getEncoded());
             File privateKeyFile = fileChooser.showSaveDialog(root.getScene().getWindow());
-
-            try {
-                FileOutputStream fos = new FileOutputStream(privateKeyFile);
-                fos.write(pkcs8EncodedKeySpec.getEncoded());
-                fos.close();
-            } catch (IOException e) {
-
+            if (privateKeyFile == null) {
+                return;
             }
-            Alert alert = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
-            alert.setTitle("Регистрация");
-            alert.setHeaderText("После подтверждения регистрации Вам придет на почту открытый ключ.");
-            alert.initOwner(StartPage.primaryStage);
-            alert.setContentText("Сохраните его");
-            alert.showAndWait();
+            if (registration.getPublicServerKey() != null) {
+                try {
+                    FileOutputStream fos = new FileOutputStream(privateKeyFile);
+                    fos.write(pkcs8EncodedKeySpec.getEncoded());
+                    fos.close();
+                    if (registration.getPublicServerKey() != null) {
+                        fileChooser.setInitialFileName("publicKey");
+                        fileChooser.setTitle("Сохраните открытый ключ (Учетная запись: Администратор)");
+                        File publicKeyFile = fileChooser.showSaveDialog(root.getScene().getWindow());
+                        fos = new FileOutputStream(publicKeyFile);
+                        fos.write(registration.getPublicServerKey());
+                        fos.close();
+                    }
+                } catch (IOException e) {
+
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+                alert.setTitle("Регистрация");
+                alert.setHeaderText("После подтверждения регистрации Вам придет на почту открытый ключ.");
+                alert.initOwner(StartPage.primaryStage);
+                alert.setContentText("Сохраните его");
+                alert.showAndWait();
+            }
             Platform.exit();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
 
-    public static byte[] encrypt(Serializable serializable, PublicKey key) {
-        byte[] cipherText = null;
-        try {
-            final Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            cipherText = cipher.doFinal(SerializationUtils.serialize(serializable));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cipherText;
-    }
 
     @FXML
     private void cancel() {

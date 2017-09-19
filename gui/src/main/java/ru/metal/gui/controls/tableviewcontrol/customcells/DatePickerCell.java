@@ -1,7 +1,7 @@
 package ru.metal.gui.controls.tableviewcontrol.customcells;
 
 import javafx.scene.control.DatePicker;
-import ru.metal.crypto.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

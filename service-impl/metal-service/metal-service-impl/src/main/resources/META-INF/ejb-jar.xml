@@ -5,13 +5,13 @@
          version="3.1">
     <interceptors>
         <interceptor>
-            <interceptor-class>ru.metal.crypto.ejb.EjbSecurityServerInterceptor</interceptor-class>
+            <interceptor-class>ru.metal.security.ejb.EjbSecurityServerInterceptor</interceptor-class>
         </interceptor>
     </interceptors>
     <assembly-descriptor>
         <interceptor-binding>
             <ejb-name>*</ejb-name>
-            <interceptor-class>ru.metal.crypto.ejb.EjbSecurityServerInterceptor</interceptor-class>
+            <interceptor-class>ru.metal.security.ejb.EjbSecurityServerInterceptor</interceptor-class>
         </interceptor-binding>
     </assembly-descriptor>
 </ejb-jar>

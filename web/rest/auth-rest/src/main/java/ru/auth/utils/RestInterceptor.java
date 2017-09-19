@@ -4,7 +4,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ServerResponse;
-import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ import ru.metal.api.auth.dto.KeyPair;
 import ru.metal.api.auth.request.AuthorizationRequest;
 import ru.metal.api.auth.response.AuthorizationResponse;
 import ru.metal.api.auth.response.RegistrationResponse;
-import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.crypto.service.AsymmetricCipher;
 import ru.metal.crypto.service.CryptoException;
 
@@ -62,6 +61,7 @@ public class RestInterceptor implements ContainerRequestFilter, WriterIntercepto
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String registration = requestContext.getHeaderString("registration");
         String token = requestContext.getHeaderString("token");
+
         if (registration != null) {
             return;
         } else if (token != null) {
@@ -84,6 +84,13 @@ public class RestInterceptor implements ContainerRequestFilter, WriterIntercepto
                     e.printStackTrace();
                 }
                 UserContextHolder.setUserPermissionDataThreadLocal(authorization.getPermissionContextData());
+            }
+        }else{
+            if (token==null){
+                requestContext.abortWith(new ServerResponse(
+                        "User not found",
+                        401, new Headers<>()));
+                return;
             }
         }
     }

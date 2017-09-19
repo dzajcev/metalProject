@@ -6,11 +6,11 @@
 
     <configuration>
         <custom-converters>
-            <converter type="ru.lanit.hcs.convert.converters.StringDozerConverter">
+            <converter type="ru.metal.convert.converters.StringDozerConverter">
                 <class-a>java.lang.String</class-a>
                 <class-b>java.lang.String</class-b>
             </converter>
-            <converter type="ru.lanit.hcs.convert.converters.StringToBooleanConverter">
+            <converter type="ru.metal.convert.converters.StringToBooleanConverter">
                 <class-a>java.lang.String</class-a>
                 <class-b>java.lang.Boolean</class-b>
             </converter>
@@ -30,7 +30,7 @@
     </mapping>
     <mapping map-null="false">
         <class-a>ru.metal.auth.impl.domain.persistent.UserData</class-a>
-        <class-b>ru.metal.crypto.ejb.PermissionContextData</class-b>
+        <class-b>ru.metal.security.ejb.PermissionContextData</class-b>
         <field>
             <a>guid</a>
             <b>userGuid</b>

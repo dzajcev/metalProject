@@ -11,23 +11,22 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.codec.binary.Hex;
 import ru.metal.api.auth.request.AuthorizationRequest;
+import ru.metal.api.auth.request.ChangePasswordRequest;
 import ru.metal.api.auth.response.AuthorizationResponse;
-import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.api.auth.response.ChangePasswordResponse;
+import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.crypto.service.CryptoException;
 import ru.metal.exceptions.ExceptionUtils;
 import ru.metal.gui.StartPage;
@@ -35,6 +34,7 @@ import ru.metal.gui.windows.LabelButton;
 import ru.metal.rest.ApplicationSettingsSingleton;
 import ru.metal.rest.AuthorizationClient;
 
+import javax.ws.rs.ProcessingException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -54,13 +54,16 @@ public class AuthorizationController {
     @FXML
     private TextField login;
     @FXML
-    private PasswordField pass;
+    private PasswordField password;
     @FXML
     private Label message;
     @FXML
     private LabelButton privateKey;
     @FXML
     private LabelButton publicKey;
+
+    @FXML
+    private TextField serverPath;
 
     @FXML
     private TextField privateKeyText;
@@ -84,11 +87,12 @@ public class AuthorizationController {
         message.setTextFill(Color.RED);
         privateKeyText.setText(ApplicationSettingsSingleton.getInstance().getPrivateKey());
         publicKeyText.setText(ApplicationSettingsSingleton.getInstance().getPublicKey());
+        serverPath.setText(ApplicationSettingsSingleton.getInstance().getServerAddress());
         registration.setText("Регистрация");
         registration.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Stage stage=(Stage)root.getScene().getWindow();
+                Stage stage = (Stage) root.getScene().getWindow();
                 stage.setTitle("Регистрация");
                 FXMLLoader loader = new FXMLLoader(StartPage.class.getResource("/fxml/Register.fxml"));
 
@@ -101,7 +105,7 @@ public class AuthorizationController {
                     e.printStackTrace();
                 }
                 if (load != null) {
-                    registerController.setAuthRoot((Parent) root);
+                    registerController.setAuthRoot(root);
                     root.getScene().setRoot((Parent) load);
                 }
             }
@@ -148,12 +152,13 @@ public class AuthorizationController {
 
     @FXML
     private void login() {
+        ApplicationSettingsSingleton.getInstance().setServerAddress(serverPath.getText());
         UserContextHolder.setUserPermissionDataThreadLocal(null);
         if (login.getText().isEmpty()) {
             message.setText("Логин не введен");
             return;
         }
-        if (pass.getText().isEmpty()) {
+        if (password.getText().isEmpty()) {
             message.setText("Пароль не введен");
             return;
         }
@@ -170,10 +175,7 @@ public class AuthorizationController {
         AuthorizationClient authorizationClient = new AuthorizationClient();
         try {
             AuthorizationRequest request = new AuthorizationRequest();
-            byte[] bytesOfMessage = (login.getText() + "_" + pass.getText()).getBytes("UTF-8");
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] theDigest = md.digest(bytesOfMessage);
-            request.setToken(Hex.encodeHexString(theDigest));
+            request.setToken(getToken(login.getText(), password.getText()));
             try {
                 UserContextHolder.loadKeyPair(closeKey, openKey);
             } catch (IOException e) {
@@ -184,18 +186,99 @@ public class AuthorizationController {
                 return;
             }
 
-            AuthorizationResponse login = authorizationClient.login(request);
-            if (login.getPermissionContextData() != null) {
-                UserContextHolder.setUserPermissionDataThreadLocal(login.getPermissionContextData());
-                done.set(AUTHORIZATION_ACCEPT);
-            } else if (!login.getErrors().isEmpty()) {
-                message.setText(login.getErrors().iterator().next().getDescription());
+            AuthorizationResponse authorizationResponse = authorizationClient.login(request);
+            if (authorizationResponse.getPermissionContextData() != null) {
+                if (authorizationResponse.getPermissionContextData().isToChangePassword()) {
+                    AnchorPane lockPane = new AnchorPane();
+                    AnchorPane.setLeftAnchor(lockPane, 0.0);
+                    AnchorPane.setRightAnchor(lockPane, 0.0);
+                    AnchorPane.setBottomAnchor(lockPane, 0.0);
+                    AnchorPane.setTopAnchor(lockPane, 0.0);
+                    AnchorPane pane = new AnchorPane();
+
+                    lockPane.getChildren().add(pane);
+                    Label title = new Label("Необходима смена пароля");
+                    title.setPrefHeight(30);
+                    title.setTextFill(Color.RED);
+                    AnchorPane.setLeftAnchor(title, 0.0);
+                    AnchorPane.setRightAnchor(title, 0.0);
+                    title.setAlignment(Pos.CENTER);
+                    pane.getChildren().add(title);
+                    pane.setStyle("-fx-background-color: lightgrey; -fx-border-color: grey;-fx-border-radius:  5");
+                    pane.setPrefWidth(340);
+                    pane.setPrefHeight(160);
+                    pane.setLayoutY(50);
+                    pane.setLayoutX(10);
+                    Label passL = new Label("Введите новый пароль");
+                    passL.setLayoutX(5);
+                    passL.setLayoutY(45);
+                    Label repassL = new Label("Подтверите новый пароль");
+                    repassL.setLayoutX(5);
+                    repassL.setLayoutY(85);
+
+                    TextField pass = new PasswordField();
+                    pass.setPrefWidth(160);
+                    pass.setLayoutX(170);
+                    pass.setLayoutY(40);
+
+                    TextField rePass = new PasswordField();
+                    rePass.setPrefWidth(160);
+                    rePass.setLayoutX(170);
+                    rePass.setLayoutY(80);
+
+
+                    Button save = new Button("Сохранить");
+                    save.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+
+                            ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+                            changePasswordRequest.setToken(authorizationResponse.getPermissionContextData().getToken());
+                            changePasswordRequest.setNewToken(getToken(login.getText(), pass.getText()));
+                            ChangePasswordResponse changePasswordResponse = authorizationClient.changePassword(changePasswordRequest);
+                            if (changePasswordResponse.getErrors().isEmpty()){
+                                password.clear();
+                                root.getChildren().remove(lockPane);
+                            }else{
+                                Alert alert = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                                alert.setTitle("Смена пароля");
+                                alert.setHeaderText("Произошла ошибка при смене пароля.");
+                                alert.initOwner(StartPage.primaryStage);
+                                alert.setContentText(changePasswordResponse.getErrors().get(0).getDescription());
+                                alert.showAndWait();
+                            }
+                        }
+                    });
+                    save.setLayoutX(230);
+                    save.setLayoutY(120);
+                    save.setPrefWidth(100);
+
+                    Button cancel = new Button("Отмена");
+                    cancel.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            Platform.exit();
+                        }
+                    });
+                    cancel.setLayoutX(5);
+                    cancel.setLayoutY(120);
+                    cancel.setPrefWidth(100);
+
+                    pane.getChildren().addAll(passL, repassL, pass, rePass, save, cancel);
+                    root.getChildren().add(lockPane);
+                } else {
+                    UserContextHolder.setUserPermissionDataThreadLocal(authorizationResponse.getPermissionContextData());
+                    done.set(AUTHORIZATION_ACCEPT);
+                }
+            } else if (!authorizationResponse.getErrors().isEmpty()) {
+                message.setText(authorizationResponse.getErrors().iterator().next().getDescription());
             }
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            message.setText("Произошла непредвиденная ошибка");
         } catch (RuntimeException e) {
             if (ExceptionUtils.containThrowable(e, CryptoException.class)) {
                 message.setText("Ошибка шифрования данных. Скорее всего используется не верный ключ");
+            } else if (ExceptionUtils.containThrowable(e, ProcessingException.class)) {
+                message.setText("Невозможно подключиться к серверу");
+
             } else {
                 message.setText("Произошла непредвиденная ошибка");
             }
@@ -227,5 +310,16 @@ public class AuthorizationController {
 
     public void setRetry(boolean retry) {
         this.retry.set(retry);
+    }
+
+    private String getToken(String login, String pass) {
+        try {
+            byte[] bytesOfMessage = (login + "_" + pass).getBytes("UTF-8");
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] theDigest = md.digest(bytesOfMessage);
+            return Hex.encodeHexString(theDigest);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -27,7 +27,7 @@ import ru.metal.api.order.request.UpdateOrderRequest;
 import ru.metal.api.order.response.UpdateOrderResponse;
 import ru.metal.api.report.request.OrderReportRequest;
 import ru.metal.api.report.response.OrderReportResponse;
-import ru.metal.crypto.ejb.UserContextHolder;
+import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.dto.ContragentFx;
 import ru.metal.dto.DocumentBodyFx;
 import ru.metal.dto.OrderHeaderFx;
