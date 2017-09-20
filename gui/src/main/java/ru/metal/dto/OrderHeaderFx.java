@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * Created by User on 30.08.2017.
  */
-public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
+public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentHeader {
 
     @ValidatableField(nullable = false)
     protected ObjectProperty<Date> createDate = new SimpleObjectProperty<>(new Date());
@@ -41,7 +41,7 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
     private BooleanProperty active=new SimpleBooleanProperty(true);
 
     @ValidatableCollection(minSize = 1)
-    private ObservableList<DocumentBodyFx> orderBody= FXCollections.observableArrayList();
+    private ObservableList<OrderBodyFx> orderBody= FXCollections.observableArrayList();
 
     public Date getCreateDate() {
         return createDate.get();
@@ -55,10 +55,12 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         this.createDate.set(createDate);
     }
 
+    @Override
     public String getNumber() {
         return number.get();
     }
 
+    @Override
     public StringProperty numberProperty() {
         return number;
     }
@@ -67,10 +69,12 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         this.number.set(number);
     }
 
+    @Override
     public ContragentFx getSource() {
         return source.get();
     }
 
+    @Override
     public ObjectProperty<ContragentFx> sourceProperty() {
         return source;
     }
@@ -79,10 +83,12 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         this.source.set(source);
     }
 
+    @Override
     public ContragentFx getRecipient() {
         return recipient.get();
     }
 
+    @Override
     public ObjectProperty<ContragentFx> recipientProperty() {
         return recipient;
     }
@@ -91,7 +97,8 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         this.recipient.set(recipient);
     }
 
-    public Date getDateOrder() {
+    @Override
+    public Date getDateDocument() {
         if (dateOrder.getValue()!=null) {
             Instant instantDateOrder = Instant.from(dateOrder.getValue().atStartOfDay(ZoneId.systemDefault()));
             return Date.from(instantDateOrder);
@@ -100,11 +107,12 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         }
     }
 
-    public ObjectProperty<LocalDate> dateOrderProperty() {
+    @Override
+    public ObjectProperty<LocalDate> dateDocumentProperty() {
         return dateOrder;
     }
 
-    public void setDateOrder(Date dateOrder) {
+    public void setDateDocument(Date dateOrder) {
         if (dateOrder!=null) {
             this.dateOrder.set(dateOrder.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
@@ -134,12 +142,38 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         this.userGuid.set(userGuid);
     }
 
+    @Override
     public boolean isActive() {
         return active.get();
     }
 
+    @Override
     public BooleanProperty activeProperty() {
         return active;
+    }
+
+    @Override
+    public int countRows() {
+        return orderBody.size();
+    }
+
+    @Override
+    public IntegerProperty countRowsProperty() {
+        return new SimpleIntegerProperty(orderBody.size());
+    }
+
+    @Override
+    public double getSum() {
+        double result=0;
+        for (OrderBodyFx bodyFx:orderBody){
+            result+=(bodyFx.getPrice()*bodyFx.getCount());
+        }
+        return result;
+    }
+
+    @Override
+    public DoubleProperty sumProperty() {
+        return new SimpleDoubleProperty(getSum());
     }
 
     public void setActive(boolean active) {
@@ -151,7 +185,7 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
         OrderHeaderDto dto=new OrderHeaderDto();
         dto.setComment(getComment());
         dto.setCreateDate(getCreateDate());
-        dto.setDateOrder(getDateOrder());
+        dto.setDateOrder(getDateDocument());
         dto.setNumber(getNumber());
         if (getRecipient()!=null) {
             dto.setRecipient(getRecipient().getEntity());
@@ -174,11 +208,11 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> {
     }
 
 
-    public ObservableList<DocumentBodyFx> getOrderBody() {
+    public ObservableList<OrderBodyFx> getOrderBody() {
         return orderBody;
     }
 
-    public void setOrderBody(ObservableList<DocumentBodyFx> orderBody) {
+    public void setOrderBody(ObservableList<OrderBodyFx> orderBody) {
         this.orderBody = orderBody;
     }
 }

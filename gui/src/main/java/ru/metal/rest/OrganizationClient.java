@@ -9,16 +9,16 @@ import ru.metal.api.organizationinfo.response.UpdateOrganizationResponse;
  */
 
 public class OrganizationClient extends AbstractRestClient {
-    private final String basePath="metal";
-    private final String path = basePath+"/orginfo";
+    private final String basePath = "metal";
+    private final String path = basePath + "/orginfo";
 
     public ObtainOrganizationInfoResponse getOrganizationInfo() {
-        ObtainOrganizationInfoResponse execute = execute(path, RequestType.GET, null, ObtainOrganizationInfoResponse.class);
+        ObtainOrganizationInfoResponse execute = executeGet(path, ObtainOrganizationInfoResponse.class);
         return execute;
     }
 
     public UpdateOrganizationResponse updateOrganizationInfo(UpdateOrganizationRequest updateOrganizationRequest) {
-        UpdateOrganizationResponse execute = execute(path, RequestType.POST, updateOrganizationRequest, UpdateOrganizationResponse.class);
+        UpdateOrganizationResponse execute = executePost(path, updateOrganizationRequest, UpdateOrganizationResponse.class);
         return execute;
     }
 }

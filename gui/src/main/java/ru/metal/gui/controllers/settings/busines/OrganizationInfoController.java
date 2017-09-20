@@ -7,6 +7,7 @@ import ru.common.api.dto.AdressDto;
 import ru.common.api.dto.BankRequisitesDto;
 import ru.metal.api.organizationinfo.dto.OrganizationInfoDto;
 import ru.metal.api.organizationinfo.request.UpdateOrganizationRequest;
+import ru.metal.api.organizationinfo.response.UpdateOrganizationResponse;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
 import ru.metal.rest.OrganizationClient;
@@ -102,7 +103,7 @@ public class OrganizationInfoController extends AbstractController {
     }
 
     @Override
-    protected boolean save() {
+    protected UpdateOrganizationResponse save() {
         if (organizationInfo == null) {
             organizationInfo = new OrganizationInfoDto();
         }
@@ -141,8 +142,8 @@ public class OrganizationInfoController extends AbstractController {
         UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest();
         updateOrganizationRequest.getDataList().add(organizationInfo);
 
-        organizationClient.updateOrganizationInfo(updateOrganizationRequest);
+        UpdateOrganizationResponse updateOrganizationResponse = organizationClient.updateOrganizationInfo(updateOrganizationRequest);
 
-        return true;
+        return updateOrganizationResponse;
     }
 }

@@ -10,6 +10,8 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import ru.common.api.dto.Error;
+import ru.common.api.response.AbstractResponse;
 import ru.metal.dto.FxEntity;
 import ru.metal.gui.windows.ActionInterface;
 
@@ -18,7 +20,7 @@ import java.util.*;
 /**
  * Created by User on 08.08.2017.
  */
-public abstract class AbstractController {
+public abstract class AbstractController<T extends AbstractResponse> {
     private Stage primaryStage;
     private BooleanProperty closeRequest = new SimpleBooleanProperty();
     private BooleanProperty toClose = new SimpleBooleanProperty();
@@ -157,20 +159,35 @@ public abstract class AbstractController {
         this.toClose.set(toClose);
     }
 
-    protected abstract boolean save();
+    protected abstract T save();
 
-    protected boolean saveResult(boolean withMessage){
-        if(!save()){
+    private String collectErrors(List<Error> list){
+        StringBuilder stringBuilder=new StringBuilder();
+        if (!list.isEmpty()){
+            for (Error error:list){
+                stringBuilder.append(error.getDescription()).append("\n");
+            }
+        }
+        return stringBuilder.toString();
+    }
+    protected boolean saveResult(boolean withMessage) {
+        T save = save();
+        boolean hasErrors = save == null || !save.getErrors().isEmpty();
+        if (hasErrors) {
             if (withMessage) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Ошибка");
                 alert.setHeaderText("Произошла ошибка при сохранении");
-                alert.setContentText("Проверьте правильность заполнения полей");
+                if (save == null) {
+                    alert.setContentText("Проверьте правильность заполнения полей");
+                }else{
+                    alert.setContentText(collectErrors(save.getErrors()));
+                }
                 alert.initOwner(getPrimaryStage());
                 alert.show();
             }
             return false;
-        }else{
+        } else {
             if (withMessage) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Успешно");
@@ -182,6 +199,7 @@ public abstract class AbstractController {
             return true;
         }
     }
+
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }

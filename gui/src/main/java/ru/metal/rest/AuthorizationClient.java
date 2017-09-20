@@ -10,16 +10,16 @@ import ru.metal.api.auth.response.ChangePasswordResponse;
  */
 public class AuthorizationClient extends AbstractRestClient {
 
-    private final String basePath="auth";
-    private final String pathAuthorization = basePath+"/authorization";
+    private final String basePath = "auth";
+    private final String pathAuthorization = basePath + "/authorization";
 
     public AuthorizationResponse login(AuthorizationRequest request) {
-        AuthorizationResponse execute = execute(pathAuthorization + "/authorize", RequestType.POST, request, AuthorizationResponse.class);
+        AuthorizationResponse execute = executePost(pathAuthorization + "/authorize", request, AuthorizationResponse.class);
         return execute;
     }
 
     public ChangePasswordResponse changePassword(ChangePasswordRequest request) {
-        ChangePasswordResponse execute = execute(pathAuthorization + "/changePassword", RequestType.POST, request, ChangePasswordResponse.class);
+        ChangePasswordResponse execute = executePost(pathAuthorization + "/changePassword", request, ChangePasswordResponse.class);
         return execute;
     }
 }

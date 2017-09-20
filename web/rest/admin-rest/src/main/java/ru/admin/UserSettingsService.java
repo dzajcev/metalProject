@@ -3,9 +3,11 @@ package ru.admin;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.RegistrationFacade;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
+import ru.metal.api.auth.request.ObtainUserRequest;
 import ru.metal.api.auth.request.UpdateUserRequest;
 import ru.metal.api.auth.response.AcceptRegistrationResponse;
 import ru.metal.api.auth.response.ObtainRegistrationRequestsResponse;
+import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.auth.response.UpdateUserResponse;
 
 import javax.ejb.EJB;
@@ -36,12 +38,18 @@ public class UserSettingsService {
         return Response.ok(response).build();
     }
     @POST
-    @Path("/accept")
+    @Path("/get")
+    public Response getUsers(ObtainUserRequest obtainUserRequest) throws Exception {
+        ObtainUserResponse response = authorizationFacade.obtainUser(obtainUserRequest);
+        return Response.ok(response).build();
+    }
+    @POST
+    @Path("/acceptRegistrationRequest")
     public Response acceptRegistration(AcceptRegistrationRequest registrationRequest) throws Exception {
         AcceptRegistrationResponse response = registrationFacade.acceptRegistration(registrationRequest,false);
         return Response.ok(response).build();
     }
-    @Path("/get")
+    @Path("/getRegistrationRequests")
     @GET
     public Response getRegistrationRequests() throws Exception {
         ObtainRegistrationRequestsResponse response = registrationFacade.getRegistrationRequests();

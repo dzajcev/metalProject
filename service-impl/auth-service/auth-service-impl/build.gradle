@@ -6,6 +6,7 @@ configurations {
 dependencies {
 	compile(project(":service-api:auth-service-api"));
     compile(project(":utils:convert-utils"));
+	compile(project(":utils:crypto-utils"));
 	compile(project(":utils:email-utils"));
 
     compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'

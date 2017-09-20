@@ -21,7 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import ru.common.api.dto.CellFormats;
-import ru.metal.dto.DocumentBodyFx;
+import ru.metal.dto.OrderBodyFx;
 import ru.metal.dto.GoodFx;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controllers.AbstractController;
@@ -36,10 +36,10 @@ import java.math.BigDecimal;
 /**
  * Created by User on 06.09.2017.
  */
-public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
-    private ObservableList<DocumentBodyFx> orderBodySource = FXCollections.observableArrayList();
-    private FilteredList<DocumentBodyFx> orderBodyFilteredList = new FilteredList<>(orderBodySource);
-    private TableViewChangeProperty<DocumentBodyFx> orderBodyTableViewChangeProperty;
+public class OrderBodyTable extends ValidatedTableView<OrderBodyFx> {
+    private ObservableList<OrderBodyFx> orderBodySource = FXCollections.observableArrayList();
+    private FilteredList<OrderBodyFx> orderBodyFilteredList = new FilteredList<>(orderBodySource);
+    private TableViewChangeProperty<OrderBodyFx> orderBodyTableViewChangeProperty;
 
     private OrderBodyInfo orderBodyInfo = new OrderBodyInfo();
 
@@ -67,7 +67,7 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
                     if (newValue != null) {
                         windows[0].setCloseRequest(true);
                         boolean exist = false;
-                        for (DocumentBodyFx bodyFx : orderBodySource) {
+                        for (OrderBodyFx bodyFx : orderBodySource) {
                             if (bodyFx.getGood().getGuid().equals(newValue.getGuid())) {
                                 getSelectionModel().select(bodyFx);
                                 exist = true;
@@ -75,9 +75,9 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
                             }
                         }
                         if (!exist) {
-                            DocumentBodyFx documentBodyFx = new DocumentBodyFx();
-                            documentBodyFx.setGood(newValue);
-                            orderBodySource.add(documentBodyFx);
+                            OrderBodyFx orderBodyFx = new OrderBodyFx();
+                            orderBodyFx.setGood(newValue);
+                            orderBodySource.add(orderBodyFx);
                         }
 
                     }
@@ -92,58 +92,58 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         orderBodyTableViewChangeProperty = new TableViewChangeProperty<>(this, orderBodySource);
         setEditable(true);
 
-        TableColumn<DocumentBodyFx, Integer> npp = new TableColumn("№ п.п");
+        TableColumn<OrderBodyFx, Integer> npp = new TableColumn("№ п.п");
         npp.setMinWidth(50);
-        npp.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DocumentBodyFx, Integer>, ObservableValue<Integer>>() {
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DocumentBodyFx, Integer> p) {
+        npp.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderBodyFx, Integer>, ObservableValue<Integer>>() {
+            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<OrderBodyFx, Integer> p) {
                 ObservableValue simpleIntegerProperty = new SimpleIntegerProperty(p.getTableView().getItems().indexOf(p.getValue()) + 1);
                 return simpleIntegerProperty;
             }
         });
 
-        TableColumn<DocumentBodyFx, String> goodName = new TableColumn("Наименование*");
+        TableColumn<OrderBodyFx, String> goodName = new TableColumn("Наименование*");
         goodName.setMinWidth(100);
-        goodName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DocumentBodyFx, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<DocumentBodyFx, String> p) {
+        goodName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderBodyFx, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<OrderBodyFx, String> p) {
                 return p.getValue().getGood().nameProperty();
             }
         });
 
-        TableColumn<DocumentBodyFx, String> okei = new TableColumn("Ед. изм");
+        TableColumn<OrderBodyFx, String> okei = new TableColumn("Ед. изм");
         okei.setMinWidth(100);
-        okei.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DocumentBodyFx, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<DocumentBodyFx, String> p) {
+        okei.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderBodyFx, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<OrderBodyFx, String> p) {
                 return p.getValue().getGood().getOkei().nameProperty();
             }
         });
 
-        Callback<TableColumn<DocumentBodyFx, Double>, TableCell<DocumentBodyFx, Double>> doubleCellFactory = getTextCellFactory(Double.class);
+        Callback<TableColumn<OrderBodyFx, Double>, TableCell<OrderBodyFx, Double>> doubleCellFactory = getTextCellFactory(Double.class);
 
-        TableColumn<DocumentBodyFx, Double> count = new TableColumn("Количество*");
+        TableColumn<OrderBodyFx, Double> count = new TableColumn("Количество*");
         count.setMinWidth(100);
         count.setCellValueFactory(new PropertyValueFactory<>("count"));
         count.setCellFactory(doubleCellFactory);
         count.getProperties().put(CellFormatKeys.NUMERIC_CELL_PATTERN, CellFormats.THREE_DECIMAL_PLACES);
 
-        TableColumn<DocumentBodyFx, Double> price = new TableColumn("Цена*");
+        TableColumn<OrderBodyFx, Double> price = new TableColumn("Цена*");
         price.setMinWidth(100);
         price.setCellValueFactory(new PropertyValueFactory<>("price"));
         price.setCellFactory(doubleCellFactory);
         price.getProperties().put(CellFormatKeys.NUMERIC_CELL_PATTERN, CellFormats.TWO_DECIMAL_PLACES);
 
-        TableColumn<DocumentBodyFx, Integer> nds = new TableColumn("НДС");
+        TableColumn<OrderBodyFx, Integer> nds = new TableColumn("НДС");
         nds.setMinWidth(100);
-        nds.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DocumentBodyFx, Integer>, ObservableValue<Integer>>() {
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<DocumentBodyFx, Integer> p) {
+        nds.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderBodyFx, Integer>, ObservableValue<Integer>>() {
+            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<OrderBodyFx, Integer> p) {
                 ObservableValue integerProperty = p.getValue().getGood().ndsProperty();
                 return integerProperty;
             }
         });
 
-        TableColumn<DocumentBodyFx, Double> summa = new TableColumn("Сумма");
+        TableColumn<OrderBodyFx, Double> summa = new TableColumn("Сумма");
         summa.setMinWidth(100);
-        summa.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DocumentBodyFx, Double>, ObservableValue<Double>>() {
-            public ObservableValue<Double> call(TableColumn.CellDataFeatures<DocumentBodyFx, Double> p) {
+        summa.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderBodyFx, Double>, ObservableValue<Double>>() {
+            public ObservableValue<Double> call(TableColumn.CellDataFeatures<OrderBodyFx, Double> p) {
                 DoubleBinding multiply = p.getValue().countProperty().multiply(p.getValue().priceProperty());
                 ObservableValue integerProperty = multiply;
                 recalc();
@@ -155,7 +155,7 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         summa.setCellFactory(doubleCellFactory);
         getColumns().addAll(npp, goodName, okei, count, price, nds, summa);
 
-        SortedList<DocumentBodyFx> sortedList = new SortedList<>(orderBodyFilteredList);
+        SortedList<OrderBodyFx> sortedList = new SortedList<>(orderBodyFilteredList);
         sortedList.comparatorProperty().bind(comparatorProperty());
         setItems(sortedList);
 
@@ -171,7 +171,7 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         del.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DocumentBodyFx selectedItem = getSelectionModel().getSelectedItem();
+                OrderBodyFx selectedItem = getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
                     orderBodySource.remove(selectedItem);
                 }
@@ -180,7 +180,7 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         cm.setOnShown(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                DocumentBodyFx selectedItem = getSelectionModel().getSelectedItem();
+                OrderBodyFx selectedItem = getSelectionModel().getSelectedItem();
                 if (selectedItem != null && selectedItem.getGuid() == null) {
                     del.setVisible(true);
                 } else {
@@ -197,11 +197,11 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         double sumWoNds = 0;
         double weight = 0;
         int count = 0;
-        for (DocumentBodyFx documentBodyFx : getOrderBodySource()) {
+        for (OrderBodyFx orderBodyFx : getOrderBodySource()) {
             count++;
-            sum += documentBodyFx.getCount() * documentBodyFx.getPrice();
-            double rowSum = documentBodyFx.getCount() * documentBodyFx.getPrice();
-            double preResult0 = 1 + new Double(documentBodyFx.getGood().getNds()) / new Double(100);
+            sum += orderBodyFx.getCount() * orderBodyFx.getPrice();
+            double rowSum = orderBodyFx.getCount() * orderBodyFx.getPrice();
+            double preResult0 = 1 + new Double(orderBodyFx.getGood().getNds()) / new Double(100);
             double preResult = rowSum / preResult0;
             BigDecimal bd = new BigDecimal(preResult);
             bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -214,7 +214,7 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         orderBodyInfo.setWeight(weight);
     }
 
-    public ObservableList<DocumentBodyFx> getOrderBodySource() {
+    public ObservableList<OrderBodyFx> getOrderBodySource() {
         return orderBodySource;
     }
 
@@ -222,7 +222,7 @@ public class OrderBodyTable extends ValidatedTableView<DocumentBodyFx> {
         return orderBodyTableViewChangeProperty.get();
     }
 
-    public TableViewChangeProperty<DocumentBodyFx> orderBodyTableViewChangePropertyProperty() {
+    public TableViewChangeProperty<OrderBodyFx> orderBodyTableViewChangePropertyProperty() {
         return orderBodyTableViewChangeProperty;
     }
 

@@ -311,7 +311,23 @@ public class StartPage extends Application {
 
                 }
             });
-            menuDictionaries.getItems().add(registrationRequestsMenuItem);
+            MenuItem usersMenuItem = new MenuItem("Пользователи");
+            usersMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Window window = openContent("/fxml/Users.fxml", primaryStage);
+
+                    if (window != null) {
+                        window.setTitle("Пользователи");
+                        window.setClosable(true);
+                        window.setMinimizable(true);
+                        window.setMaximizable(true);
+                        addWindow(window);
+                    }
+
+                }
+            });
+            menuDictionaries.getItems().addAll(registrationRequestsMenuItem, usersMenuItem);
         }
         mainFrame.addMenuItem(menuFile);
         mainFrame.addMenuItem(menuDictionaries);

@@ -9,6 +9,14 @@ public interface Formats {
     /**
      * Only letters, max 60 symbols
      */
+    String USERNAME_FORMAT = "(.){3,20}";
+    /**
+     * Only letters, max 60 symbols
+     */
+    String LOGIN_FORMAT = "(.){6,20}";
+    /**
+     * Only letters, max 60 symbols
+     */
     String NAME_FORMAT = "(.){0,60}";
 
     /**
@@ -18,8 +26,7 @@ public interface Formats {
 
     String COMMENT_FORMAT = "(.){0,150}";
     String BANK_FORMAT = "(.){0,100}";
-
-    String EMAIL_FORMAT = "^[-\\w.]+@([A-z0-9][-A-z0-9]+\\.)+[A-z]{2,4}$";
+    String EMAIL_FORMAT = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
     /**
      * Only digits, 13 or 15 symbols

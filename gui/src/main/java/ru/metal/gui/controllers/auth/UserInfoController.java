@@ -1,5 +1,7 @@
 package ru.metal.gui.controllers.auth;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.apache.commons.codec.binary.Hex;
+import ru.common.api.response.AbstractResponse;
 import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
 import ru.metal.api.auth.request.UpdateUserRequest;
@@ -23,6 +26,7 @@ import ru.metal.security.ejb.dto.Role;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Comparator;
 
 /**
  * Created by User on 19.09.2017.
@@ -77,6 +81,10 @@ public class UserInfoController extends AbstractController {
 
     private RegistrationRequestDataFx request;
 
+    private UserFx user;
+
+    private BooleanProperty saved = new SimpleBooleanProperty(false);
+
 
     Callback<ListView<Role>, ListCell<Role>> roleCallback = new Callback<ListView<Role>, ListCell<Role>>() {
 
@@ -127,11 +135,24 @@ public class UserInfoController extends AbstractController {
 
     @FXML
     protected void saveAction(ActionEvent event) {
-        saveResult(true);
+
+        boolean result = saveResult(true);
+        if (result) {
+            saved.set(true);
+            setCloseRequest(true);
+        }
+    }
+
+    public boolean isSaved() {
+        return saved.get();
+    }
+
+    public BooleanProperty savedProperty() {
+        return saved;
     }
 
     @Override
-    protected boolean save() {
+    protected AbstractResponse save() {
 
         if (request != null) {
             AcceptRegistrationRequest acceptRegistrationRequest = new AcceptRegistrationRequest();
@@ -139,38 +160,47 @@ public class UserInfoController extends AbstractController {
             acceptRegistrationRequest.setPrivileges(currentPrivilege.getItems());
             acceptRegistrationRequest.setRoles(currentRoles.getItems());
             AcceptRegistrationResponse acceptRegistrationResponse = adminClient.acceptRegistration(acceptRegistrationRequest);
-            return acceptRegistrationResponse.getErrors().isEmpty();
-        } else {
+            return acceptRegistrationResponse;
+        } else if (user != null) {
+
             UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-//            updateUserRequest.setNeedGenerateKeys(newKeys.isSelected());
-//
-//            UserFx user = new UserFx();
-//            user.setLogin(login.getText());
-//            user.setFirstName(firstName.getText());
-//            user.setMiddleName(middleName.getText());
-//            user.setSecondName(secondName.getText());
-//            user.setEmail(email.getText());
-//            user.setActive(active.isSelected());
-//            updateUserRequest.setToChangePassword(setPwd.isSelected());
-//            if (setPwd.isSelected()) {
-//
-//                try {
-//                    byte[] bytesOfMessage = (login.getText() + "_" + tmpPassword.getText()).getBytes("UTF-8");
-//                    MessageDigest md = MessageDigest.getInstance("MD5");
-//                    byte[] theDigest = md.digest(bytesOfMessage);
-//                    user.setToken(Hex.encodeHexString(theDigest));
-//                } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            } else {
-//                user.setToken(request.getToken());
-//            }
+            updateUserRequest.setNeedGenerateKeys(newKeys.isSelected());
 
+            user.setPrivileges(currentPrivilege.getItems());
+            user.setRoles(currentRoles.getItems());
+            user.setLogin(login.getText());
+            user.setFirstName(firstName.getText());
+            user.setMiddleName(middleName.getText());
+            user.setSecondName(secondName.getText());
+            user.setEmail(email.getText());
+            user.setActive(active.isSelected());
+            updateUserRequest.setToChangePassword(setPwd.isSelected());
+            if (setPwd.isSelected()) {
+
+                try {
+                    byte[] bytesOfMessage = (login.getText() + "_" + tmpPassword.getText()).getBytes("UTF-8");
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    byte[] theDigest = md.digest(bytesOfMessage);
+                    user.setToken(Hex.encodeHexString(theDigest));
+                } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                user.setToken(user.getToken());
+            }
+            boolean hasError = user.hasError();
+            if (hasError) {
+                setError(login, "login", user);
+                setError(firstName, "firstName", user);
+                setError(secondName, "secondName", user);
+                setError(email, "email", user);
+                return null;
+            }
+            updateUserRequest.setUser(user.getEntity());
             UpdateUserResponse updateUserResponse = adminClient.updateUser(updateUserRequest);
-            return updateUserResponse.getErrors().isEmpty();
+            return updateUserResponse;
         }
-
-
+        return null;
     }
 
     @FXML
@@ -180,6 +210,54 @@ public class UserInfoController extends AbstractController {
         currentRoles.setCellFactory(roleCallback);
         availablePrivilege.setCellFactory(privilegeCallback);
         currentPrivilege.setCellFactory(privilegeCallback);
+    }
+
+    public void setUser(UserFx userFx) {
+        this.user = userFx;
+        login.setText(this.user.getLogin());
+        firstName.setText(this.user.getFirstName());
+        middleName.setText(this.user.getMiddleName());
+        secondName.setText(this.user.getSecondName());
+        email.setText(this.user.getEmail());
+        active.setSelected(user.isActive());
+        ObservableList<Role> availableRolesList = FXCollections.observableArrayList();
+        ObservableList<Role> currentRolesList = FXCollections.observableArrayList();
+
+        ObservableList<Privilege> availablePrivilegeList = FXCollections.observableArrayList();
+        ObservableList<Privilege> currentPrivilegeList = FXCollections.observableArrayList();
+
+        for (Role role : Role.values()) {
+            if (userFx.getRoles().contains(role)) {
+                currentRolesList.add(role);
+            } else {
+                availableRolesList.add(role);
+            }
+        }
+        for (Privilege privilege : Privilege.values()) {
+            if (userFx.getPrivileges().contains(privilege)) {
+                currentPrivilegeList.add(privilege);
+            } else {
+                availablePrivilegeList.add(privilege);
+            }
+        }
+        availableRoles.setItems(availableRolesList);
+        availablePrivilege.setItems(availablePrivilegeList);
+        currentRoles.setItems(currentRolesList);
+        currentPrivilege.setItems(currentPrivilegeList);
+        availableRoles.getItems().sort(new Comparator<Role>() {
+            @Override
+            public int compare(Role o1, Role o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+        availablePrivilege.setItems(FXCollections.observableArrayList(Privilege.values()));
+        availablePrivilege.getItems().sort(new Comparator<Privilege>() {
+            @Override
+            public int compare(Privilege o1, Privilege o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+        registerControls();
     }
 
     public void setRegistrationRequest(RegistrationRequestDataFx request) {
@@ -195,13 +273,26 @@ public class UserInfoController extends AbstractController {
         this.request = request;
         active.setVisible(false);
         activeLabel.setVisible(false);
-        login.textProperty().bindBidirectional(request.loginProperty());
-        firstName.textProperty().bindBidirectional(request.firstNameProperty());
-        middleName.textProperty().bindBidirectional(request.middleNameProperty());
-        secondName.textProperty().bindBidirectional(request.secondNameProperty());
-        email.textProperty().bindBidirectional(request.emailProperty());
+        login.setText(request.getLogin());
+        firstName.setText(request.getFirstName());
+        middleName.setText(request.getMiddleName());
+        secondName.setText(request.getSecondName());
+        email.setText(request.getEmail());
+
         availableRoles.setItems(FXCollections.observableArrayList(Role.values()));
+        availableRoles.getItems().sort(new Comparator<Role>() {
+            @Override
+            public int compare(Role o1, Role o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
         availablePrivilege.setItems(FXCollections.observableArrayList(Privilege.values()));
+        availablePrivilege.getItems().sort(new Comparator<Privilege>() {
+            @Override
+            public int compare(Privilege o1, Privilege o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
         registerControls();
     }
 

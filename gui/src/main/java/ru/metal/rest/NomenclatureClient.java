@@ -18,14 +18,14 @@ import ru.metal.dto.response.ObtainTreeItemResponse;
  */
 
 public class NomenclatureClient extends AbstractRestClient implements TreeClient<GroupFx> {
-    private final String basePath="metal";
-    private final String pathGroup = basePath+"/nomenclature/groups";
-    private final String pathGood = basePath+"/nomenclature/goods";
-    private final String pathOkei = basePath+"/nomenclature/okei";
+    private final String basePath = "metal";
+    private final String pathGroup = basePath + "/nomenclature/groups";
+    private final String pathGood = basePath + "/nomenclature/goods";
+    private final String pathOkei = basePath + "/nomenclature/okei";
 
     @Override
     public ObtainTreeItemResponse<GroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) {
-        ObtainGroupReponse execute = execute(pathGroup + "/get", RequestType.POST, obtainTreeItemRequest, ObtainGroupReponse.class);
+        ObtainGroupReponse execute = executePost(pathGroup + "/get", obtainTreeItemRequest, ObtainGroupReponse.class);
         ObtainTreeItemResponse<GroupFx> response = new ObtainTreeItemResponse<>();
         response.setErrors(execute.getErrors());
         response.setDataList(GoodGroupHelper.getInstance().getFxCollection(execute.getDataList()));
@@ -33,10 +33,10 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     }
 
     @Override
-    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest){
+    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest) {
         UpdateTreeItemRequest<GroupDto> request = new UpdateTreeItemRequest<>();
         request.setDataList(GoodGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
-        UpdateGoodGroupResponse execute = execute(pathGroup + "/update", RequestType.POST, request, UpdateGoodGroupResponse.class);
+        UpdateGoodGroupResponse execute = executePost(pathGroup + "/update", request, UpdateGoodGroupResponse.class);
         UpdateTreeItemResponse response = new UpdateTreeItemResponse();
         response.getErrors().addAll(execute.getErrors());
         response.setImportResults(execute.getImportResults());
@@ -45,23 +45,23 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
 
     @Override
     public UpdateGoodGroupResponse deleteItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) {
-        return execute(pathGroup + "/delete", RequestType.POST, deleteTreeItemRequest, UpdateGoodGroupResponse.class);
+        return executePost(pathGroup + "/delete", deleteTreeItemRequest, UpdateGoodGroupResponse.class);
     }
 
 
     public ObtainGoodResponse getGoods(ObtainGoodRequest obtainGoodRequest) {
-        ObtainGoodResponse execute = execute(pathGood + "/get", RequestType.POST, obtainGoodRequest, ObtainGoodResponse.class);
+        ObtainGoodResponse execute = executePost(pathGood + "/get", obtainGoodRequest, ObtainGoodResponse.class);
         return execute;
     }
 
 
-    public UpdateGoodsResponse updateGoods(UpdateGoodsRequest updateGoodsRequest){
-        UpdateGoodsResponse execute = execute(pathGood + "/update", RequestType.POST, updateGoodsRequest, UpdateGoodsResponse.class);
+    public UpdateGoodsResponse updateGoods(UpdateGoodsRequest updateGoodsRequest) {
+        UpdateGoodsResponse execute = executePost(pathGood + "/update", updateGoodsRequest, UpdateGoodsResponse.class);
         return execute;
     }
 
-    public ObtainOkeiResponse getOkei(ObtainOkeiRequest obtainOkeiRequest){
-        ObtainOkeiResponse execute = execute(pathOkei + "/get", RequestType.POST, obtainOkeiRequest, ObtainOkeiResponse.class);
+    public ObtainOkeiResponse getOkei(ObtainOkeiRequest obtainOkeiRequest) {
+        ObtainOkeiResponse execute = executePost(pathOkei + "/get", obtainOkeiRequest, ObtainOkeiResponse.class);
         return execute;
     }
 

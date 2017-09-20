@@ -55,11 +55,11 @@ public abstract class AbstractRestClient {
         return path;
     }
 
-    protected <T extends AbstractResponse> T execute(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) {
-        return executeQuery(additionalPath, requestType, object, resultClass);
+    protected <T extends AbstractResponse> T executePost(String additionalPath, Object object, Class<T> resultClass) {
+        return executeQuery(additionalPath, RequestType.POST, object, resultClass);
     }
-    protected <T extends AbstractResponse> T execute(String additionalPath, RequestType requestType, Class<T> resultClass) {
-        return executeQuery(additionalPath, requestType, null, resultClass);
+    protected <T extends AbstractResponse> T executeGet(String additionalPath, Class<T> resultClass) {
+        return executeQuery(additionalPath, RequestType.GET, null, resultClass);
     }
     private <T extends AbstractResponse> T executeQuery(String additionalPath, RequestType requestType, Object object, Class<T> resultClass) {
         ResteasyWebTarget target = createTarget(additionalPath);

@@ -18,14 +18,14 @@ import ru.metal.dto.response.ObtainTreeItemResponse;
  */
 
 public class ContragentsClient extends AbstractRestClient implements TreeClient<ContragentGroupFx> {
-    private final String basePath="metal";
-    private final String pathGroup = basePath+"/contragents/groups";
-    private final String pathContragent = basePath+"/contragents/contragent";
-    private final String pathEmployee = basePath+"/contragents/employee";
+    private final String basePath = "metal";
+    private final String pathGroup = basePath + "/contragents/groups";
+    private final String pathContragent = basePath + "/contragents/contragent";
+    private final String pathEmployee = basePath + "/contragents/employee";
 
     @Override
-    public ObtainTreeItemResponse<ContragentGroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest){
-        ObtainContragentGroupReponse execute = execute(pathGroup + "/get", RequestType.POST, obtainTreeItemRequest, ObtainContragentGroupReponse.class);
+    public ObtainTreeItemResponse<ContragentGroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) {
+        ObtainContragentGroupReponse execute = executePost(pathGroup + "/get", obtainTreeItemRequest, ObtainContragentGroupReponse.class);
         ObtainTreeItemResponse<ContragentGroupFx> response = new ObtainTreeItemResponse<ContragentGroupFx>();
         response.setErrors(execute.getErrors());
         response.setDataList(ContragentGroupHelper.getInstance().getFxCollection(execute.getDataList()));
@@ -36,7 +36,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<ContragentGroupFx> updateTreeItemRequest) {
         UpdateTreeItemRequest<ContragentGroupDto> request = new UpdateTreeItemRequest<>();
         request.setDataList(ContragentGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
-        UpdateContragentGroupResponse execute = execute(pathGroup + "/update", RequestType.POST, request, UpdateContragentGroupResponse.class);
+        UpdateContragentGroupResponse execute = executePost(pathGroup + "/update", request, UpdateContragentGroupResponse.class);
         UpdateTreeItemResponse response = new UpdateTreeItemResponse();
         response.getErrors().addAll(execute.getErrors());
         response.setImportResults(execute.getImportResults());
@@ -45,22 +45,22 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
 
     @Override
     public UpdateTreeItemResponse deleteItem(DeleteTreeItemRequest<ContragentGroupFx> deleteTreeItemRequest) {
-        UpdateContragentGroupResponse execute = execute(pathGroup + "/delete", RequestType.POST, deleteTreeItemRequest, UpdateContragentGroupResponse.class);
+        UpdateContragentGroupResponse execute = executePost(pathGroup + "/delete", deleteTreeItemRequest, UpdateContragentGroupResponse.class);
         return execute;
     }
 
-    public ObtainContragentResponse getContragents(ObtainContragentRequest obtainContragentRequest){
-        ObtainContragentResponse execute = execute(pathContragent + "/get", RequestType.POST, obtainContragentRequest, ObtainContragentResponse.class);
+    public ObtainContragentResponse getContragents(ObtainContragentRequest obtainContragentRequest) {
+        ObtainContragentResponse execute = executePost(pathContragent + "/get", obtainContragentRequest, ObtainContragentResponse.class);
         return execute;
     }
 
-    public UpdateContragentResponse updateContragents(UpdateContragentRequest updateContragentRequest){
-        UpdateContragentResponse execute = execute(pathContragent + "/update", RequestType.POST, updateContragentRequest, UpdateContragentResponse.class);
+    public UpdateContragentResponse updateContragents(UpdateContragentRequest updateContragentRequest) {
+        UpdateContragentResponse execute = executePost(pathContragent + "/update", updateContragentRequest, UpdateContragentResponse.class);
         return execute;
     }
 
     public UpdateEmployeeResponse updateEmployee(UpdateEmployeeRequest updateEmployeeRequest) {
-        UpdateEmployeeResponse execute = execute(pathEmployee + "/update", RequestType.POST, updateEmployeeRequest, UpdateEmployeeResponse.class);
+        UpdateEmployeeResponse execute = executePost(pathEmployee + "/update", updateEmployeeRequest, UpdateEmployeeResponse.class);
         return execute;
     }
 }

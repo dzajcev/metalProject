@@ -10,7 +10,17 @@ public class ObtainUserRequest extends AbstractRequest {
 
     private String email;
 
+    private boolean active;
+
     private String guid;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public String getGuid() {
         return guid;

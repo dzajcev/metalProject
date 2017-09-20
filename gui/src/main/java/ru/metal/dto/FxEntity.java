@@ -107,7 +107,7 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
                             if (!hasError && value != null && !regexp.isEmpty()) {
                                 boolean regexpNotValid;
                                 if (!(value instanceof Date)) {
-                                    regexpNotValid = !value.toString().matches(regexp);
+                                    regexpNotValid = !value.toString().toLowerCase().matches(regexp.toLowerCase());
                                 } else {
                                     regexpNotValid = false;
                                 }

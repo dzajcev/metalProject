@@ -2,35 +2,24 @@ package ru.metal.gui.controllers.auth;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.*;
-import javafx.stage.Stage;
-import ru.common.api.dto.TableElement;
+import javafx.scene.input.MouseButton;
+import ru.common.api.response.AbstractResponse;
 import ru.metal.api.auth.response.ObtainRegistrationRequestsResponse;
-import ru.metal.api.nomenclature.request.ObtainGoodRequest;
-import ru.metal.dto.FxEntity;
-import ru.metal.dto.GoodFx;
 import ru.metal.dto.RegistrationRequestDataFx;
 import ru.metal.dto.helper.RegistrationRequestDataHelper;
 import ru.metal.gui.StartPage;
 import ru.metal.gui.controllers.AbstractController;
-import ru.metal.gui.controllers.nomenclature.GoodInfoController;
-import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
 import ru.metal.gui.windows.Window;
 import ru.metal.rest.AdminClient;
-import ru.metal.security.ejb.dto.AbstractDto;
-
-import java.util.Iterator;
 
 
 /**
@@ -40,7 +29,7 @@ public class RegistrationRequestsController extends AbstractController {
     public static final String ID = "registrationRequests";
 
     @FXML
-    private TableView requests;
+    private TableView<RegistrationRequestDataFx> requests;
 
     @FXML
     private void initialize() {
@@ -48,29 +37,29 @@ public class RegistrationRequestsController extends AbstractController {
         TableColumn login = new TableColumn("Логин");
         login.setMinWidth(100);
         login.setCellValueFactory(
-                new PropertyValueFactory<GoodFx, String>("login"));
+                new PropertyValueFactory<RegistrationRequestDataFx, String>("login"));
 
         TableColumn firstName = new TableColumn("Имя");
         firstName.setMinWidth(100);
         firstName.setCellValueFactory(
-                new PropertyValueFactory<GoodFx, String>("firstName"));
+                new PropertyValueFactory<RegistrationRequestDataFx, String>("firstName"));
 
         TableColumn middleName = new TableColumn("Отчество");
         middleName.setMinWidth(100);
         middleName.setCellValueFactory(
-                new PropertyValueFactory<GoodFx, String>("middleName"));
+                new PropertyValueFactory<RegistrationRequestDataFx, String>("middleName"));
 
         TableColumn secondName = new TableColumn("Фамилия");
         secondName.setMinWidth(100);
         secondName.setCellValueFactory(
-                new PropertyValueFactory<GoodFx, String>("secondName"));
+                new PropertyValueFactory<RegistrationRequestDataFx, String>("secondName"));
 
         TableColumn email = new TableColumn("Email");
         email.setMinWidth(100);
         email.setCellValueFactory(
-                new PropertyValueFactory<GoodFx, String>("email"));
+                new PropertyValueFactory<RegistrationRequestDataFx, String>("email"));
 
-        requests.getColumns().addAll(firstName,middleName,secondName,email);
+        requests.getColumns().addAll(login, firstName, middleName, secondName, email);
         AdminClient adminClient = new AdminClient();
         ObtainRegistrationRequestsResponse registrationRequests = adminClient.getRegistrationRequests();
         ObservableList<RegistrationRequestDataFx> fxCollection = RegistrationRequestDataHelper.getInstance().getFxCollection(registrationRequests.getDataList());
@@ -89,7 +78,14 @@ public class RegistrationRequestsController extends AbstractController {
                     RegistrationRequestDataFx rowData = row.getItem();
                     Window<UserInfoController, Node> window = StartPage.openContent("/fxml/UserInfo.fxml", getPrimaryStage());
                     window.getController().setRegistrationRequest(rowData);
-
+                    window.getController().savedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if (newValue) {
+                                fxCollection.remove(rowData);
+                            }
+                        }
+                    });
                     window.setTitle("Сведения о запросе на регистрацию");
                     window.setClosable(true);
                     window.setMaximizable(false);
@@ -102,7 +98,7 @@ public class RegistrationRequestsController extends AbstractController {
     }
 
     @Override
-    protected boolean save() {
-        return false;
+    protected AbstractResponse save() {
+        return null;
     }
 }

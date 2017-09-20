@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import ru.common.api.response.AbstractResponse;
 import ru.common.api.response.ObtainEmailSettingsResponse;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
@@ -14,8 +15,8 @@ import ru.metal.rest.ApplicationSettingsSingleton;
  * Created by User on 08.08.2017.
  */
 public class BusinesSettingsController extends AbstractController {
-    @FXML
-    private SaveButton save;
+//    @FXML
+//    private SaveButton save;
     @FXML
     private Label smtpHost;
     @FXML
@@ -38,7 +39,7 @@ public class BusinesSettingsController extends AbstractController {
         sender.setText(obtainEmailSettingsResponse.getEmailSettings().getFrom());
         login.setText(obtainEmailSettingsResponse.getEmailSettings().getUserName());
         pass.setText(obtainEmailSettingsResponse.getEmailSettings().getPassword());
-        registerControlsProperties(save);
+      //  registerControlsProperties(save);
     }
 
     @FXML
@@ -48,7 +49,7 @@ public class BusinesSettingsController extends AbstractController {
 
 
     @Override
-    protected boolean save() {
-        return true;
+    protected AbstractResponse save() {
+        return null;
     }
 }

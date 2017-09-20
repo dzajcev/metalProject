@@ -12,7 +12,7 @@ import ru.metal.dto.helper.OrderBodyHelper;
 /**
  * Created by User on 30.08.2017.
  */
-public class DocumentBodyFx extends FxEntity<OrderBodyDto> {
+public class OrderBodyFx extends FxEntity<OrderBodyDto> {
 
     @ValidatableField(nullable = false)
     private ObjectProperty<GoodFx> good=new SimpleObjectProperty<>();
@@ -74,7 +74,7 @@ public class DocumentBodyFx extends FxEntity<OrderBodyDto> {
     }
 
     @Override
-    public FxHelper<DocumentBodyFx, OrderBodyDto> getHelper() {
+    public FxHelper<OrderBodyFx, OrderBodyDto> getHelper() {
         return OrderBodyHelper.getInstance();
     }
 }

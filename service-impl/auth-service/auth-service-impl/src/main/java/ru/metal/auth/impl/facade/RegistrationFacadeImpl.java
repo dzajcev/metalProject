@@ -18,12 +18,12 @@ import ru.metal.api.auth.response.RegistrationResponse;
 import ru.metal.auth.impl.domain.persistent.RegistrationRequestData;
 import ru.metal.auth.impl.domain.persistent.RegistrationRequestData_;
 import ru.metal.auth.impl.domain.persistent.UserData;
-import ru.metal.auth.impl.domain.persistent.UserData_;
 import ru.metal.convert.mapper.Mapper;
-import ru.metal.security.ejb.dto.Privilege;
-import ru.metal.security.ejb.dto.Role;
+import ru.metal.crypto.service.KeyGenerator;
 import ru.metal.email.Email;
 import ru.metal.email.EmailSender;
+import ru.metal.security.ejb.dto.Privilege;
+import ru.metal.security.ejb.dto.Role;
 
 import javax.ejb.*;
 import javax.inject.Inject;
@@ -32,7 +32,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -64,6 +63,9 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
 
     @Inject
     private Validator validator;
+
+    @Inject
+    private KeyGenerator keyGenerator;
 
     @Override
     public RegistrationResponse createRegistration(RegistrationRequest registrationRequest) {
@@ -137,17 +139,10 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
         userData.setPrivileges(privileges);
         userData.setRoles(roles);
         PublicKey publicKey;
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            publicKey = keyPair.getPublic();
-            PrivateKey privateKey = keyPair.getPrivate();
+        Pair<PublicKey, PrivateKey> generate = keyGenerator.generate();
+        publicKey = generate.getLeft();
+        userData.setPrivateServerKey(generate.getRight().getEncoded());
 
-            userData.setPrivateServerKey(privateKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
         UserData merge = entityManager.merge(userData);
 
         Pair<UserData, PublicKey> pair = new Pair<>(merge, publicKey);
@@ -172,7 +167,7 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
             return acceptRegistrationResponse;
         }
 
-        Pair<UserData, PublicKey> user = createUser(registrationRequestData, acceptRegistrationRequest.getRoles(),acceptRegistrationRequest.getPrivileges());
+        Pair<UserData, PublicKey> user = createUser(registrationRequestData, acceptRegistrationRequest.getRoles(), acceptRegistrationRequest.getPrivileges());
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
                 user.getRight().getEncoded());
         registrationRequestData.setAccepted(true);

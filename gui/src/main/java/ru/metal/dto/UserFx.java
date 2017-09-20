@@ -7,34 +7,35 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.metal.api.auth.dto.User;
-import ru.metal.api.auth.dto.UserCommonData;
+import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.FxHelper;
 import ru.metal.security.ejb.dto.Privilege;
 import ru.metal.security.ejb.dto.Role;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by User on 19.09.2017.
  */
 public class UserFx extends FxEntity<User> {
 
+    @ValidatableField(nullable = false, regexp = Formats.LOGIN_FORMAT)
     private StringProperty login = new SimpleStringProperty();
 
+    @ValidatableField(nullable = false, regexp = Formats.USERNAME_FORMAT)
     private StringProperty secondName = new SimpleStringProperty();
 
     private StringProperty middleName = new SimpleStringProperty();
 
+    @ValidatableField(nullable = false, regexp = Formats.USERNAME_FORMAT)
     private StringProperty firstName = new SimpleStringProperty();
 
+    @ValidatableField(nullable = false, regexp = Formats.EMAIL_FORMAT)
     private StringProperty email = new SimpleStringProperty();
 
+    @ValidatableField(nullable = false)
     private StringProperty token = new SimpleStringProperty();
 
-    private BooleanProperty active=new SimpleBooleanProperty(true);
+    private BooleanProperty active = new SimpleBooleanProperty(true);
+
     private ObservableList<Role> roles = FXCollections.observableArrayList();
 
     private ObservableList<Privilege> privileges = FXCollections.observableArrayList();
@@ -151,7 +152,7 @@ public class UserFx extends FxEntity<User> {
 
     @Override
     public User getEntity() {
-        User user=new User();
+        User user = new User();
         user.setGuid(getGuid());
         user.setTransportGuid(getTransportGuid());
         user.setLastEditingDate(getLastEditingDate());
@@ -164,6 +165,7 @@ public class UserFx extends FxEntity<User> {
         user.setToken(getToken());
         user.setRoles(roles);
         user.setPrivileges(privileges);
+        user.setActive(isActive());
         return user;
     }
 

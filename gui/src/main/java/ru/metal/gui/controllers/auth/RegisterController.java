@@ -173,16 +173,21 @@ public class RegisterController {
             if (privateKeyFile == null) {
                 return;
             }
+            try {
+                FileOutputStream fos = new FileOutputStream(privateKeyFile);
+                fos.write(pkcs8EncodedKeySpec.getEncoded());
+                fos.close();
+            }catch (IOException e) {
+
+            }
             if (registration.getPublicServerKey() != null) {
                 try {
-                    FileOutputStream fos = new FileOutputStream(privateKeyFile);
-                    fos.write(pkcs8EncodedKeySpec.getEncoded());
-                    fos.close();
+
                     if (registration.getPublicServerKey() != null) {
                         fileChooser.setInitialFileName("publicKey");
                         fileChooser.setTitle("Сохраните открытый ключ (Учетная запись: Администратор)");
                         File publicKeyFile = fileChooser.showSaveDialog(root.getScene().getWindow());
-                        fos = new FileOutputStream(publicKeyFile);
+                        FileOutputStream fos = new FileOutputStream(publicKeyFile);
                         fos.write(registration.getPublicServerKey());
                         fos.close();
                     }

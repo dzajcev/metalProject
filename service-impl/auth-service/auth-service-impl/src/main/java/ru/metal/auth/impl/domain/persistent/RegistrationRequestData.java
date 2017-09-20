@@ -9,8 +9,7 @@ import javax.persistence.UniqueConstraint;
  * Created by User on 11.09.2017.
  */
 @Entity
-@Table(name = "REGISTRATION_REQUESTS",uniqueConstraints = {@UniqueConstraint(columnNames={"LOGIN",}),
-                                                            @UniqueConstraint(columnNames={"EMAIL"})})
+@Table(name = "REGISTRATION_REQUESTS")
 public class RegistrationRequestData extends BaseEntity {
 
     @Column(name = "LOGIN",nullable = false)

@@ -29,7 +29,7 @@ import ru.metal.api.report.request.OrderReportRequest;
 import ru.metal.api.report.response.OrderReportResponse;
 import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.dto.ContragentFx;
-import ru.metal.dto.DocumentBodyFx;
+import ru.metal.dto.OrderBodyFx;
 import ru.metal.dto.OrderHeaderFx;
 import ru.metal.dto.helper.ContragentHelper;
 import ru.metal.dto.helper.OrderHeaderHelper;
@@ -336,7 +336,7 @@ public class OrderController extends AbstractController {
         shipper.valueProperty().bindBidirectional(orderHeaderFx.sourceProperty());
         buyer.valueProperty().bindBidirectional(orderHeaderFx.recipientProperty());
         orderNumber.textProperty().bindBidirectional(orderHeaderFx.numberProperty());
-        orderDate.valueProperty().bindBidirectional(orderHeaderFx.dateOrderProperty());
+        orderDate.valueProperty().bindBidirectional(orderHeaderFx.dateDocumentProperty());
         comment.textProperty().bindBidirectional(orderHeaderFx.commentProperty());
         if (orderHeaderFx.getGuid()==null){
             orderDate.setValue(LocalDate.now());
@@ -351,7 +351,7 @@ public class OrderController extends AbstractController {
     }
 
     @Override
-    protected boolean save() {
+    protected UpdateOrderResponse save() {
         orderHeaderFx.setUserGuid(UserContextHolder.getPermissionContextDataThreadLocal().getUserGuid());
         orderHeaderFx.setOrderBody(orderBody.getOrderBodySource());
 
@@ -362,27 +362,26 @@ public class OrderController extends AbstractController {
             setError(shipper, "source", orderHeaderFx);
             setError(buyer, "recipient", orderHeaderFx);
             orderBody.checkError();
-            return false;
+            return null;
         }
         UpdateOrderRequest updateOrderRequest = new UpdateOrderRequest();
 
         updateOrderRequest.getDataList().add(orderHeaderFx.getEntity());
-        UpdateOrderResponse response = null;
 
-        response = orderClient.updateOrders(updateOrderRequest);
+        UpdateOrderResponse response = orderClient.updateOrders(updateOrderRequest);
 
         UpdateOrderResult updateOrderResult = response.getImportResults().get(0);
         orderHeaderFx.setGuid(updateOrderResult.getGuid());
         orderHeaderFx.setNumber(updateOrderResult.getOrderNumber());
 
         for (UpdateBodyResult result : updateOrderResult.getBodyResults()) {
-            for (DocumentBodyFx bodyFx : orderHeaderFx.getOrderBody()) {
+            for (OrderBodyFx bodyFx : orderHeaderFx.getOrderBody()) {
                 if (bodyFx.getTransportGuid().equals(result.getTransportGuid())) {
                     bodyFx.setGuid(result.getGuid());
                     break;
                 }
             }
         }
-        return true;
+        return response;
     }
 }

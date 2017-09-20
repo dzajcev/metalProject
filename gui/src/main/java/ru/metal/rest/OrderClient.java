@@ -14,13 +14,13 @@ public class OrderClient extends AbstractRestClient {
     private final String pathOrder = basePath + "/orders";
 
 
-    public ObtainOrderResponse getOrders(ObtainOrderRequest obtainOrderRequest)  {
-        ObtainOrderResponse response = execute(pathOrder + "/get", RequestType.POST, obtainOrderRequest, ObtainOrderResponse.class);
+    public ObtainOrderResponse getOrders(ObtainOrderRequest obtainOrderRequest) {
+        ObtainOrderResponse response = executePost(pathOrder + "/get", obtainOrderRequest, ObtainOrderResponse.class);
         return response;
     }
 
     public UpdateOrderResponse updateOrders(UpdateOrderRequest obtainOrderRequest) {
-        UpdateOrderResponse response = execute(pathOrder + "/update", RequestType.POST, obtainOrderRequest, UpdateOrderResponse.class);
+        UpdateOrderResponse response = executePost(pathOrder + "/update", obtainOrderRequest, UpdateOrderResponse.class);
         return response;
     }
 

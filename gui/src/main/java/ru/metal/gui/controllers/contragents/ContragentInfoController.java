@@ -19,10 +19,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import ru.common.api.response.AbstractResponse;
 import ru.metal.api.contragents.dto.ContragentType;
 import ru.metal.api.contragents.dto.DocumentType;
 import ru.metal.api.contragents.dto.PersonType;
 import ru.metal.api.contragents.request.UpdateContragentRequest;
+import ru.metal.api.contragents.response.UpdateContragentResponse;
 import ru.metal.dto.ContragentFx;
 import ru.metal.dto.DocumentFx;
 import ru.metal.dto.EmployeeFx;
@@ -537,7 +539,7 @@ public class ContragentInfoController extends AbstractController {
     private BooleanProperty saved = new SimpleBooleanProperty(false);
 
     @Override
-    protected boolean save() {
+    protected UpdateContragentResponse save() {
         UpdateContragentRequest request = new UpdateContragentRequest();
 
         contragentFx.setActive(active.isSelected());
@@ -669,14 +671,14 @@ public class ContragentInfoController extends AbstractController {
             }
             employees.checkError();
             documents.checkError();
-            return false;
+            return null;
         }
 
-        contragentsClient.updateContragents(request);
+        UpdateContragentResponse updateContragentResponse = contragentsClient.updateContragents(request);
 
         saved.setValue(true);
         setCloseRequest(true);
-        return true;
+        return updateContragentResponse;
     }
 
 

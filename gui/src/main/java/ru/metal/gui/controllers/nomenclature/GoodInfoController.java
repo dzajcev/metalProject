@@ -15,6 +15,7 @@ import javafx.util.StringConverter;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
 import ru.metal.api.nomenclature.response.ObtainOkeiResponse;
+import ru.metal.api.nomenclature.response.UpdateGoodsResponse;
 import ru.metal.dto.GoodFx;
 import ru.metal.dto.OkeiFx;
 import ru.metal.dto.helper.OkeiHelper;
@@ -25,7 +26,7 @@ import ru.metal.rest.NomenclatureClient;
 /**
  * Created by User on 17.08.2017.
  */
-public class GoodInfoController extends AbstractController {
+public class GoodInfoController extends AbstractController<UpdateGoodsResponse> {
     private GoodFx goodFx;
 
     @FXML
@@ -87,7 +88,7 @@ public class GoodInfoController extends AbstractController {
     private BooleanProperty saved = new SimpleBooleanProperty(false);
 
     @Override
-    protected boolean save() {
+    protected UpdateGoodsResponse save() {
 
         goodFx.setOkei(okei.getValue());
         goodFx.setActive(active.isSelected());
@@ -105,17 +106,17 @@ public class GoodInfoController extends AbstractController {
             setError(name, "name", goodFx);
             setError(okei, "okei", goodFx);
             setError(nds, "nds", goodFx);
-            return false;
+            return null;
         }
         UpdateGoodsRequest updateGoodsRequest = new UpdateGoodsRequest();
 
         updateGoodsRequest.getDataList().add(goodFx.getEntity());
 
-        nomenclatureClient.updateGoods(updateGoodsRequest);
+        UpdateGoodsResponse updateGoodsResponse = nomenclatureClient.updateGoods(updateGoodsRequest);
 
         saved.setValue(true);
         setCloseRequest(true);
-        return true;
+        return updateGoodsResponse;
     }
 
     public boolean isSaved() {

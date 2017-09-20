@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by User on 09.09.2017.
  */
-public class AbstractResponse implements Serializable {
+public abstract class AbstractResponse implements Serializable {
     private List<Error> errors;
 
     public List<Error> getErrors() {

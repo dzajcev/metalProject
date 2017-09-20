@@ -121,7 +121,7 @@ public class ShipperController extends AbstractController {
 
 
     @Override
-    protected boolean save() {
+    protected UpdateContragentResponse save() {
 
         UpdateContragentRequest request = new UpdateContragentRequest();
         shipper.setGroup(this.contragent.getGroup());
@@ -152,7 +152,7 @@ public class ShipperController extends AbstractController {
             setError(korrAccount, "korrAccount", shipper);
             setError(kpp, "kpp", shipper);
             setError(name, "name", shipper);
-            return false;
+            return null;
 
         }
         request.getDataList().add(shipper.getEntity());
@@ -163,7 +163,7 @@ public class ShipperController extends AbstractController {
         setSavedObject(shipper);
         setSavedObject(null);
         setCloseRequest(true);
-        return true;
+        return updateContragentResponse;
     }
 
     public ContragentFx getSavedObject() {

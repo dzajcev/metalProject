@@ -11,9 +11,8 @@ public class ReportClient extends AbstractRestClient {
     private final String pathOrder = "/report";
 
 
-
     public OrderReportResponse getOrders(OrderReportRequest orderReportRequest) {
-        OrderReportResponse response = execute(pathOrder + "/order", RequestType.POST, orderReportRequest, OrderReportResponse.class);
+        OrderReportResponse response = executePost(pathOrder + "/order", orderReportRequest, OrderReportResponse.class);
         return response;
     }
 

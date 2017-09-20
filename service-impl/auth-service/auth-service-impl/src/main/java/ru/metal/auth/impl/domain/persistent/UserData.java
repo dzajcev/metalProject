@@ -39,9 +39,6 @@ public class UserData extends BaseEntity {
     @Column(name = "TO_CHANGE_PASSWORD")
     private boolean toChangePassword=false;
 
-    @Column(name = "TO_CHANGE_KEYS")
-    private boolean toChangeKeys=false;
-
     @Column(name = "PUBLIC_USER_KEY", nullable = false)
     private byte[] publicUserKey;
 
@@ -163,11 +160,4 @@ public class UserData extends BaseEntity {
         this.toChangePassword = toChangePassword;
     }
 
-    public boolean isToChangeKeys() {
-        return toChangeKeys;
-    }
-
-    public void setToChangeKeys(boolean toChangeKeys) {
-        this.toChangeKeys = toChangeKeys;
-    }
 }

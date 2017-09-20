@@ -24,6 +24,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import ru.common.api.response.AbstractResponse;
 import ru.metal.gui.controllers.AbstractController;
 
 import java.awt.image.BufferedImage;
@@ -189,7 +190,7 @@ public class JRViewerFxController extends AbstractController {
     }
 
     @FXML
-    public boolean save() {
+    public AbstractResponse save() {
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter pdf = new FileChooser.ExtensionFilter("Portable Document Format (*.pdf)", "*.pdf");
         FileChooser.ExtensionFilter html = new FileChooser.ExtensionFilter("HyperText Markup Language", "*.html");
@@ -267,7 +268,7 @@ public class JRViewerFxController extends AbstractController {
                     break;
             }
         }
-        return true;
+        return null;
     }
 
     private WritableImage getImage(int pageNumber) {

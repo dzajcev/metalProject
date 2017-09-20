@@ -3,7 +3,7 @@ package ru.metal.dto.helper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.metal.api.order.dto.OrderBodyDto;
-import ru.metal.dto.DocumentBodyFx;
+import ru.metal.dto.OrderBodyFx;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by User on 01.09.2017.
  */
-public class OrderBodyHelper implements FxHelper<DocumentBodyFx,OrderBodyDto> {
+public class OrderBodyHelper implements FxHelper<OrderBodyFx,OrderBodyDto> {
     private static volatile OrderBodyHelper instance;
 
     public static OrderBodyHelper getInstance() {
@@ -32,11 +32,11 @@ public class OrderBodyHelper implements FxHelper<DocumentBodyFx,OrderBodyDto> {
 
 
     @Override
-    public DocumentBodyFx getFxEntity(OrderBodyDto dto) {
+    public OrderBodyFx getFxEntity(OrderBodyDto dto) {
         if (dto == null) {
             return null;
         }
-        DocumentBodyFx orderBody = new DocumentBodyFx();
+        OrderBodyFx orderBody = new OrderBodyFx();
         orderBody.setGuid(dto.getGuid());
         orderBody.setLastEditingDate(dto.getLastEditingDate());
         orderBody.setTransportGuid(dto.getTransportGuid());
@@ -47,8 +47,8 @@ public class OrderBodyHelper implements FxHelper<DocumentBodyFx,OrderBodyDto> {
     }
 
     @Override
-    public ObservableList<DocumentBodyFx> getFxCollection(List<OrderBodyDto> collection) {
-        ObservableList<DocumentBodyFx> result = FXCollections.observableArrayList();
+    public ObservableList<OrderBodyFx> getFxCollection(List<OrderBodyDto> collection) {
+        ObservableList<OrderBodyFx> result = FXCollections.observableArrayList();
         for (OrderBodyDto dto : collection) {
             result.add(getFxEntity(dto));
         }
@@ -56,9 +56,9 @@ public class OrderBodyHelper implements FxHelper<DocumentBodyFx,OrderBodyDto> {
     }
 
     @Override
-    public List<OrderBodyDto> getDtoCollection(Collection<DocumentBodyFx> collection) {
+    public List<OrderBodyDto> getDtoCollection(Collection<OrderBodyFx> collection) {
         List<OrderBodyDto> result = new ArrayList<>();
-        for (DocumentBodyFx dto : collection) {
+        for (OrderBodyFx dto : collection) {
             result.add(dto.getEntity());
         }
         return result;
