@@ -1,15 +1,15 @@
 package ru.metal.impl.facade;
 
 
-import ru.metal.api.order.OrderFacade;
-import ru.metal.api.order.dto.OrderBodyDto;
-import ru.metal.api.order.dto.OrderHeaderDto;
-import ru.metal.api.order.dto.UpdateBodyResult;
-import ru.metal.api.order.dto.UpdateOrderResult;
-import ru.metal.api.order.request.ObtainOrderRequest;
-import ru.metal.api.order.request.UpdateOrderRequest;
-import ru.metal.api.order.response.ObtainOrderResponse;
-import ru.metal.api.order.response.UpdateOrderResponse;
+import ru.metal.api.documents.order.OrderFacade;
+import ru.metal.api.documents.order.dto.OrderBodyDto;
+import ru.metal.api.documents.order.dto.OrderHeaderDto;
+import ru.metal.api.documents.order.dto.UpdateBodyResult;
+import ru.metal.api.documents.order.dto.UpdateOrderResult;
+import ru.metal.api.documents.order.request.ObtainOrderRequest;
+import ru.metal.api.documents.order.request.UpdateOrderRequest;
+import ru.metal.api.documents.order.response.ObtainOrderResponse;
+import ru.metal.api.documents.order.response.UpdateOrderResponse;
 import ru.metal.convert.mapper.Mapper;
 import ru.metal.impl.domain.persistent.contragents.Contragent;
 import ru.metal.impl.domain.persistent.contragents.Contragent_;
@@ -49,10 +49,6 @@ public class OrderFacadeImpl implements OrderFacade {
         CriteriaQuery<OrderHeader> cq = cb.createQuery(OrderHeader.class);
         Root<OrderHeader> root = cq.from(OrderHeader.class);
         List<Predicate> predicates = new ArrayList<>();
-        if (request.isActive()) {
-            Predicate predicate = cb.equal(root.get(OrderHeader_.active), true);
-            predicates.add(predicate);
-        }
         if (!request.getGuids().isEmpty()) {
             Predicate guidPredicate;
             if (request.getGuids().size() == 1) {

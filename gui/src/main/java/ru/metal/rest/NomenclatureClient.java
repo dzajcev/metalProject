@@ -24,7 +24,7 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     private final String pathOkei = basePath + "/nomenclature/okei";
 
     @Override
-    public ObtainTreeItemResponse<GroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) {
+    public ObtainTreeItemResponse<GroupFx> getGroupItems(ObtainTreeItemRequest obtainTreeItemRequest) {
         ObtainGroupReponse execute = executePost(pathGroup + "/get", obtainTreeItemRequest, ObtainGroupReponse.class);
         ObtainTreeItemResponse<GroupFx> response = new ObtainTreeItemResponse<>();
         response.setErrors(execute.getErrors());
@@ -33,7 +33,7 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     }
 
     @Override
-    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest) {
+    public UpdateTreeItemResponse updateGroupItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest) {
         UpdateTreeItemRequest<GroupDto> request = new UpdateTreeItemRequest<>();
         request.setDataList(GoodGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
         UpdateGoodGroupResponse execute = executePost(pathGroup + "/update", request, UpdateGoodGroupResponse.class);
@@ -44,7 +44,7 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     }
 
     @Override
-    public UpdateGoodGroupResponse deleteItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) {
+    public UpdateGoodGroupResponse deleteGroupItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) {
         return executePost(pathGroup + "/delete", deleteTreeItemRequest, UpdateGoodGroupResponse.class);
     }
 

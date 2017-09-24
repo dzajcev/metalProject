@@ -1,6 +1,7 @@
 package ru.metal.api.auth.dto;
 
 import ru.metal.security.ejb.dto.AbstractDto;
+import ru.metal.security.ejb.dto.User;
 
 import java.util.Date;
 

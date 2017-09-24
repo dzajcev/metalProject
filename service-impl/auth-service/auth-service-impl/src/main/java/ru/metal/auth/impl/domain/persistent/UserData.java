@@ -5,7 +5,9 @@ import ru.metal.security.ejb.dto.Role;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by User on 11.09.2017.
@@ -35,6 +37,18 @@ public class UserData extends BaseEntity {
 
     @Column(name = "TOKEN", nullable = false)
     private String token;
+
+    //кто делегирует
+    @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "DELEGATORS_USERS")
+    @Column(name = "USER_GUID", nullable = false)
+    private Set<String> donorRights;
+
+    //кому делегируем
+    @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "DELEGATE_USERS")
+    @Column(name = "USER_GUID", nullable = false)
+    private Set<String> consumersRights;
 
     @Column(name = "TO_CHANGE_PASSWORD")
     private boolean toChangePassword=false;
@@ -160,4 +174,34 @@ public class UserData extends BaseEntity {
         this.toChangePassword = toChangePassword;
     }
 
+    public Set<String> getConsumersRights() {
+        if (consumersRights ==null){
+            consumersRights =new HashSet<>();
+        }
+        return consumersRights;
+    }
+
+    public void setConsumersRights(Set<String> consumersRights) {
+        this.consumersRights = consumersRights;
+    }
+
+    public Set<String> getDonorRights() {
+        if (donorRights ==null){
+            donorRights =new HashSet<>();
+        }
+        return donorRights;
+    }
+
+    public void setDonorRights(Set<String> donorRights) {
+        this.donorRights = donorRights;
+    }
+
+    public String getShortName() {
+        StringBuilder stringBuilder = new StringBuilder(getSecondName()).append(" ");
+        stringBuilder.append(getFirstName().substring(0, 1)).append(". ");
+        if (getMiddleName() != null) {
+            stringBuilder.append(getMiddleName().substring(0, 1)).append(". ");
+        }
+        return stringBuilder.toString();
+    }
 }

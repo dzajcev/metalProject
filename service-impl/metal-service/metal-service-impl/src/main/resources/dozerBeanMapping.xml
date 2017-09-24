@@ -67,10 +67,10 @@
     </mapping>
     <mapping map-null="false">
         <class-a>ru.metal.impl.domain.persistent.order.OrderHeader</class-a>
-        <class-b>ru.metal.api.order.dto.OrderHeaderDto</class-b>
+        <class-b>ru.metal.api.documents.order.dto.OrderHeaderDto</class-b>
     </mapping>
     <mapping map-null="false">
         <class-a>ru.metal.impl.domain.persistent.order.OrderBody</class-a>
-        <class-b>ru.metal.api.order.dto.OrderBodyDto</class-b>
+        <class-b>ru.metal.api.documents.order.dto.OrderBodyDto</class-b>
     </mapping>
 </mappings>

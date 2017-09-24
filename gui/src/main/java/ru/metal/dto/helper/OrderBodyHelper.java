@@ -2,7 +2,7 @@ package ru.metal.dto.helper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.order.dto.OrderBodyDto;
+import ru.metal.api.documents.order.dto.OrderBodyDto;
 import ru.metal.dto.OrderBodyFx;
 
 import java.util.ArrayList;

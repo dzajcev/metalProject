@@ -103,6 +103,8 @@ public class ContragentFx extends FxEntity<ContragentDto> implements TableElemen
 
     private ObservableList<EmployeeFx> employees = FXCollections.observableArrayList();
 
+    private StringProperty userGuid = new SimpleStringProperty();
+
     @Override
     public String getName() {
         return name.get();
@@ -393,6 +395,18 @@ public class ContragentFx extends FxEntity<ContragentDto> implements TableElemen
         this.contragentTypes = contragentTypes;
     }
 
+    public String getUserGuid() {
+        return userGuid.get();
+    }
+
+    public StringProperty userGuidProperty() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid.set(userGuid);
+    }
+
     @Override
     public ContragentDto getEntity() {
         ContragentDto contragent = new ContragentDto();
@@ -434,6 +448,7 @@ public class ContragentFx extends FxEntity<ContragentDto> implements TableElemen
         if (getShipper() != null) {
             contragent.setShipper(getShipper().getEntity());
         }
+        contragent.setUserGuid(getUserGuid());
         return contragent;
     }
 

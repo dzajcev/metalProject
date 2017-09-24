@@ -6,16 +6,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import ru.common.api.dto.CellFormats;
 import ru.metal.api.auth.AuthorizationFacade;
-import ru.metal.api.auth.dto.User;
+import ru.metal.security.ejb.dto.User;
 import ru.metal.api.auth.request.ObtainUserRequest;
 import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.contragents.dto.ContragentDto;
 import ru.metal.api.contragents.dto.PersonType;
-import ru.metal.api.order.OrderFacade;
-import ru.metal.api.order.dto.OrderBodyDto;
-import ru.metal.api.order.dto.OrderHeaderDto;
-import ru.metal.api.order.request.ObtainOrderRequest;
-import ru.metal.api.order.response.ObtainOrderResponse;
+import ru.metal.api.documents.order.OrderFacade;
+import ru.metal.api.documents.order.dto.OrderBodyDto;
+import ru.metal.api.documents.order.dto.OrderHeaderDto;
+import ru.metal.api.documents.order.request.ObtainOrderRequest;
+import ru.metal.api.documents.order.response.ObtainOrderResponse;
 import ru.metal.api.report.OrderReport;
 import ru.metal.api.report.dto.order.OrderData;
 import ru.metal.api.report.request.OrderReportRequest;
@@ -40,7 +40,7 @@ import java.util.*;
 public class OrderReportImpl extends ReportGenerator implements OrderReport {
 
 
-    @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/orderFacade!ru.metal.api.order.OrderFacade")
+    @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/orderFacade!ru.metal.api.documents.order.OrderFacade")
     private OrderFacade orderFacade;
 
     @EJB(lookup = "ejb:auth-service-ear/auth-service-impl/authorizationFacade!ru.metal.api.auth.AuthorizationFacade")
@@ -87,8 +87,8 @@ public class OrderReportImpl extends ReportGenerator implements OrderReport {
             params.put("directorFIO", dto.getSource().getDirector() != null ? dto.getSource().getDirector().getShortName() : "");
             params.put("accountantFIO", dto.getSource().getAccountant() != null ? dto.getSource().getAccountant().getShortName() : "");
             ObtainUserRequest obtainUserRequest=new ObtainUserRequest();
-            obtainUserRequest.setGuid(dto.getUserGuid());
-            ObtainUserResponse obtainUserResponse = authorizationFacade.obtainUser(obtainUserRequest);
+            obtainUserRequest.setGuids(Collections.singletonList(dto.getUserGuid()));
+            ObtainUserResponse obtainUserResponse = authorizationFacade.obtainUsers(obtainUserRequest);
             if (!obtainUserResponse.getDataList().isEmpty()){
                 User user = obtainUserResponse.getDataList().get(0);
                 params.put("employeeFIO",user.getShortName());

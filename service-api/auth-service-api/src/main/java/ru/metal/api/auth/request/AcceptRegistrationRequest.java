@@ -4,10 +4,10 @@ import ru.common.api.dto.ValidationConstants;
 import ru.common.api.request.AbstractRequest;
 import ru.metal.security.ejb.dto.Privilege;
 import ru.metal.security.ejb.dto.Role;
+import ru.metal.security.ejb.security.DelegateUser;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +20,8 @@ public class AcceptRegistrationRequest extends AbstractRequest {
     private String registrationRequestGuid;
 
     private List<Role> roles;
+
+    private List<DelegateUser> consumerRights;
 
     private List<Privilege> privileges;
 
@@ -51,5 +53,16 @@ public class AcceptRegistrationRequest extends AbstractRequest {
 
     public void setRegistrationRequestGuid(String registrationRequestGuid) {
         this.registrationRequestGuid = registrationRequestGuid;
+    }
+
+    public List<DelegateUser> getConsumerRights() {
+        if (consumerRights ==null){
+            consumerRights =new ArrayList<>();
+        }
+        return consumerRights;
+    }
+
+    public void setConsumerRights(List<DelegateUser> delegateUsers) {
+        this.consumerRights = delegateUsers;
     }
 }

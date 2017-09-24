@@ -1,7 +1,7 @@
 package ru.metal.api.auth.request;
 
 import ru.common.api.request.AbstractRequest;
-import ru.metal.api.auth.dto.User;
+import ru.metal.security.ejb.dto.User;
 
 /**
  * Created by User on 11.09.2017.

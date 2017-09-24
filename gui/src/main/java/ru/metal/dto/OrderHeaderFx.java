@@ -3,7 +3,8 @@ package ru.metal.dto;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.order.dto.OrderHeaderDto;
+import ru.metal.api.documents.order.dto.OrderHeaderDto;
+import ru.metal.api.documents.order.dto.OrderStatus;
 import ru.metal.dto.annotations.ValidatableCollection;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.FxHelper;
@@ -29,6 +30,9 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
     private ObjectProperty<ContragentFx> source = new SimpleObjectProperty<>();
 
     @ValidatableField(nullable = false)
+    private ObjectProperty<OrderStatus> status = new SimpleObjectProperty<>();
+
+    @ValidatableField(nullable = false)
     private ObjectProperty<ContragentFx> recipient = new SimpleObjectProperty<>();
 
     @ValidatableField(nullable = false)
@@ -38,10 +42,8 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
 
     private StringProperty userGuid = new SimpleStringProperty();
 
-    private BooleanProperty active=new SimpleBooleanProperty(true);
-
     @ValidatableCollection(minSize = 1)
-    private ObservableList<OrderBodyFx> orderBody= FXCollections.observableArrayList();
+    private ObservableList<OrderBodyFx> orderBody = FXCollections.observableArrayList();
 
     public Date getCreateDate() {
         return createDate.get();
@@ -99,10 +101,10 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
 
     @Override
     public Date getDateDocument() {
-        if (dateOrder.getValue()!=null) {
+        if (dateOrder.getValue() != null) {
             Instant instantDateOrder = Instant.from(dateOrder.getValue().atStartOfDay(ZoneId.systemDefault()));
             return Date.from(instantDateOrder);
-        }else{
+        } else {
             return null;
         }
     }
@@ -113,7 +115,7 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
     }
 
     public void setDateDocument(Date dateOrder) {
-        if (dateOrder!=null) {
+        if (dateOrder != null) {
             this.dateOrder.set(dateOrder.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
     }
@@ -142,14 +144,16 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
         this.userGuid.set(userGuid);
     }
 
-    @Override
-    public boolean isActive() {
-        return active.get();
+    public OrderStatus getStatus() {
+        return status.get();
     }
 
-    @Override
-    public BooleanProperty activeProperty() {
-        return active;
+    public ObjectProperty<OrderStatus> statusProperty() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status.set(status);
     }
 
     @Override
@@ -164,9 +168,9 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
 
     @Override
     public double getSum() {
-        double result=0;
-        for (OrderBodyFx bodyFx:orderBody){
-            result+=(bodyFx.getPrice()*bodyFx.getCount());
+        double result = 0;
+        for (OrderBodyFx bodyFx : orderBody) {
+            result += (bodyFx.getPrice() * bodyFx.getCount());
         }
         return result;
     }
@@ -176,34 +180,30 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
         return new SimpleDoubleProperty(getSum());
     }
 
-    public void setActive(boolean active) {
-        this.active.set(active);
-    }
-
     @Override
     public OrderHeaderDto getEntity() {
-        OrderHeaderDto dto=new OrderHeaderDto();
+        OrderHeaderDto dto = new OrderHeaderDto();
         dto.setComment(getComment());
         dto.setCreateDate(getCreateDate());
         dto.setDateOrder(getDateDocument());
         dto.setNumber(getNumber());
-        if (getRecipient()!=null) {
+        if (getRecipient() != null) {
             dto.setRecipient(getRecipient().getEntity());
         }
-        if (getSource()!=null) {
+        if (getSource() != null) {
             dto.setSource(getSource().getEntity());
         }
         dto.setUserGuid(getUserGuid());
         dto.setGuid(getGuid());
         dto.setLastEditingDate(getLastEditingDate());
         dto.setTransportGuid(getTransportGuid());
-        dto.setActive(isActive());
+        dto.setStatus(getStatus());
         dto.setBody(OrderBodyHelper.getInstance().getDtoCollection(getOrderBody()));
         return dto;
     }
 
     @Override
-    public FxHelper<OrderHeaderFx,OrderHeaderDto> getHelper() {
+    public FxHelper<OrderHeaderFx, OrderHeaderDto> getHelper() {
         return OrderHeaderHelper.getInstance();
     }
 

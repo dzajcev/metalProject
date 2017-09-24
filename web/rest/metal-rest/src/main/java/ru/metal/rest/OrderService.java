@@ -1,10 +1,10 @@
 package ru.metal.rest;
 
-import ru.metal.api.order.OrderFacade;
-import ru.metal.api.order.request.ObtainOrderRequest;
-import ru.metal.api.order.request.UpdateOrderRequest;
-import ru.metal.api.order.response.ObtainOrderResponse;
-import ru.metal.api.order.response.UpdateOrderResponse;
+import ru.metal.api.documents.order.OrderFacade;
+import ru.metal.api.documents.order.request.ObtainOrderRequest;
+import ru.metal.api.documents.order.request.UpdateOrderRequest;
+import ru.metal.api.documents.order.response.ObtainOrderResponse;
+import ru.metal.api.documents.order.response.UpdateOrderResponse;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
 @TransactionAttribute(TransactionAttributeType.NEVER)
 public class OrderService {
 
-    @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/orderFacade!ru.metal.api.order.OrderFacade")
+    @EJB(lookup = "ejb:metal-service-ear/metal-service-impl/orderFacade!ru.metal.api.documents.order.OrderFacade")
     private OrderFacade orderFacade;
 
     @POST

@@ -6,11 +6,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.auth.dto.User;
+import ru.metal.security.ejb.dto.User;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.FxHelper;
 import ru.metal.security.ejb.dto.Privilege;
 import ru.metal.security.ejb.dto.Role;
+import ru.metal.security.ejb.security.DelegateUser;
+import ru.metal.security.ejb.security.DelegatingUser;
 
 /**
  * Created by User on 19.09.2017.
@@ -33,6 +35,12 @@ public class UserFx extends FxEntity<User> {
 
     @ValidatableField(nullable = false)
     private StringProperty token = new SimpleStringProperty();
+
+    //делегирующие юзеры
+    private ObservableList<DelegatingUser> donorRights =FXCollections.observableArrayList();
+
+    //кому делегирую права
+    private ObservableList<DelegateUser> consumersRights =FXCollections.observableArrayList();
 
     private BooleanProperty active = new SimpleBooleanProperty(true);
 
@@ -141,6 +149,22 @@ public class UserFx extends FxEntity<User> {
         this.privileges = privileges;
     }
 
+    public ObservableList<DelegatingUser> getDonorRights() {
+        return donorRights;
+    }
+
+    public void setDonorRights(ObservableList<DelegatingUser> donorRights) {
+        this.donorRights = donorRights;
+    }
+
+    public ObservableList<DelegateUser> getConsumersRights() {
+        return consumersRights;
+    }
+
+    public void setConsumersRights(ObservableList<DelegateUser> consumersRights) {
+        this.consumersRights = consumersRights;
+    }
+
     public String getShortName() {
         StringBuilder stringBuilder = new StringBuilder(getSecondName()).append(" ");
         stringBuilder.append(getFirstName().substring(0, 1)).append(". ");
@@ -166,12 +190,29 @@ public class UserFx extends FxEntity<User> {
         user.setRoles(roles);
         user.setPrivileges(privileges);
         user.setActive(isActive());
+        user.setConsumersRights(getConsumersRights());
+        user.setDonorRights(getDonorRights());
         return user;
     }
 
     @Override
     public FxHelper<FxEntity<User>, User> getHelper() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserFx)) return false;
+
+        UserFx userFx = (UserFx) o;
+
+        return getGuid() != null ? getGuid().equals(userFx.getGuid()) : userFx.getGuid() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getGuid() != null ? getGuid().hashCode() : 0;
     }
 }
 

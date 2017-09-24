@@ -1,9 +1,9 @@
 package ru.metal.rest;
 
-import ru.metal.api.order.request.ObtainOrderRequest;
-import ru.metal.api.order.request.UpdateOrderRequest;
-import ru.metal.api.order.response.ObtainOrderResponse;
-import ru.metal.api.order.response.UpdateOrderResponse;
+import ru.metal.api.documents.order.request.ObtainOrderRequest;
+import ru.metal.api.documents.order.request.UpdateOrderRequest;
+import ru.metal.api.documents.order.response.ObtainOrderResponse;
+import ru.metal.api.documents.order.response.UpdateOrderResponse;
 
 /**
  * Created by User on 08.08.2017.

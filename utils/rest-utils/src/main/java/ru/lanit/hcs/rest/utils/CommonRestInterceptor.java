@@ -81,12 +81,7 @@ public class CommonRestInterceptor implements ContainerRequestFilter, ReaderInte
                 return;
             }
             PermissionContextData p = new PermissionContextData();
-            p.setUserGuid(session.getUser().getGuid());
-            p.setSecondName(session.getUser().getSecondName());
-            p.setMiddleName(session.getUser().getMiddleName());
-            p.setFirstName(session.getUser().getFirstName());
-            p.setRoles(session.getUser().getRoles());
-            p.setPrivileges(session.getUser().getPrivileges());
+            p.setUser(session.getUser());
             KeyPair keyPair = authorizationFacade.getKeyPair(session.getUser().getGuid());
             try {
                 UserContextHolder.loadKeyPair(keyPair.getPrivateKey(), keyPair.getPublicKey());
@@ -150,8 +145,9 @@ public class CommonRestInterceptor implements ContainerRequestFilter, ReaderInte
             context.proceed();
             return;
         }
-        String value = mapper.writeValueAsString(entity);
+
         try {
+            String value = mapper.writeValueAsString(entity);
             CryptoPacket cryptoPacket = AsymmetricCipher.ecryptPacket(value, UserContextHolder.getPublicKey());
             context.setEntity(cryptoPacket);
             context.setType(CryptoPacket.class);
@@ -160,6 +156,8 @@ public class CommonRestInterceptor implements ContainerRequestFilter, ReaderInte
             context.setOutputStream(old);
         } catch (CryptoException e) {
             throw new IOException(e);
+        }catch (Exception e){
+            e.printStackTrace();
         }
         context.proceed();
     }

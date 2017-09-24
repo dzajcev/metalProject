@@ -17,6 +17,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -79,6 +81,22 @@ public class AuthorizationController {
 
     @FXML
     private void initialize() {
+        login.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode()== KeyCode.ENTER){
+                    login();
+                }
+            }
+        });
+        password.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode()== KeyCode.ENTER){
+                    login();
+                }
+            }
+        });
         FileChooser.ExtensionFilter key = new FileChooser.ExtensionFilter("Файл ключа", "*.key");
         fileChooser.getExtensionFilters().addAll(key);
         fileChooser.setSelectedExtensionFilter(key);
@@ -233,7 +251,7 @@ public class AuthorizationController {
                         public void handle(ActionEvent event) {
 
                             ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
-                            changePasswordRequest.setToken(authorizationResponse.getPermissionContextData().getToken());
+                            changePasswordRequest.setToken(authorizationResponse.getPermissionContextData().getUser().getToken());
                             changePasswordRequest.setNewToken(getToken(login.getText(), pass.getText()));
                             ChangePasswordResponse changePasswordResponse = authorizationClient.changePassword(changePasswordRequest);
                             if (changePasswordResponse.getErrors().isEmpty()){

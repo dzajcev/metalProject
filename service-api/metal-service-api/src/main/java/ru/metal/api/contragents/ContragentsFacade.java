@@ -16,6 +16,8 @@ public interface ContragentsFacade {
 
     ObtainContragentGroupReponse getGroups(ObtainContragentGroupRequest obtainTreeItemRequest);
 
+    ObtainContragentGroupReponse getFullGroupsByContragents(ObtainContragentGroupRequest obtainContragentGroupRequest);
+
     UpdateContragentGroupResponse updateGroups(UpdateTreeItemRequest<ContragentGroupDto> request);
 
     UpdateContragentGroupResponse deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request);

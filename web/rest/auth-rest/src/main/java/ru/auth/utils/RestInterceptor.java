@@ -75,7 +75,7 @@ public class RestInterceptor implements ContainerRequestFilter, WriterIntercepto
                         401, new Headers<>()));
 
             } else {
-                KeyPair keyPair = authorizationFacade.getKeyPair(authorization.getPermissionContextData().getUserGuid());
+                KeyPair keyPair = authorizationFacade.getKeyPair(authorization.getPermissionContextData().getUser().getGuid());
                 try {
                     UserContextHolder.loadKeyPair(keyPair.getPrivateKey(), keyPair.getPublicKey());
                 } catch (InvalidKeySpecException e) {

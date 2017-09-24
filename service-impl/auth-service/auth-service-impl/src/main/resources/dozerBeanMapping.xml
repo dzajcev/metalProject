@@ -21,20 +21,20 @@
 
     <mapping map-null="false">
         <class-a>ru.metal.auth.impl.domain.persistent.RegistrationRequestData</class-a>
-        <class-b>ru.metal.api.auth.dto.RegistrationData</class-b>
+        <class-b>ru.metal.security.ejb.dto.RegistrationData</class-b>
     </mapping>
 
     <mapping map-null="false">
         <class-a>ru.metal.auth.impl.domain.persistent.UserData</class-a>
-        <class-b>ru.metal.api.auth.dto.User</class-b>
-    </mapping>
-    <mapping map-null="false">
-        <class-a>ru.metal.auth.impl.domain.persistent.UserData</class-a>
-        <class-b>ru.metal.security.ejb.PermissionContextData</class-b>
-        <field>
-            <a>guid</a>
-            <b>userGuid</b>
-        </field>
+        <class-b>ru.metal.security.ejb.dto.User</class-b>
+        <field-exclude>
+            <a>consumersRights</a>
+            <b>consumersRights</b>
+        </field-exclude>
+        <field-exclude>
+            <a>donorRights</a>
+            <b>donorRights</b>
+        </field-exclude>
     </mapping>
     <mapping map-null="false">
         <class-a>ru.metal.auth.impl.domain.persistent.Session</class-a>

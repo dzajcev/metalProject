@@ -24,7 +24,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     private final String pathEmployee = basePath + "/contragents/employee";
 
     @Override
-    public ObtainTreeItemResponse<ContragentGroupFx> getItems(ObtainTreeItemRequest obtainTreeItemRequest) {
+    public ObtainTreeItemResponse<ContragentGroupFx> getGroupItems(ObtainTreeItemRequest obtainTreeItemRequest) {
         ObtainContragentGroupReponse execute = executePost(pathGroup + "/get", obtainTreeItemRequest, ObtainContragentGroupReponse.class);
         ObtainTreeItemResponse<ContragentGroupFx> response = new ObtainTreeItemResponse<ContragentGroupFx>();
         response.setErrors(execute.getErrors());
@@ -32,8 +32,16 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
         return response;
     }
 
+    public ObtainTreeItemResponse<ContragentGroupFx> getGroupFullItems(ObtainTreeItemRequest obtainTreeItemRequest) {
+        ObtainContragentGroupReponse execute = executePost(pathGroup + "/getFull", obtainTreeItemRequest, ObtainContragentGroupReponse.class);
+        ObtainTreeItemResponse<ContragentGroupFx> response = new ObtainTreeItemResponse<ContragentGroupFx>();
+        response.setErrors(execute.getErrors());
+        response.setDataList(ContragentGroupHelper.getInstance().getFxCollection(execute.getDataList()));
+        return response;
+    }
+
     @Override
-    public UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<ContragentGroupFx> updateTreeItemRequest) {
+    public UpdateTreeItemResponse updateGroupItems(UpdateTreeItemRequest<ContragentGroupFx> updateTreeItemRequest) {
         UpdateTreeItemRequest<ContragentGroupDto> request = new UpdateTreeItemRequest<>();
         request.setDataList(ContragentGroupHelper.getInstance().getDtoCollection(updateTreeItemRequest.getDataList()));
         UpdateContragentGroupResponse execute = executePost(pathGroup + "/update", request, UpdateContragentGroupResponse.class);
@@ -44,7 +52,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     }
 
     @Override
-    public UpdateTreeItemResponse deleteItem(DeleteTreeItemRequest<ContragentGroupFx> deleteTreeItemRequest) {
+    public UpdateTreeItemResponse deleteGroupItem(DeleteTreeItemRequest<ContragentGroupFx> deleteTreeItemRequest) {
         UpdateContragentGroupResponse execute = executePost(pathGroup + "/delete", deleteTreeItemRequest, UpdateContragentGroupResponse.class);
         return execute;
     }

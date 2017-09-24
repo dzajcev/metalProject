@@ -80,7 +80,7 @@ public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement> exte
         comboBox.setConverter(new StringConverter<E>() {
             @Override
             public String toString(E object) {
-                return object.getName();
+                return object.getTitle();
             }
 
             @Override
@@ -110,7 +110,7 @@ public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement> exte
                     if (item == null || empty) {
                         setText(null);
                     } else {
-                        setText(item.getName());
+                        setText(item.getTitle());
                     }
                 }
             };
@@ -126,7 +126,7 @@ public class ComboBoxCell<T extends AbstractDto, E extends ComboBoxElement> exte
         if (getItem() == null) {
             return "";
         } else {
-            return getItem().getName();
+            return getItem().getTitle();
         }
     }
 }

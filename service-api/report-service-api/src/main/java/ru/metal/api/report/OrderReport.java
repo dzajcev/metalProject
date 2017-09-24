@@ -1,6 +1,5 @@
 package ru.metal.api.report;
 
-import ru.metal.api.order.dto.OrderHeaderDto;
 import ru.metal.api.report.request.OrderReportRequest;
 import ru.metal.api.report.response.OrderReportResponse;
 

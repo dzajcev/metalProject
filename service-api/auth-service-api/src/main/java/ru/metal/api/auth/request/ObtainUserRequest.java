@@ -2,6 +2,9 @@ package ru.metal.api.auth.request;
 
 import ru.common.api.request.AbstractRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by User on 11.09.2017.
  */
@@ -12,7 +15,7 @@ public class ObtainUserRequest extends AbstractRequest {
 
     private boolean active;
 
-    private String guid;
+    private List<String> guids;
 
     public boolean isActive() {
         return active;
@@ -22,12 +25,15 @@ public class ObtainUserRequest extends AbstractRequest {
         this.active = active;
     }
 
-    public String getGuid() {
-        return guid;
+    public List<String> getGuids() {
+        if (guids == null) {
+            guids = new ArrayList<>();
+        }
+        return guids;
     }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setGuids(List<String> guids) {
+        this.guids = guids;
     }
 
     public String getLogin() {

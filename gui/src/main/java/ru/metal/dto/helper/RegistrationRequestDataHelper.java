@@ -2,9 +2,7 @@ package ru.metal.dto.helper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.auth.dto.RegistrationData;
-import ru.metal.api.nomenclature.dto.GoodDto;
-import ru.metal.dto.GoodFx;
+import ru.metal.security.ejb.dto.RegistrationData;
 import ru.metal.dto.RegistrationRequestDataFx;
 
 import java.util.ArrayList;

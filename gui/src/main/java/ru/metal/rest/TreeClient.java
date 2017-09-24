@@ -12,10 +12,10 @@ import ru.metal.dto.response.ObtainTreeItemResponse;
  */
 public interface TreeClient<T extends TreeviewElement> {
 
-    ObtainTreeItemResponse<T> getItems(ObtainTreeItemRequest obtainTreeItemRequest);
+    ObtainTreeItemResponse<T> getGroupItems(ObtainTreeItemRequest obtainTreeItemRequest);
 
-    UpdateTreeItemResponse updateItems(UpdateTreeItemRequest<T> updateTreeItemRequest);
+    UpdateTreeItemResponse updateGroupItems(UpdateTreeItemRequest<T> updateTreeItemRequest);
 
-    UpdateTreeItemResponse deleteItem(DeleteTreeItemRequest<T> deleteTreeItemRequest);
+    UpdateTreeItemResponse deleteGroupItem(DeleteTreeItemRequest<T> deleteTreeItemRequest);
 
 }

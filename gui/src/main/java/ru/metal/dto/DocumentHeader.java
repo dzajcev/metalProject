@@ -26,10 +26,6 @@ public interface DocumentHeader {
 
     ObjectProperty<LocalDate> dateDocumentProperty();
 
-    boolean isActive();
-
-    BooleanProperty activeProperty();
-
     int countRows();
 
     IntegerProperty countRowsProperty();

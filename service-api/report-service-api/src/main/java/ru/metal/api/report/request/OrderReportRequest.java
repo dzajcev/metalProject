@@ -1,7 +1,5 @@
 package ru.metal.api.report.request;
 
-import ru.metal.api.order.dto.OrderHeaderDto;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

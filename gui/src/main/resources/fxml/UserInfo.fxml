@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import ru.metal.gui.windows.SaveButton?>
-<AnchorPane prefHeight="323.0" prefWidth="713.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.auth.UserInfoController">
+<AnchorPane prefHeight="309.0" prefWidth="713.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.auth.UserInfoController">
     <children>
         <TabPane layoutX="23.0" layoutY="36.0" prefHeight="253.0" prefWidth="713.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <tabs>
@@ -48,7 +48,7 @@
                                 <ListView fx:id="availableRoles" layoutX="10.0" layoutY="30.0" prefHeight="180.0" prefWidth="130.0" />
                                 <Button layoutX="145.0" layoutY="87.0" mnemonicParsing="false" onAction="#roleToRight" text="&gt;" />
                                 <Button layoutX="145.0" layoutY="115.0" mnemonicParsing="false" onAction="#roleToLeft" text="&lt;" />
-                                <ListView fx:id="currentRoles" layoutX="175.0" layoutY="31.0" prefHeight="180.0" prefWidth="130.0" />
+                                <ListView fx:id="currentRoles" layoutX="175.0" layoutY="30.0" prefHeight="180.0" prefWidth="130.0" />
                                 <ListView fx:id="currentPrivilege" layoutX="569.0" layoutY="31.0" prefHeight="180.0" prefWidth="130.0" />
                                 <Button layoutX="539.0" layoutY="115.0" mnemonicParsing="false" onAction="#privilegeToLeft" text="&lt;" />
                                 <Button layoutX="539.0" layoutY="87.0" mnemonicParsing="false" onAction="#privilegeToRight" text="&gt;" />
@@ -58,6 +58,21 @@
                         </AnchorPane>
                     </content>
                 </Tab>
+            <Tab text="Делегирование">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="allUsers" layoutX="10.0" layoutY="30.0" prefHeight="180.0" prefWidth="130.0" />
+                        <Button layoutX="145.0" layoutY="115.0" mnemonicParsing="false" onAction="#delegateToLeft" text="&lt;" />
+                        <Button layoutX="145.0" layoutY="87.0" mnemonicParsing="false" onAction="#delegateToRight" text="&gt;" />
+                        <ListView fx:id="currentUsers" layoutX="175.0" layoutY="30.0" prefHeight="180.0" prefWidth="130.0" />
+                        <Label layoutX="38.0" layoutY="10.0" text="Делегировать полномочия пользователям:" />
+                        <ListView fx:id="recieved" layoutX="350.0" layoutY="30.0" prefHeight="180.0" prefWidth="234.0" />
+                        <Label layoutX="350.0" layoutY="10.0" text="Полномочия получены от пользователей:" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
             </tabs>
         </TabPane>
         <SaveButton fx:id="save" layoutX="632.0" layoutY="278.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" />

@@ -16,7 +16,7 @@ public enum DocumentType implements ComboBoxElement{
         this.title = title;
     }
 
-    public String getName() {
+    public String getTitle() {
         return title;
     }
 

@@ -91,6 +91,9 @@ public class Contragent extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Document> documents;
 
+    @Column(name = "USER_GUID")
+    private String userGuid;
+
     public void setGroup(ContragentGroup group) {
         this.group = group;
     }
@@ -281,5 +284,13 @@ public class Contragent extends BaseEntity {
 
     public void setContragentTypes(List<ContragentType> contragentTypes) {
         this.contragentTypes = contragentTypes;
+    }
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
     }
 }

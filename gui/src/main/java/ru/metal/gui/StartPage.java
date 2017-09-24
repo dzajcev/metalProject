@@ -16,8 +16,12 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
-import ru.metal.api.order.dto.OrderHeaderDto;
-import ru.metal.gui.controllers.auth.RegistrationRequestsController;
+import ru.metal.api.documents.DocumentStatus;
+import ru.metal.api.documents.order.dto.OrderHeaderDto;
+import ru.metal.api.documents.order.dto.OrderStatus;
+import ru.metal.dto.OrderHeaderFx;
+import ru.metal.gui.controllers.documents.DocumentJournalController;
+import ru.metal.gui.controllers.documents.order.OrderDocumentSelector;
 import ru.metal.gui.utils.SecurityChecker;
 import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.exceptions.ExceptionShower;
@@ -25,7 +29,7 @@ import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.controllers.auth.AuthorizationController;
 import ru.metal.gui.controllers.contragents.ContragentsForm;
 import ru.metal.gui.controllers.nomenclature.NomenclatureForm;
-import ru.metal.gui.controllers.order.OrderController;
+import ru.metal.gui.controllers.documents.order.OrderController;
 import ru.metal.gui.windows.MainFrame;
 import ru.metal.gui.windows.Window;
 import ru.metal.security.ejb.dto.Role;
@@ -80,7 +84,7 @@ public class StartPage extends Application {
 
     public static void addWindow(Window window) {
         Window selectedWindow = getSelectedWindow();
-        mainFrame.getWindows().add(window);
+        mainFrame.getWindows().add(mainFrame.getWindows().isEmpty() ? 0 : mainFrame.getWindows().size() - 1, window);
         if (selectedWindow == null) {
             window.setLayoutX(100);
             window.setLayoutY(100);
@@ -144,10 +148,6 @@ public class StartPage extends Application {
         return null;
     }
 
-    public static MainFrame getMainFrame() {
-        return mainFrame;
-    }
-
     public static Window openContent(Node form, AbstractController controller, Stage primaryStage) {
         if (controller != null) {
             controller.setPrimaryStage(primaryStage);
@@ -181,7 +181,7 @@ public class StartPage extends Application {
 
     private void authorizationAccept(Stage primaryStage) {
         primaryStage.setResizable(true);
-        primaryStage.setTitle("Управление (" + UserContextHolder.getPermissionContextDataThreadLocal().getShortName() + ")");
+        primaryStage.setTitle("Управление (" + UserContextHolder.getPermissionContextDataThreadLocal().getUser().getShortName() + ")");
         Menu menuFile = new Menu("Файл");
         Menu create = new Menu("Создать");
         MenuItem createOrder = new MenuItem("Счет на оплату");
@@ -291,7 +291,7 @@ public class StartPage extends Application {
         });
         menuDictionaries.getItems().addAll(nomenclature, contragents);
 
-        if (SecurityChecker.checkRole(Role.ADMIN)) {
+        if (SecurityChecker.checkRoles(Role.ADMIN)) {
             if (!menuDictionaries.getItems().isEmpty()) {
                 menuDictionaries.getItems().add(new SeparatorMenuItem());
             }
@@ -329,8 +329,30 @@ public class StartPage extends Application {
             });
             menuDictionaries.getItems().addAll(registrationRequestsMenuItem, usersMenuItem);
         }
+        Menu menuJournals = new Menu("Журналы");
+        MenuItem orderJournal = new MenuItem("Журнал счетов");
+        orderJournal.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Window<DocumentJournalController<OrderHeaderFx, OrderStatus>, Node> window = openContent("/fxml/DocumentJournal.fxml", primaryStage);
+
+                if (window != null) {
+                    DocumentJournalController<OrderHeaderFx, OrderStatus> controller = window.getController();
+
+                    controller.setDocumentSelector(new OrderDocumentSelector());
+                    window.setTitle("Журнал счетов");
+                    window.setClosable(true);
+                    window.setMinimizable(true);
+                    window.setMaximizable(true);
+                    addWindow(window);
+                }
+
+            }
+        });
+        menuJournals.getItems().addAll(orderJournal);
         mainFrame.addMenuItem(menuFile);
         mainFrame.addMenuItem(menuDictionaries);
+        mainFrame.addMenuItem(menuJournals);
         final Scene scene = new Scene(mainFrame);
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override

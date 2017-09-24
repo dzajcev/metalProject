@@ -10,18 +10,23 @@ import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.apache.commons.codec.binary.Hex;
 import ru.common.api.response.AbstractResponse;
-import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
+import ru.metal.api.auth.request.ObtainUserRequest;
 import ru.metal.api.auth.request.UpdateUserRequest;
 import ru.metal.api.auth.response.AcceptRegistrationResponse;
+import ru.metal.api.auth.response.ObtainUserResponse;
 import ru.metal.api.auth.response.UpdateUserResponse;
 import ru.metal.dto.RegistrationRequestDataFx;
 import ru.metal.dto.UserFx;
+import ru.metal.dto.helper.UserHelper;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.SaveButton;
 import ru.metal.rest.AdminClient;
 import ru.metal.security.ejb.dto.Privilege;
 import ru.metal.security.ejb.dto.Role;
+import ru.metal.security.ejb.dto.User;
+import ru.metal.security.ejb.security.DelegateUser;
+import ru.metal.security.ejb.security.DelegatingUser;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -78,6 +83,14 @@ public class UserInfoController extends AbstractController {
     @FXML
     private ListView<Privilege> currentPrivilege;
 
+    @FXML
+    private ListView<DelegateUser> allUsers;
+
+    @FXML
+    private ListView<DelegateUser> currentUsers;
+
+    @FXML
+    private ListView<DelegatingUser> recieved;
 
     private RegistrationRequestDataFx request;
 
@@ -85,7 +98,50 @@ public class UserInfoController extends AbstractController {
 
     private BooleanProperty saved = new SimpleBooleanProperty(false);
 
+    Callback<ListView<DelegateUser>, ListCell<DelegateUser>> userCallback = new Callback<ListView<DelegateUser>, ListCell<DelegateUser>>() {
 
+        @Override
+        public ListCell<DelegateUser> call(ListView<DelegateUser> p) {
+
+            ListCell<DelegateUser> cell = new ListCell<DelegateUser>() {
+
+                @Override
+                protected void updateItem(DelegateUser t, boolean bln) {
+                    super.updateItem(t, bln);
+                    if (t != null) {
+                        setText(t.getUserName());
+                    } else {
+                        setText(null);
+                    }
+                }
+
+            };
+
+            return cell;
+        }
+    };
+    Callback<ListView<DelegatingUser>, ListCell<DelegatingUser>> recieveDelegateCallback = new Callback<ListView<DelegatingUser>, ListCell<DelegatingUser>>() {
+
+        @Override
+        public ListCell<DelegatingUser> call(ListView<DelegatingUser> p) {
+
+            ListCell<DelegatingUser> cell = new ListCell<DelegatingUser>() {
+
+                @Override
+                protected void updateItem(DelegatingUser t, boolean bln) {
+                    super.updateItem(t, bln);
+                    if (t != null) {
+                        setText(t.getUserName());
+                    } else {
+                        setText(null);
+                    }
+                }
+
+            };
+
+            return cell;
+        }
+    };
     Callback<ListView<Role>, ListCell<Role>> roleCallback = new Callback<ListView<Role>, ListCell<Role>>() {
 
         @Override
@@ -159,6 +215,7 @@ public class UserInfoController extends AbstractController {
             acceptRegistrationRequest.setRegistrationRequestGuid(request.getGuid());
             acceptRegistrationRequest.setPrivileges(currentPrivilege.getItems());
             acceptRegistrationRequest.setRoles(currentRoles.getItems());
+            acceptRegistrationRequest.setConsumerRights(currentUsers.getItems());
             AcceptRegistrationResponse acceptRegistrationResponse = adminClient.acceptRegistration(acceptRegistrationRequest);
             return acceptRegistrationResponse;
         } else if (user != null) {
@@ -174,6 +231,8 @@ public class UserInfoController extends AbstractController {
             user.setSecondName(secondName.getText());
             user.setEmail(email.getText());
             user.setActive(active.isSelected());
+            user.setDonorRights(recieved.getItems());
+            user.setConsumersRights(currentUsers.getItems());
             updateUserRequest.setToChangePassword(setPwd.isSelected());
             if (setPwd.isSelected()) {
 
@@ -210,21 +269,31 @@ public class UserInfoController extends AbstractController {
         currentRoles.setCellFactory(roleCallback);
         availablePrivilege.setCellFactory(privilegeCallback);
         currentPrivilege.setCellFactory(privilegeCallback);
+        allUsers.setCellFactory(userCallback);
+        currentUsers.setCellFactory(userCallback);
+        recieved.setCellFactory(recieveDelegateCallback);
     }
 
     public void setUser(UserFx userFx) {
         this.user = userFx;
-        login.setText(this.user.getLogin());
-        firstName.setText(this.user.getFirstName());
-        middleName.setText(this.user.getMiddleName());
-        secondName.setText(this.user.getSecondName());
-        email.setText(this.user.getEmail());
-        active.setSelected(user.isActive());
+
+        ObtainUserRequest obtainUserRequest =new ObtainUserRequest();
+        obtainUserRequest.getGuids().add(userFx.getGuid());
+        User userDto = adminClient.getUsers(obtainUserRequest).getDataList().get(0);
+        login.setText(userDto.getLogin());
+        firstName.setText(userDto.getFirstName());
+        middleName.setText(userDto.getMiddleName());
+        secondName.setText(userDto.getSecondName());
+        email.setText(userDto.getEmail());
+        active.setSelected(userDto.isActive());
         ObservableList<Role> availableRolesList = FXCollections.observableArrayList();
         ObservableList<Role> currentRolesList = FXCollections.observableArrayList();
 
         ObservableList<Privilege> availablePrivilegeList = FXCollections.observableArrayList();
         ObservableList<Privilege> currentPrivilegeList = FXCollections.observableArrayList();
+
+        ObservableList<DelegateUser> allUsersList = FXCollections.observableArrayList();
+        ObservableList<DelegateUser> currentUsersList = FXCollections.observableArrayList();
 
         for (Role role : Role.values()) {
             if (userFx.getRoles().contains(role)) {
@@ -240,21 +309,76 @@ public class UserInfoController extends AbstractController {
                 availablePrivilegeList.add(privilege);
             }
         }
+
+        ObtainUserRequest obtainUserRequestAll = new ObtainUserRequest();
+        obtainUserRequestAll.setActive(true);
+        ObtainUserResponse users = adminClient.getUsers(obtainUserRequestAll);
+        ObservableList<UserFx> userCollection = UserHelper.getInstance().getFxCollection(users.getDataList());
+
+        currentUsersList.addAll(userDto.getConsumersRights());
+        for (UserFx currentUser : userCollection) {
+            if (!currentUser.getGuid().equals(userFx.getGuid())) {
+                boolean isFind = false;
+                for (DelegateUser user : userDto.getConsumersRights()) {
+                    if (user.getUserGuid().equals(currentUser.getGuid())) {
+                        isFind = true;
+                        break;
+                    }
+                }
+                if (!isFind) {
+                    DelegateUser delegatingUser = new DelegateUser();
+                    delegatingUser.setUserGuid(currentUser.getGuid());
+                    delegatingUser.setUserName(currentUser.getShortName());
+                    allUsersList.add(delegatingUser);
+                }
+            }
+        }
+        recieved.setItems(FXCollections.observableArrayList(userDto.getDonorRights()));
         availableRoles.setItems(availableRolesList);
-        availablePrivilege.setItems(availablePrivilegeList);
         currentRoles.setItems(currentRolesList);
+
+        availablePrivilege.setItems(availablePrivilegeList);
         currentPrivilege.setItems(currentPrivilegeList);
+
+        allUsers.setItems(allUsersList);
+        currentUsers.setItems(currentUsersList);
+
         availableRoles.getItems().sort(new Comparator<Role>() {
             @Override
             public int compare(Role o1, Role o2) {
                 return o1.getTitle().compareTo(o2.getTitle());
             }
         });
-        availablePrivilege.setItems(FXCollections.observableArrayList(Privilege.values()));
+        currentRoles.getItems().sort(new Comparator<Role>() {
+            @Override
+            public int compare(Role o1, Role o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+
         availablePrivilege.getItems().sort(new Comparator<Privilege>() {
             @Override
             public int compare(Privilege o1, Privilege o2) {
                 return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+        currentPrivilege.getItems().sort(new Comparator<Privilege>() {
+            @Override
+            public int compare(Privilege o1, Privilege o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+
+        allUsers.getItems().sort(new Comparator<DelegateUser>() {
+            @Override
+            public int compare(DelegateUser o1, DelegateUser o2) {
+                return o1.getUserName().compareTo(o2.getUserName());
+            }
+        });
+        currentUsers.getItems().sort(new Comparator<DelegateUser>() {
+            @Override
+            public int compare(DelegateUser o1, DelegateUser o2) {
+                return o1.getUserName().compareTo(o2.getUserName());
             }
         });
         registerControls();
@@ -278,6 +402,16 @@ public class UserInfoController extends AbstractController {
         middleName.setText(request.getMiddleName());
         secondName.setText(request.getSecondName());
         email.setText(request.getEmail());
+
+        ObtainUserRequest obtainUserRequest = new ObtainUserRequest();
+        obtainUserRequest.setActive(true);
+        ObtainUserResponse users = adminClient.getUsers(obtainUserRequest);
+        for (User user : users.getDataList()) {
+            DelegateUser delegateUser = new DelegateUser();
+            delegateUser.setUserGuid(user.getGuid());
+            delegateUser.setUserName(user.getShortName());
+            allUsers.getItems().add(delegateUser);
+        }
 
         availableRoles.setItems(FXCollections.observableArrayList(Role.values()));
         availableRoles.getItems().sort(new Comparator<Role>() {
@@ -322,6 +456,26 @@ public class UserInfoController extends AbstractController {
         }
     }
 
+    @FXML
+    private void delegateToRight() {
+        if (allUsers.getSelectionModel().getSelectedItem() != null) {
+            DelegateUser selectedItem = allUsers.getSelectionModel().getSelectedItem();
+            allUsers.getSelectionModel().clearSelection();
+            allUsers.getItems().remove(selectedItem);
+            currentUsers.getItems().add(selectedItem);
+        }
+    }
+
+    @FXML
+    private void delegateToLeft() {
+        if (currentUsers.getSelectionModel().getSelectedItem() != null) {
+            DelegateUser selectedItem = currentUsers.getSelectionModel().getSelectedItem();
+
+            currentUsers.getSelectionModel().clearSelection();
+            currentUsers.getItems().remove(selectedItem);
+            allUsers.getItems().add(selectedItem);
+        }
+    }
 
     @FXML
     private void roleToRight() {

@@ -2,9 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import ru.metal.gui.controllers.order.OrderBodyTable?>
+<?import ru.metal.gui.controllers.documents.order.OrderBodyTable?>
 <?import ru.metal.gui.windows.SaveMenuItem?>
-<AnchorPane id="order" prefHeight="570.0" prefWidth="843.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.order.OrderController">
+<AnchorPane id="order" prefHeight="570.0" prefWidth="843.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.documents.order.OrderController">
    <children>
       <AnchorPane layoutX="14.0" layoutY="34.0" prefHeight="141.0" prefWidth="455.0" style="-fx-border-width: 1; -fx-border-color: grey; -fx-border-radius: 5;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="35.0">
          <children>

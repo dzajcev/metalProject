@@ -73,12 +73,12 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
     }
 
     public void setContent(E content) {
-        this.content = content;
+        setContent(content, null);
     }
 
     public void setContent(E node, T controller) {
-        this.content=node;
-        this.controller=controller;
+        this.content = node;
+        this.controller = controller;
         AnchorPane.setTopAnchor(node, 0.0);
         AnchorPane.setBottomAnchor(node, 0.0);
         AnchorPane.setLeftAnchor(node, 0.0);
@@ -115,9 +115,10 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
 
     }
 
-    public T getController(){
+    public T getController() {
         return controller;
     }
+
     private void init() {
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -428,7 +429,7 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
         node.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                boundsInLocal = mainFrame.getContentPane().getBoundsInLocal();
+                boundsInLocal = getParent().getBoundsInLocal();
                 initX = event.getX();
                 initY = event.getY() + 30;
                 event.consume();

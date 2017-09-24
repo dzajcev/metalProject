@@ -37,7 +37,12 @@ public class ContragentsService {
         ObtainContragentGroupReponse groups = contragentsFacade.getGroups(obtainTreeItemRequest);
         return Response.ok(groups).build();
     }
-
+    @POST
+    @Path("/groups/getFull")
+    public Response getGroupsFull(ObtainContragentGroupRequest obtainTreeItemRequest) throws Exception {
+        ObtainContragentGroupReponse groups = contragentsFacade.getFullGroupsByContragents(obtainTreeItemRequest);
+        return Response.ok(groups).build();
+    }
     @POST
     @Path("/groups/update")
     public Response updateGroups(UpdateTreeItemRequest<ContragentGroupDto> request) throws Exception {

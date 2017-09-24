@@ -19,6 +19,8 @@ public class ObtainContragentRequest extends ObtainAbstractRequest {
 
     private List<ContragentType> contragentTypes = new ArrayList<>();
 
+    private List<String> userGuids;
+
     public boolean getActive() {
         return active;
     }
@@ -52,5 +54,16 @@ public class ObtainContragentRequest extends ObtainAbstractRequest {
 
     public void setContragentTypes(List<ContragentType> contragentTypes) {
         this.contragentTypes = contragentTypes;
+    }
+
+    public List<String> getUserGuids() {
+        if (userGuids == null) {
+            userGuids = new ArrayList<>();
+        }
+        return userGuids;
+    }
+
+    public void setUserGuids(List<String> userGuids) {
+        this.userGuids = userGuids;
     }
 }

@@ -9,7 +9,9 @@ import ru.metal.security.ejb.security.checker.SecurityChecker;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by vpredtechenskaya on 10/22/2015.
@@ -18,7 +20,7 @@ public class SecurityUtils {
 
     public static String getUserGUID() {
         final PermissionContextData contextData = getContextData();
-        return contextData.getUserGuid();
+        return contextData.getUser().getGuid();
     }
 
     public static boolean isSystemUser() {
@@ -28,13 +30,19 @@ public class SecurityUtils {
 
 
     public static boolean checkPrivileges(final Privilege... expectedPrivileges) {
-        if (expectedPrivileges.length==0){
+        if (expectedPrivileges.length == 0) {
             return true;
         }
         final PermissionContextData contextData = getContextData();
-        if (contextData.getPrivileges() != null) {
+
+        List<Privilege> privileges = new ArrayList<>();
+        privileges.addAll(Arrays.asList(expectedPrivileges));
+        for (DelegatingUser delegatingUser : contextData.getUser().getDonorRights()) {
+            privileges.addAll(delegatingUser.getPrivileges());
+        }
+        if (contextData.getUser().getPrivileges() != null) {
             for (final Privilege privilege : expectedPrivileges) {
-                if (!contextData.getPrivileges().contains(privilege)) {
+                if (!privileges.contains(privilege)) {
                     return false;
                 }
             }
@@ -44,19 +52,35 @@ public class SecurityUtils {
     }
 
     public static boolean checkUserRoles(final Role... expectedRoles) {
-        if (expectedRoles.length==0){
+        if (expectedRoles.length == 0) {
             return true;
         }
         final PermissionContextData contextData = getContextData();
-        if (contextData.getRoles() != null) {
+        List<Role> roles = new ArrayList<>();
+        roles.addAll(Arrays.asList(expectedRoles));
+        for (DelegatingUser delegatingUser : contextData.getUser().getDonorRights()) {
+            roles.addAll(delegatingUser.getRoles());
+        }
+        if (contextData.getUser().getRoles() != null) {
             for (final Role role : expectedRoles) {
-                if (!contextData.getRoles().contains(role)) {
+                if (!contextData.getUser().getRoles().contains(role)) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+
+    public static List<String> getAllUsersGuids() {
+        PermissionContextData contextData = getContextData();
+        List<String> result = new ArrayList<>();
+        result.add(contextData.getUser().getGuid());
+        for (DelegatingUser delegatingUser : contextData.getUser().getDonorRights()) {
+            result.add(delegatingUser.getUserGuid());
+        }
+        return result;
     }
 
     private static PermissionContextData getContextData() {

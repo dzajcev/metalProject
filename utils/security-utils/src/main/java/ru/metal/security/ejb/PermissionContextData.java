@@ -1,8 +1,8 @@
 package ru.metal.security.ejb;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import ru.metal.security.ejb.dto.Privilege;
-import ru.metal.security.ejb.dto.Role;
+import ru.metal.security.ejb.dto.User;
+import ru.metal.security.ejb.security.DelegatingUser;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,72 +13,20 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PermissionContextData implements Serializable {
-    private String userGuid;
-
-    private String secondName;
-
-    private String middleName;
-
-    private String firstName;
-
-    private List<Role> roles;
-
-    private List<Privilege> privileges;
+    private User user;
 
     private String sessionGuid;
+
+    private boolean systemUser;
 
     public String getSessionGuid() {
         return sessionGuid;
     }
 
-    private String token;
-
-    private boolean systemUser;
-
     private boolean toChangePassword;
 
     public void setSessionGuid(String sessionGuid) {
         this.sessionGuid = sessionGuid;
-    }
-
-    public String getUserGuid() {
-        return userGuid;
-    }
-
-    public void setUserGuid(String userGuid) {
-        this.userGuid = userGuid;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public boolean isSystemUser() {
@@ -89,35 +37,8 @@ public class PermissionContextData implements Serializable {
         this.systemUser = systemUser;
     }
 
-
     public boolean isToChangePassword() {
         return toChangePassword;
-    }
-
-    public void setToChangePassword(boolean toChangePassword) {
-        this.toChangePassword = toChangePassword;
-    }
-
-    public List<Role> getRoles() {
-        if (roles == null) {
-            roles = new ArrayList<>();
-        }
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public List<Privilege> getPrivileges() {
-        if (privileges == null) {
-            privileges = new ArrayList<>();
-        }
-        return privileges;
-    }
-
-    public void setPrivileges(List<Privilege> privileges) {
-        this.privileges = privileges;
     }
 
     public byte[] serialize() {
@@ -141,12 +62,11 @@ public class PermissionContextData implements Serializable {
         }
     }
 
-    public String getShortName() {
-        StringBuilder stringBuilder = new StringBuilder(secondName).append(" ");
-        stringBuilder.append(firstName.substring(0, 1)).append(". ");
-        if (middleName != null) {
-            stringBuilder.append(middleName.substring(0, 1)).append(". ");
-        }
-        return stringBuilder.toString();
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

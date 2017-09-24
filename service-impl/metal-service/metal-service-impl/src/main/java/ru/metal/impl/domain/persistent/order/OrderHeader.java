@@ -1,14 +1,12 @@
 package ru.metal.impl.domain.persistent.order;
 
+import ru.metal.api.documents.order.dto.OrderStatus;
 import ru.metal.impl.domain.persistent.BaseEntity;
 import ru.metal.impl.domain.persistent.contragents.Contragent;
-import ru.metal.impl.domain.persistent.contragents.Document;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by User on 31.08.2017.
@@ -38,11 +36,12 @@ public class OrderHeader extends BaseEntity {
     @Column(name = "COMMENT")
     private String comment;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     @Column(name = "USER_GUID")
     private String userGuid;
-
-    @Column(name = "ACTIVE")
-    private boolean active;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderBody> body;
@@ -120,18 +119,18 @@ public class OrderHeader extends BaseEntity {
         this.userGuid = userGuid;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
     @PrePersist
     protected void prePersist() {
         super.prePersist();
         createDate = new Date();
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public List<OrderBody> getBody() {

@@ -59,7 +59,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
     public void setRequest(ObtainTreeItemRequest obtainTreeItemRequest) {
         this.obtainTreeItemRequest = obtainTreeItemRequest;
         this.obtainTreeItemRequest.setActive(true);
-        ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
+        ObtainTreeItemResponse<T> items = treeClient.getGroupItems(obtainTreeItemRequest);
         fillTree(treeView.getRoot(), items.getDataList());
 
     }
@@ -91,7 +91,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                     onlyActive = false;
                 }
                 treeView.getRoot().getChildren().clear();
-                ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
+                ObtainTreeItemResponse<T> items = treeClient.getGroupItems(obtainTreeItemRequest);
                 fillTree(treeView.getRoot(), items.getDataList());
 
 
@@ -183,13 +183,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
         rootItem.setValue((T) rootNode);
         rootItem.setExpanded(true);
         treeView.setRoot(rootItem);
-        //     obtainTreeItemRequest.setActive(true);
-//        try {
-//            ObtainTreeItemResponse<T> items = treeClient.getItems(obtainTreeItemRequest);
-//            fillTree(rootItem, items.getDataList());
-//        } catch (ServerErrorException e) {
-//            e.printStackTrace();
-//        }
+
         treeView.setCellFactory(new Callback<TreeView<T>, TreeCell<T>>() {
             @Override
             public TreeCell<T> call(TreeView<T> param) {
@@ -251,7 +245,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                             UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
                             updateTreeItemRequest.getDataList().add(itemToMove.getValue());
 
-                            treeClient.updateItems(updateTreeItemRequest);
+                            treeClient.updateGroupItems(updateTreeItemRequest);
 
                             newParent.getChildren().sort(new Comparator<TreeItem<T>>() {
                                 @Override
@@ -450,7 +444,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         getTreeView().getSelectionModel().select(addedItem);
                         UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
                         updateTreeItemRequest.getDataList().add(addedElement);
-                        UpdateTreeItemResponse updateTreeItemResponse = treeClient.updateItems(updateTreeItemRequest);
+                        UpdateTreeItemResponse updateTreeItemResponse = treeClient.updateGroupItems(updateTreeItemRequest);
                         addedElement.setGuid(updateTreeItemRequest.getDataList().get(0).getGuid());
 
                     } catch (InstantiationException e) {
@@ -484,7 +478,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         DeleteTreeItemRequest<T> treeItemRequest = new DeleteTreeItemRequest<T>();
                         treeItemRequest.setGuids(groupGuids);
                         StringBuilder errorText = new StringBuilder();
-                        UpdateTreeItemResponse<UpdateResult> response = treeClient.deleteItem(treeItemRequest);
+                        UpdateTreeItemResponse<UpdateResult> response = treeClient.deleteGroupItem(treeItemRequest);
                         for (UpdateResult updateResult : response.getImportResults()) {
                             Iterator<TreeItem<T>> itemIterator = allChildren.iterator();
                             while ((itemIterator.hasNext())) {
@@ -541,7 +535,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
 
                         request.setDataList(requestList);
 
-                        treeClient.updateItems(request);
+                        treeClient.updateGroupItems(request);
 
                     }
                     if (toUpdate) {
@@ -674,7 +668,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
             UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
             updateTreeItemRequest.getDataList().add(item);
 
-            treeClient.updateItems(updateTreeItemRequest);
+            treeClient.updateGroupItems(updateTreeItemRequest);
 
         }
 

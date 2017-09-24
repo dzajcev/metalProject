@@ -10,7 +10,8 @@ import ru.metal.api.auth.response.*;
  */
 public interface AuthorizationFacade {
 
-    ObtainUserResponse obtainUser(ObtainUserRequest obtainUserRequest);
+
+    ObtainUserResponse obtainUsers(ObtainUserRequest obtainUserRequest);
 
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 

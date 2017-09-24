@@ -62,6 +62,7 @@ public class MainFrame extends VBox {
                                     lock.set(newValue);
                                 }
                             });
+                            List<Node> d=contentPane.getChildren();
                             if (addedNode.isModal()) {
                                 lock.setValue(true);
                                 AnchorPane modalPane = new AnchorPane(addedNode);
@@ -70,9 +71,11 @@ public class MainFrame extends VBox {
                                 AnchorPane.setBottomAnchor(modalPane, 0.0);
                                 AnchorPane.setTopAnchor(modalPane, 0.0);
                                 modalPane.setStyle("-fx-background-color: transparent");
-                                contentPane.getChildren().add(modalPane);
+                                modalPane.toFront();
+                                contentPane.getChildren().add(contentPane.getChildren().isEmpty() ? 0 : contentPane.getChildren().size() - 1, modalPane);
                             } else {
                                 contentPane.getChildren().add(addedNode);
+                                addedNode.toFront();
                             }
                             MenuItem menuItem = new MenuItem(addedNode.getTitle());
                             menuItem.setOnAction(new EventHandler<ActionEvent>() {

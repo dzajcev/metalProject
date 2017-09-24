@@ -2,9 +2,7 @@ package ru.metal.dto.helper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.auth.dto.RegistrationData;
-import ru.metal.api.auth.dto.User;
-import ru.metal.dto.RegistrationRequestDataFx;
+import ru.metal.security.ejb.dto.User;
 import ru.metal.dto.UserFx;
 
 import java.util.ArrayList;
@@ -51,6 +49,8 @@ public class UserHelper implements FxHelper<UserFx,User> {
         dataFx.setActive(dto.isActive());
         dataFx.setRoles(FXCollections.observableArrayList(dto.getRoles()));
         dataFx.setPrivileges(FXCollections.observableArrayList(dto.getPrivileges()));
+        dataFx.setConsumersRights(FXCollections.observableArrayList(dto.getConsumersRights()));
+        dataFx.setDonorRights(FXCollections.observableArrayList(dto.getDonorRights()));
         return dataFx;
     }
     @Override

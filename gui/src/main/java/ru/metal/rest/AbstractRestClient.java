@@ -90,7 +90,7 @@ public abstract class AbstractRestClient {
                 int status = ee.getResponse().getStatus();
                 if (status == Response.Status.FORBIDDEN.getStatusCode()) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
-                    alert.setTitle("Повторная авторизация");
+                    alert.setTitle("Ошибка шифрования");
                     alert.setHeaderText("Произошла ошибка при шифровании сообщения.\nСкорее всего, Вы используете не корректный ключ");
                     alert.initOwner(StartPage.primaryStage);
                     alert.setContentText("Закройте приложение, и укажите при авторизации корректные ключи");

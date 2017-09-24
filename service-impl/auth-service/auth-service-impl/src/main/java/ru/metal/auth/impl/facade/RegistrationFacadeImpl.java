@@ -5,8 +5,6 @@ import ru.common.api.dto.Pair;
 import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.ErrorCodeEnum;
 import ru.metal.api.auth.RegistrationFacade;
-import ru.metal.api.auth.dto.RegistrationData;
-import ru.metal.api.auth.dto.User;
 import ru.metal.api.auth.exceptions.FieldValidationException;
 import ru.metal.api.auth.request.AcceptRegistrationRequest;
 import ru.metal.api.auth.request.ObtainUserRequest;
@@ -23,7 +21,10 @@ import ru.metal.crypto.service.KeyGenerator;
 import ru.metal.email.Email;
 import ru.metal.email.EmailSender;
 import ru.metal.security.ejb.dto.Privilege;
+import ru.metal.security.ejb.dto.RegistrationData;
 import ru.metal.security.ejb.dto.Role;
+import ru.metal.security.ejb.dto.User;
+import ru.metal.security.ejb.security.DelegateUser;
 
 import javax.ejb.*;
 import javax.inject.Inject;
@@ -35,7 +36,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.security.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +89,7 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
         ObtainUserRequest obtainUserRequest = new ObtainUserRequest();
         obtainUserRequest.setEmail(registrationRequest.getRegistrationData().getEmail());
         obtainUserRequest.setLogin(registrationRequest.getRegistrationData().getLogin());
-        ObtainUserResponse obtainUserResponse = authorizationFacade.obtainUser(obtainUserRequest);
+        ObtainUserResponse obtainUserResponse = authorizationFacade.obtainUsers(obtainUserRequest);
         if (!obtainUserResponse.getDataList().isEmpty()) {
             boolean loginExist = false;
             boolean emailExist = false;
@@ -126,7 +128,8 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
         return response;
     }
 
-    private Pair<UserData, PublicKey> createUser(RegistrationRequestData registrationRequestData, List<Role> roles, List<Privilege> privileges) {
+    private Pair<UserData, PublicKey> createUser(RegistrationRequestData registrationRequestData, List<Role> roles, List<Privilege> privileges,
+                                                 List<DelegateUser> consumerUsers) {
         UserData userData = new UserData();
         userData.setActive(true);
         userData.setEmail(registrationRequestData.getEmail());
@@ -142,8 +145,16 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
         Pair<PublicKey, PrivateKey> generate = keyGenerator.generate();
         publicKey = generate.getLeft();
         userData.setPrivateServerKey(generate.getRight().getEncoded());
+        for (DelegateUser consumerUser:consumerUsers){
+            userData.getConsumersRights().add(consumerUser.getUserGuid());
+        }
 
         UserData merge = entityManager.merge(userData);
+
+        for (DelegateUser donorUser:consumerUsers){
+            UserData userData1 = entityManager.find(UserData.class, donorUser.getUserGuid());
+            userData1.getDonorRights().add(merge.getGuid());
+        }
 
         Pair<UserData, PublicKey> pair = new Pair<>(merge, publicKey);
         return pair;
@@ -167,7 +178,7 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
             return acceptRegistrationResponse;
         }
 
-        Pair<UserData, PublicKey> user = createUser(registrationRequestData, acceptRegistrationRequest.getRoles(), acceptRegistrationRequest.getPrivileges());
+        Pair<UserData, PublicKey> user = createUser(registrationRequestData, acceptRegistrationRequest.getRoles(), acceptRegistrationRequest.getPrivileges(),acceptRegistrationRequest.getConsumerRights());
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
                 user.getRight().getEncoded());
         registrationRequestData.setAccepted(true);

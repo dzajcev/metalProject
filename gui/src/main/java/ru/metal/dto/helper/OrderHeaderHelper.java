@@ -2,7 +2,7 @@ package ru.metal.dto.helper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.metal.api.order.dto.OrderHeaderDto;
+import ru.metal.api.documents.order.dto.OrderHeaderDto;
 import ru.metal.dto.OrderHeaderFx;
 
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ public class OrderHeaderHelper implements FxHelper<OrderHeaderFx,OrderHeaderDto>
         orderHeader.setDateDocument(dto.getDateOrder());
         orderHeader.setCreateDate(dto.getCreateDate());
         orderHeader.setComment(dto.getComment());
-        orderHeader.setActive(dto.isActive());
         orderHeader.setOrderBody(OrderBodyHelper.getInstance().getFxCollection(dto.getBody()));
         return orderHeader;
     }

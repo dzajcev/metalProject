@@ -64,6 +64,7 @@ public class ContragentHelper implements FxHelper<ContragentFx,ContragentDto>{
         contragentFx.setOkved(dto.getOkved());
         contragentFx.setPhone(dto.getPhone());
         contragentFx.setShipper(getFxEntity(dto.getShipper()));
+        contragentFx.setUserGuid(dto.getUserGuid());
 
         return contragentFx;
     }

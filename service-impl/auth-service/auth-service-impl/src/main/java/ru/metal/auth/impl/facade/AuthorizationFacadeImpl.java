@@ -6,7 +6,7 @@ import ru.metal.api.auth.AuthorizationFacade;
 import ru.metal.api.auth.ErrorCodeEnum;
 import ru.metal.api.auth.dto.KeyPair;
 import ru.metal.api.auth.dto.SessionDto;
-import ru.metal.api.auth.dto.User;
+import ru.metal.security.ejb.dto.User;
 import ru.metal.api.auth.dto.UserUpdateResult;
 import ru.metal.api.auth.exceptions.FieldValidationException;
 import ru.metal.api.auth.request.AuthorizationRequest;
@@ -26,6 +26,8 @@ import ru.metal.crypto.service.KeyGenerator;
 import ru.metal.email.Email;
 import ru.metal.email.EmailSender;
 import ru.metal.security.ejb.PermissionContextData;
+import ru.metal.security.ejb.security.DelegateUser;
+import ru.metal.security.ejb.security.DelegatingUser;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -40,10 +42,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by User on 11.09.2017.
@@ -70,14 +69,81 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     private EmailSender emailSender;
 
     @Override
-    public ObtainUserResponse obtainUser(ObtainUserRequest obtainUserRequest) {
+    public ObtainUserResponse obtainUsers(ObtainUserRequest obtainUserRequest) {
+        List<UserData> usersDataList = getUsers(obtainUserRequest);
+        List<User> users = mapper.mapCollections(usersDataList, User.class);
+
+        Set<String> delegated=new HashSet<>();
+        //юзер->delegated
+        Map<String, List<String>> userDelegated=new HashMap<>();
+        //юзер->delegating
+        Map<String, List<String>> userDelegating=new HashMap<>();
+
+        for (UserData userData:usersDataList){
+            if (!userDelegated.containsKey(userData.getGuid())){
+                userDelegated.put(userData.getGuid(),new ArrayList<>());
+            }
+            if (!userDelegating.containsKey(userData.getGuid())){
+                userDelegating.put(userData.getGuid(),new ArrayList<>());
+            }
+            for (String d1:userData.getDonorRights()){
+                delegated.add(d1);
+                userDelegating.get(userData.getGuid()).add(d1);
+            }
+            for (String d1:userData.getConsumersRights()){
+                delegated.add(d1);
+                userDelegated.get(userData.getGuid()).add(d1);
+            }
+        }
+
+        if (!delegated.isEmpty()) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<UserData> cq1 = cb.createQuery(UserData.class);
+            Root<UserData> root1 = cq1.from(UserData.class);
+            cq1.where(root1.get(UserData_.guid).in(delegated));
+            TypedQuery<UserData> q1 = entityManager.createQuery(cq1);
+            List<UserData> results1 = q1.getResultList();
+
+            Map<String, UserData> map = new HashMap<>();
+            for (UserData userData : results1) {
+                map.put(userData.getGuid(), userData);
+            }
+
+            for (User user : users) {
+                List<String> strings = userDelegated.get(user.getGuid());
+                for (String s : strings) {
+                    UserData userData = map.get(s);
+                    DelegateUser delegateUser = new DelegateUser();
+                    delegateUser.setUserName(userData.getShortName());
+                    delegateUser.setUserGuid(userData.getGuid());
+                    user.getConsumersRights().add(delegateUser);
+                }
+                List<String> strings1 = userDelegating.get(user.getGuid());
+                for (String s : strings1) {
+                    UserData userData = map.get(s);
+                    DelegatingUser delegatingUser = new DelegatingUser();
+                    delegatingUser.setUserName(userData.getShortName());
+                    delegatingUser.setUserGuid(userData.getGuid());
+                    delegatingUser.setPrivileges(new ArrayList<>(userData.getPrivileges()));
+                    delegatingUser.setRoles(new ArrayList<>(userData.getRoles()));
+                    user.getDonorRights().add(delegatingUser);
+                }
+            }
+        }
+
+        ObtainUserResponse obtainUserResponse = new ObtainUserResponse();
+        obtainUserResponse.setDataList(users);
+        return obtainUserResponse;
+    }
+
+    private List<UserData> getUsers(ObtainUserRequest obtainUserRequest) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<UserData> cq = cb.createQuery(UserData.class);
         Root<UserData> root = cq.from(UserData.class);
         List<Predicate> predicates = new ArrayList<>();
-        if (obtainUserRequest.getGuid() != null) {
-            cq.where(cb.equal(root.get(UserData_.guid), obtainUserRequest.getGuid()));
+        if (!obtainUserRequest.getGuids().isEmpty()) {
+            cq.where(root.get(UserData_.guid).in(obtainUserRequest.getGuids()));
         } else {
             if (obtainUserRequest.getEmail() != null) {
                 predicates.add(cb.equal(root.get(UserData_.email), obtainUserRequest.getEmail()));
@@ -92,12 +158,12 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
                 cq.where(cb.or(predicates.toArray(new Predicate[0]))).distinct(true);
             }
         }
+
         TypedQuery<UserData> q = entityManager.createQuery(cq);
         List<UserData> results = q.getResultList();
-        List<User> users = mapper.mapCollections(results, User.class);
-        ObtainUserResponse obtainUserResponse = new ObtainUserResponse();
-        obtainUserResponse.setDataList(users);
-        return obtainUserResponse;
+
+
+        return results;
     }
 
     private void deactivateSessions(String userGuid) {
@@ -156,17 +222,69 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         return changePasswordResponse;
     }
 
+    private void updateDelegating(User user, UserData userData){
+        userData.getConsumersRights().clear();
+        for (DelegatingUser delegatingUser:user.getDonorRights()){
+            userData.getConsumersRights().add(delegatingUser.getUserGuid());
+        }
+
+    }
+
+    private List<String> getGuidsDelegateUsers(List<? extends DelegateUser> delegateUsers){
+        List<String> result=new ArrayList<>();
+        for (DelegateUser delegateUser:delegateUsers){
+            result.add(delegateUser.getUserGuid());
+        }
+        return result;
+    }
     @Override
     public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
         UpdateUserResponse updateUserResponse = new UpdateUserResponse();
-        UserData map = mapper.map(updateUserRequest.getUser(), UserData.class);
+        User userDto = updateUserRequest.getUser();
+        UserData map = mapper.map(userDto, UserData.class);
+        //делегирование
+        map.getConsumersRights().addAll(getGuidsDelegateUsers(userDto.getConsumersRights()));
+        map.getDonorRights().addAll(getGuidsDelegateUsers(userDto.getDonorRights()));
 
-        map.setToChangePassword(updateUserRequest.isToChangePassword());
+        for (String donorUser:map.getConsumersRights()){
+            UserData userData1 = entityManager.find(UserData.class, donorUser);
+            userData1.getDonorRights().add(map.getGuid());
+        }
 
-        ObtainUserRequest obtainUserRequest=new ObtainUserRequest();
+        //найти пользователей, у которых донором является текущий, и выявить тех пользователей, которых нет в списке консьюмеров и удалить
+        // у них из доноров текущего пользователя
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserData> cq = cb.createQuery(UserData.class);
+        Root<UserData> root = cq.from(UserData.class);
+        final SetJoin<UserData, String> donors = root.joinSet("donorRights");
+        final Predicate predicate = donors.in(userDto.getGuid());
+        cq.where(predicate);
+
+        TypedQuery<UserData> q = entityManager.createQuery(cq);
+        List<UserData> resultList = q.getResultList();
+        for (UserData userData:resultList){
+            boolean isFinded=false;
+            for (String s:map.getConsumersRights()){
+                if (userData.getGuid().equals(s)){
+                    isFinded=true;
+                    break;
+                }
+            }
+            if (!isFinded){
+                Iterator<String> iterator = userData.getDonorRights().iterator();
+                while(iterator.hasNext()){
+                    String next = iterator.next();
+                    if (userDto.getGuid().equals(next)){
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+        }
+        ObtainUserRequest obtainUserRequest = new ObtainUserRequest();
         obtainUserRequest.setLogin(map.getLogin());
         obtainUserRequest.setEmail(map.getEmail());
-        ObtainUserResponse obtainUserResponse = obtainUser(obtainUserRequest);
+        ObtainUserResponse obtainUserResponse = obtainUsers(obtainUserRequest);
         if (!obtainUserResponse.getDataList().isEmpty()) {
             boolean loginExist = false;
             boolean emailExist = false;
@@ -188,9 +306,10 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
                 Error error = new Error(ErrorCodeEnum.REGISTRATION003);
                 updateUserResponse.getErrors().add(error);
             }
-            return updateUserResponse;
+            if (!updateUserResponse.getErrors().isEmpty()) {
+                return updateUserResponse;
+            }
         }
-
 
         if (updateUserRequest.isNeedGenerateKeys()) {
             Pair<PublicKey, PrivateKey> publicKeyPrivateKeyPair = regenerateKeys(map);
@@ -202,6 +321,8 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             map.setPrivateServerKey(userData.getPrivateServerKey());
             entityManager.detach(userData);
         }
+
+
         UserData merge = entityManager.merge(map);
         UserUpdateResult userUpdateResult = new UserUpdateResult();
         userUpdateResult.setGuid(merge.getGuid());
@@ -234,13 +355,13 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         return result;
     }
 
-    private String createSession(User user) {
+    private String createSession(UserData user) {
         deactivateSessions(user.getGuid());
         Session session = new Session();
         session.setClosed(false);
         session.setStartSession(new Date());
         session.setLastAction(new Date());
-        session.setUser(mapper.map(user, UserData.class));
+        session.setUser(user);
         return entityManager.merge(session).getGuid();
     }
 
@@ -256,9 +377,11 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         AuthorizationResponse authorizationResponse = new AuthorizationResponse();
         try {
             UserData result = q.getSingleResult();
+            User user = mapper.map(result, User.class);
             PermissionContextData permissionContextData = mapper.map(result, PermissionContextData.class);
-            permissionContextData.setSessionGuid(createSession(mapper.map(result, User.class)));
-            permissionContextData.setToken(authorizationRequest.getToken());
+            permissionContextData.setSessionGuid(createSession(result));
+            permissionContextData.setUser(user);
+            //  permissionContextData.setToken(authorizationRequest.getToken());
             authorizationResponse.setPermissionContextData(permissionContextData);
         } catch (NoResultException e) {
         }

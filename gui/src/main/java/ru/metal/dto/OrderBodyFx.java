@@ -4,7 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import ru.metal.api.order.dto.OrderBodyDto;
+import ru.metal.api.documents.order.dto.OrderBodyDto;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.FxHelper;
 import ru.metal.dto.helper.OrderBodyHelper;

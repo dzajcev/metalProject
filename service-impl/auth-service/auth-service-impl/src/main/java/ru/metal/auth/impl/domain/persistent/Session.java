@@ -1,7 +1,5 @@
 package ru.metal.auth.impl.domain.persistent;
 
-import ru.metal.api.auth.dto.User;
-
 import javax.persistence.*;
 import java.util.Date;
 

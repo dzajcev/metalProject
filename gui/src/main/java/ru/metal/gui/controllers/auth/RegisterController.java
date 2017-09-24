@@ -11,14 +11,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.SerializationUtils;
-import ru.metal.api.auth.dto.RegistrationData;
+import ru.metal.security.ejb.dto.RegistrationData;
 import ru.metal.api.auth.request.RegistrationRequest;
 import ru.metal.api.auth.response.RegistrationResponse;
 import ru.metal.gui.StartPage;
 import ru.metal.rest.RegistrationClient;
 
-import javax.crypto.Cipher;
 import java.io.*;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;

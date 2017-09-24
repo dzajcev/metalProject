@@ -59,6 +59,7 @@ public class ContragentDto extends AbstractDto implements Cloneable, TableElemen
 
     private List<EmployeeDto> employees;
 
+    private String userGuid;
 
     public void setGroup(ContragentGroupDto group) {
         this.group = group;
@@ -261,5 +262,13 @@ public class ContragentDto extends AbstractDto implements Cloneable, TableElemen
         } catch (CloneNotSupportedException e) {
             return new ContragentDto();
         }
+    }
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
     }
 }

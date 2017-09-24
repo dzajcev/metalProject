@@ -4,8 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.metal.api.auth.dto.RegistrationData;
-import ru.metal.api.auth.request.RegistrationRequest;
+import ru.metal.security.ejb.dto.RegistrationData;
 import ru.metal.dto.helper.FxHelper;
 import ru.metal.dto.helper.RegistrationRequestDataHelper;
 

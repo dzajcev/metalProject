@@ -40,7 +40,7 @@ public class UserSettingsService {
     @POST
     @Path("/get")
     public Response getUsers(ObtainUserRequest obtainUserRequest) throws Exception {
-        ObtainUserResponse response = authorizationFacade.obtainUser(obtainUserRequest);
+        ObtainUserResponse response = authorizationFacade.obtainUsers(obtainUserRequest);
         return Response.ok(response).build();
     }
     @POST

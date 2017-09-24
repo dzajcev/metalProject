@@ -6,6 +6,7 @@ package ru.metal.security.ejb.dto;
 public enum Role {
     ADMIN("Администратор"),
     DIRECTOR("Директор"),
+    SENIOR("Старший сотрудник"),
     ACCOUNTANT("Бухгалтер"),
     MANAGER("Сотрудник");
 
