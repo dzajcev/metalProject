@@ -13,23 +13,17 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import ru.common.api.dto.CellFormats;
 import ru.metal.dto.OrderBodyFx;
 import ru.metal.dto.GoodFx;
-import ru.metal.gui.StartPage;
-import ru.metal.gui.controllers.AbstractController;
-import ru.metal.gui.controllers.nomenclature.NomenclatureForm;
+import ru.metal.gui.controllers.catalogs.nomenclature.NomenclatureForm;
 import ru.metal.gui.controls.tableviewcontrol.TableViewChangeProperty;
 import ru.metal.gui.controls.tableviewcontrol.ValidatedTableView;
 import ru.metal.gui.controls.tableviewcontrol.customcells.CellFormatKeys;
-import ru.metal.gui.windows.Window;
 
 import java.math.BigDecimal;
 
@@ -44,48 +38,42 @@ public class OrderBodyTable extends ValidatedTableView<OrderBodyFx> {
     private OrderBodyInfo orderBodyInfo = new OrderBodyInfo();
 
     private void createNomenclatureForm() {
-        Window<AbstractController, NomenclatureForm> window = StartPage.getWindow(NomenclatureForm.ID);
-        final Window[] windows = new Window[1];
-        if (window != null && !window.getContent().isObtainMode()) {
-            window.setCloseRequest(true);
-            window = null;
-        }
-        NomenclatureForm nomenclatureForm;
-        if (window == null) {
-            nomenclatureForm = new NomenclatureForm(true);
-            nomenclatureForm.setObtainMode(true);
-            window = StartPage.openContent(nomenclatureForm, null, null);
-            window.setTitle("Товары");
-            window.setClosable(true);
-            window.setMinimizable(true);
-            window.setMaximizable(true);
-            window.setModal(true);
-            windows[0] = window;
-            nomenclatureForm.obtainItemProperty().addListener(new ChangeListener<GoodFx>() {
-                @Override
-                public void changed(ObservableValue<? extends GoodFx> observable, GoodFx oldValue, GoodFx newValue) {
-                    if (newValue != null) {
-                        windows[0].setCloseRequest(true);
-                        boolean exist = false;
-                        for (OrderBodyFx bodyFx : orderBodySource) {
-                            if (bodyFx.getGood().getGuid().equals(newValue.getGuid())) {
-                                getSelectionModel().select(bodyFx);
-                                exist = true;
-                                break;
-                            }
-                        }
-                        if (!exist) {
-                            OrderBodyFx orderBodyFx = new OrderBodyFx();
-                            orderBodyFx.setGood(newValue);
-                            orderBodySource.add(orderBodyFx);
-                        }
+        final Dialog[] windows = new Dialog[1];
 
+        NomenclatureForm nomenclatureForm = new NomenclatureForm(true);
+        nomenclatureForm.setObtainMode(true);
+        nomenclatureForm.obtainItemProperty().addListener(new ChangeListener<GoodFx>() {
+            @Override
+            public void changed(ObservableValue<? extends GoodFx> observable, GoodFx oldValue, GoodFx newValue) {
+                if (newValue != null) {
+                    windows[0].close();
+                    boolean exist = false;
+                    for (OrderBodyFx bodyFx : orderBodySource) {
+                        if (bodyFx.getGood().getGuid().equals(newValue.getGuid())) {
+                            getSelectionModel().select(bodyFx);
+                            exist = true;
+                            break;
+                        }
                     }
+                    if (!exist) {
+                        OrderBodyFx orderBodyFx = new OrderBodyFx();
+                        orderBodyFx.setGood(newValue);
+                        orderBodySource.add(orderBodyFx);
+                    }
+
                 }
-            });
-        }
-        window.setModal(true);
-        StartPage.addWindow(window);
+            }
+        });
+        DialogPane dialogPane=new DialogPane();
+        dialogPane.getButtonTypes().add(ButtonType.CLOSE);
+        dialogPane.setContent(nomenclatureForm);
+        Dialog dialog=new Dialog<>();
+        dialog.initOwner(getScene().getWindow());
+        dialog.setTitle("Выберите товар");
+        dialog.setResult("ok");
+        dialog.setDialogPane(dialogPane);
+        windows[0] = dialog;
+        dialog.showAndWait();
     }
 
     public OrderBodyTable() {
@@ -181,6 +169,10 @@ public class OrderBodyTable extends ValidatedTableView<OrderBodyFx> {
             @Override
             public void handle(WindowEvent event) {
                 OrderBodyFx selectedItem = getSelectionModel().getSelectedItem();
+                if (!isEditable()){
+                    del.setVisible(false);
+                    add.setVisible(false);
+                }
                 if (selectedItem != null && selectedItem.getGuid() == null) {
                     del.setVisible(true);
                 } else {

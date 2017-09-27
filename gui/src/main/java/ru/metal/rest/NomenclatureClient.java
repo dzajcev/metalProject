@@ -32,6 +32,14 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
         return response;
     }
 
+    public ObtainTreeItemResponse<GroupFx> getGroupFullItems(ObtainTreeItemRequest obtainTreeItemRequest) {
+        ObtainGroupReponse execute = executePost(pathGroup + "/getFull", obtainTreeItemRequest, ObtainGroupReponse.class);
+        ObtainTreeItemResponse<GroupFx> response = new ObtainTreeItemResponse<>();
+        response.setErrors(execute.getErrors());
+        response.setDataList(GoodGroupHelper.getInstance().getFxCollection(execute.getDataList()));
+        return response;
+    }
+
     @Override
     public UpdateTreeItemResponse updateGroupItems(UpdateTreeItemRequest<GroupFx> updateTreeItemRequest) {
         UpdateTreeItemRequest<GroupDto> request = new UpdateTreeItemRequest<>();
@@ -44,7 +52,7 @@ public class NomenclatureClient extends AbstractRestClient implements TreeClient
     }
 
     @Override
-    public UpdateGoodGroupResponse deleteGroupItem(DeleteTreeItemRequest<GroupFx> deleteTreeItemRequest) {
+    public UpdateGoodGroupResponse deleteGroupItem(DeleteTreeItemRequest deleteTreeItemRequest) {
         return executePost(pathGroup + "/delete", deleteTreeItemRequest, UpdateGoodGroupResponse.class);
     }
 

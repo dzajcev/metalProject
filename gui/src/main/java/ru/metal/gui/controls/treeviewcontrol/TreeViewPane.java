@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -22,14 +23,13 @@ import ru.common.api.dto.TableElement;
 import ru.common.api.dto.TreeviewElement;
 import ru.common.api.dto.UpdateResult;
 import ru.common.api.request.DeleteTreeItemRequest;
-import ru.common.api.request.ObtainTreeItemRequest;
 import ru.common.api.request.UpdateTreeItemRequest;
 import ru.common.api.response.UpdateTreeItemResponse;
 import ru.metal.dto.FxEntity;
 import ru.metal.dto.response.ObtainTreeItemResponse;
+import ru.metal.gui.controllers.catalogs.GroupSelector;
 import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
 import ru.metal.gui.windows.LabelButton;
-import ru.metal.rest.TreeClient;
 
 import java.util.*;
 
@@ -39,14 +39,11 @@ import java.util.*;
 public class TreeViewPane<T extends TreeviewElement> extends VBox {
     public final static String ROOT_GUID = "-1";
     private Class<T> clazz;
-    TreeClient<T> treeClient;
     private TreeView<T> treeView;
     private ObjectProperty<List<String>> selectedGroups = new SimpleObjectProperty<>();
     private ObjectProperty<T> selectedItem = new SimpleObjectProperty<T>();
-    private boolean onlyActive = true;
-
-
-    private ObtainTreeItemRequest obtainTreeItemRequest = new ObtainTreeItemRequest();
+    CheckBox activeBox = new CheckBox("Активные");
+    private GroupSelector<T> groupSelector;
 
     public List<String> getSelectedGroups() {
         return selectedGroups.get();
@@ -56,17 +53,15 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
         return selectedGroups;
     }
 
-    public void setRequest(ObtainTreeItemRequest obtainTreeItemRequest) {
-        this.obtainTreeItemRequest = obtainTreeItemRequest;
-        this.obtainTreeItemRequest.setActive(true);
-        ObtainTreeItemResponse<T> items = treeClient.getGroupItems(obtainTreeItemRequest);
-        fillTree(treeView.getRoot(), items.getDataList());
-
+    public void refresh() {
+        List<T> items = groupSelector.getGroups(activeBox.isSelected());
+        treeView.getRoot().getChildren().clear();
+        fillTree(treeView.getRoot(), items);
     }
 
-    public TreeViewPane(TreeClient<T> treeClient, String name, Class<T> clazz) {
+    public TreeViewPane(GroupSelector<T> groupSelector, String name, Class<T> clazz) {
         this.clazz = clazz;
-        this.treeClient = treeClient;
+        this.groupSelector = groupSelector;
         setAlignment(Pos.TOP_CENTER);
         setPadding(new Insets(2));
         HBox buttonBlock = new HBox();
@@ -76,32 +71,20 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
         buttonBlock.setAlignment(Pos.CENTER_RIGHT);
         getChildren().addAll(buttonBlock);
 
-        CheckBox activeBox = new CheckBox("Активные");
+
         activeBox.setSelected(true);
         Tooltip tooltipActiveBox = new Tooltip("Только активные");
         activeBox.setTooltip(tooltipActiveBox);
         activeBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    obtainTreeItemRequest.setActive(true);
-                    onlyActive = true;
-                } else {
-                    obtainTreeItemRequest.setActive(false);
-                    onlyActive = false;
-                }
-                treeView.getRoot().getChildren().clear();
-                ObtainTreeItemResponse<T> items = treeClient.getGroupItems(obtainTreeItemRequest);
-                fillTree(treeView.getRoot(), items.getDataList());
-
-
+                refresh();
                 List<TreeItem<T>> allChildren = getAllChildren(treeView.getSelectionModel().getSelectedItem());
                 List<String> result = new ArrayList();
                 for (TreeItem<T> item : allChildren) {
                     result.add(item.getValue().getGuid());
                 }
                 selectedGroups.setValue(result);
-
             }
         });
         LabelButton expandAll = new LabelButton(null, new Image(getClass().getResourceAsStream("/icons/tree_expand.png")));
@@ -183,7 +166,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
         rootItem.setValue((T) rootNode);
         rootItem.setExpanded(true);
         treeView.setRoot(rootItem);
-
+        refresh();
         treeView.setCellFactory(new Callback<TreeView<T>, TreeCell<T>>() {
             @Override
             public TreeCell<T> call(TreeView<T> param) {
@@ -244,8 +227,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
 
                             UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
                             updateTreeItemRequest.getDataList().add(itemToMove.getValue());
-
-                            treeClient.updateGroupItems(updateTreeItemRequest);
+                            groupSelector.updateGroups(Collections.singletonList(itemToMove.getValue()));
 
                             newParent.getChildren().sort(new Comparator<TreeItem<T>>() {
                                 @Override
@@ -444,7 +426,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         getTreeView().getSelectionModel().select(addedItem);
                         UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
                         updateTreeItemRequest.getDataList().add(addedElement);
-                        UpdateTreeItemResponse updateTreeItemResponse = treeClient.updateGroupItems(updateTreeItemRequest);
+                        groupSelector.updateGroups(Collections.singletonList(addedElement));
                         addedElement.setGuid(updateTreeItemRequest.getDataList().get(0).getGuid());
 
                     } catch (InstantiationException e) {
@@ -475,10 +457,10 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                     }
 
                     if (!active) {
-                        DeleteTreeItemRequest<T> treeItemRequest = new DeleteTreeItemRequest<T>();
-                        treeItemRequest.setGuids(groupGuids);
+                        DeleteTreeItemRequest treeItemRequest = new DeleteTreeItemRequest();
+                        treeItemRequest.setDataList(groupGuids);
                         StringBuilder errorText = new StringBuilder();
-                        UpdateTreeItemResponse<UpdateResult> response = treeClient.deleteGroupItem(treeItemRequest);
+                        UpdateTreeItemResponse<UpdateResult> response = groupSelector.deleteGroup(groupGuids);
                         for (UpdateResult updateResult : response.getImportResults()) {
                             Iterator<TreeItem<T>> itemIterator = allChildren.iterator();
                             while ((itemIterator.hasNext())) {
@@ -534,8 +516,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                         UpdateTreeItemRequest<T> request = new UpdateTreeItemRequest();
 
                         request.setDataList(requestList);
-
-                        treeClient.updateGroupItems(request);
+                        groupSelector.updateGroups(requestList);
 
                     }
                     if (toUpdate) {
@@ -548,7 +529,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                             }
                         }
                     }
-                    if (toUpdate && (onlyActive && !active)) {
+                    if (toUpdate && (activeBox.isSelected() && !active)) {
                         getTreeItem().getParent().getChildren().remove(getTreeItem());
                     }
                 }
@@ -665,10 +646,7 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
             });
             getTreeView().getSelectionModel().clearSelection();
             getTreeView().getSelectionModel().select(getTreeItem());
-            UpdateTreeItemRequest<T> updateTreeItemRequest = new UpdateTreeItemRequest();
-            updateTreeItemRequest.getDataList().add(item);
-
-            treeClient.updateGroupItems(updateTreeItemRequest);
+            groupSelector.updateGroups(Collections.singletonList(item));
 
         }
 
@@ -685,18 +663,6 @@ public class TreeViewPane<T extends TreeviewElement> extends VBox {
                     save();
                 }
             });
-//            textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
-//
-//                @Override
-//                public void handle(KeyEvent t) {
-//                    if (t.getCode() == KeyCode.ENTER) {
-//                        save();
-//
-//                    } else if (t.getCode() == KeyCode.ESCAPE) {
-//                        cancelEdit();
-//                    }
-//                }
-//            });
         }
 
         private String getString() {

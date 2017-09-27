@@ -7,10 +7,7 @@ import ru.common.api.request.ObtainTreeItemRequest;
 import ru.common.api.request.UpdateTreeItemRequest;
 import ru.metal.api.nomenclature.ErrorCodeEnum;
 import ru.metal.api.nomenclature.NomenclatureFacade;
-import ru.metal.api.nomenclature.dto.GoodDto;
-import ru.metal.api.nomenclature.dto.GroupDto;
-import ru.metal.api.nomenclature.dto.OkeiDto;
-import ru.metal.api.nomenclature.dto.UpdateGoodGroupResult;
+import ru.metal.api.nomenclature.dto.*;
 import ru.metal.api.nomenclature.request.ObtainGoodRequest;
 import ru.metal.api.nomenclature.request.ObtainOkeiRequest;
 import ru.metal.api.nomenclature.request.UpdateGoodsRequest;
@@ -98,9 +95,9 @@ public class NomenclatureFacadeImpl extends AbstractCatalogFacade<GoodGroup> imp
     }
 
     @Override
-    public UpdateGoodGroupResponse deleteGroups(DeleteTreeItemRequest<GroupDto> request) {
+    public UpdateGoodGroupResponse deleteGroups(DeleteTreeItemRequest request) {
         ObtainTreeItemRequest obtainGoodGroupRequest = new ObtainTreeItemRequest();
-        obtainGoodGroupRequest.setGroupGuids(request.getGuids());
+        obtainGoodGroupRequest.setGroupGuids(request.getDataList());
         List<GoodGroup> groups = getEntityGroups(obtainGoodGroupRequest);
         List<GoodGroup> deleted = getDeletedGroups(groups);
         UpdateGoodGroupResponse response = new UpdateGoodGroupResponse();
@@ -155,11 +152,12 @@ public class NomenclatureFacadeImpl extends AbstractCatalogFacade<GoodGroup> imp
     @Override
     public UpdateGoodsResponse updateGoods(UpdateGoodsRequest request) {
         UpdateGoodsResponse response = new UpdateGoodsResponse();
-        List<Good> data = mapper.mapCollections(request.getDataList(), Good.class);
-        for (Good good : data) {
-
-            entityManager.merge(good);
-
+        for (GoodDto good : request.getDataList()) {
+            Good merge = entityManager.merge(mapper.map(good,Good.class));
+            UpdateGoodResult updateGoodResult=new UpdateGoodResult();
+            updateGoodResult.setGuid(merge.getGuid());
+            updateGoodResult.setTransportGuid(good.getTransportGuid());
+            response.getImportResults().add(updateGoodResult);
         }
         return response;
     }

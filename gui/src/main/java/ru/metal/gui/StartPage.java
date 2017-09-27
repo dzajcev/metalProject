@@ -16,7 +16,6 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import ru.metal.api.contragents.request.ObtainContragentRequest;
-import ru.metal.api.documents.DocumentStatus;
 import ru.metal.api.documents.order.dto.OrderHeaderDto;
 import ru.metal.api.documents.order.dto.OrderStatus;
 import ru.metal.dto.OrderHeaderFx;
@@ -27,8 +26,8 @@ import ru.metal.security.ejb.UserContextHolder;
 import ru.metal.exceptions.ExceptionShower;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.controllers.auth.AuthorizationController;
-import ru.metal.gui.controllers.contragents.ContragentsForm;
-import ru.metal.gui.controllers.nomenclature.NomenclatureForm;
+import ru.metal.gui.controllers.catalogs.contragents.ContragentsForm;
+import ru.metal.gui.controllers.catalogs.nomenclature.NomenclatureForm;
 import ru.metal.gui.controllers.documents.order.OrderController;
 import ru.metal.gui.windows.MainFrame;
 import ru.metal.gui.windows.Window;
@@ -256,6 +255,7 @@ public class StartPage extends Application {
                     window.setClosable(true);
                     window.setMinimizable(true);
                     window.setMaximizable(true);
+                    window.setResizable();
                     addWindow(window);
                 }
             }
@@ -276,7 +276,7 @@ public class StartPage extends Application {
                     window = null;
                 }
                 if (window == null) {
-                    ContragentsForm contragentsForm = new ContragentsForm(true, obtainContragentRequest);
+                    ContragentsForm contragentsForm = new ContragentsForm(true);
                     window = openContent(contragentsForm, null, primaryStage);
                 }
                 if (window != null) {
@@ -284,6 +284,7 @@ public class StartPage extends Application {
                     window.setClosable(true);
                     window.setMinimizable(true);
                     window.setMaximizable(true);
+                    window.setResizable();
                     addWindow(window);
                 }
 
@@ -306,6 +307,7 @@ public class StartPage extends Application {
                         window.setClosable(true);
                         window.setMinimizable(true);
                         window.setMaximizable(true);
+                        window.setResizable();
                         addWindow(window);
                     }
 
@@ -322,6 +324,7 @@ public class StartPage extends Application {
                         window.setClosable(true);
                         window.setMinimizable(true);
                         window.setMaximizable(true);
+                        window.setResizable();
                         addWindow(window);
                     }
 
@@ -344,6 +347,7 @@ public class StartPage extends Application {
                     window.setClosable(true);
                     window.setMinimizable(true);
                     window.setMaximizable(true);
+                    window.setResizable();
                     addWindow(window);
                 }
 

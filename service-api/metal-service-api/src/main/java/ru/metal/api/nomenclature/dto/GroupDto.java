@@ -1,7 +1,7 @@
 package ru.metal.api.nomenclature.dto;
 
-import ru.metal.security.ejb.dto.AbstractDto;
 import ru.common.api.dto.TreeviewElement;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 /**
  * Created by User on 09.08.2017.
@@ -12,6 +12,8 @@ public class GroupDto extends AbstractDto implements TreeviewElement {
     private String groupGuid;
 
     private String name;
+
+    private String userGuid;
 
     private boolean active = true;
 
@@ -37,5 +39,13 @@ public class GroupDto extends AbstractDto implements TreeviewElement {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
     }
 }

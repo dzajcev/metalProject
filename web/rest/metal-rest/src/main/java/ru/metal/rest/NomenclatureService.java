@@ -49,7 +49,7 @@ public class NomenclatureService {
 
     @POST
     @Path("/groups/delete")
-    public Response deleteGroups(DeleteTreeItemRequest<GroupDto> request) throws Exception {
+    public Response deleteGroups(DeleteTreeItemRequest request) throws Exception {
         UpdateGoodGroupResponse groupUpdateResponse = nomenclatureFacade.deleteGroups(request);
         return Response.ok(groupUpdateResponse).build();
     }

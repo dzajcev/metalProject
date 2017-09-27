@@ -154,9 +154,6 @@ public class ValidatedTableView<S extends FxEntity> extends TableView<S> {
 
                     if (item != null) {
                         Class<? extends AbstractDto> aClass = item.getClass();
-                        //    Callback<TableColumn.CellDataFeatures<S,E>, ObservableValue<E>> cellValueFactory1 = tableColumn.getCellValueFactory();
-//                        TableColumn.CellDataFeatures cellDataFeatures=new TableColumn.CellDataFeatures(ValidatedTableView.this, tableColumn,item);
-//                        ObservableValue<E> call = cellValueFactory1.call(cellDataFeatures);
                         if (!(tableColumn.getCellValueFactory() instanceof PropertyValueFactory)) {
                             return;
                         }

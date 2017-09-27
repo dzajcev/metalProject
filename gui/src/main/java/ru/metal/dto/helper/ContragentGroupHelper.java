@@ -43,6 +43,7 @@ public class ContragentGroupHelper implements FxHelper<ContragentGroupFx,Contrag
         contragentGroupFx.setActive(dto.getActive());
         contragentGroupFx.setGroupGuid(dto.getGroupGuid());
         contragentGroupFx.setName(dto.getName());
+        contragentGroupFx.setUserGuid(dto.getUserGuid());
         return contragentGroupFx;
     }
     @Override

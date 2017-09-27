@@ -1,5 +1,6 @@
 package ru.metal.api.documents.order;
 
+import ru.metal.api.documents.order.request.DropOrderRequest;
 import ru.metal.api.documents.order.request.ObtainOrderRequest;
 import ru.metal.api.documents.order.request.UpdateOrderRequest;
 import ru.metal.api.documents.order.response.ObtainOrderResponse;
@@ -14,5 +15,6 @@ public interface OrderFacade {
 
     UpdateOrderResponse updateOrders(UpdateOrderRequest updateOrderRequest);
 
+    UpdateOrderResponse dropOrders(DropOrderRequest dropOrderRequest);
 
 }

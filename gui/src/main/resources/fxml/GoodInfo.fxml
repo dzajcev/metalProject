@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import ru.metal.gui.windows.SaveButton?>
-<AnchorPane id="goodInfo" prefHeight="150.0" prefWidth="522.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.nomenclature.GoodInfoController">
+<AnchorPane id="goodInfo" prefHeight="150.0" prefWidth="522.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.catalogs.nomenclature.GoodInfoController">
    <children>
       <TextField fx:id="name" layoutX="9.0" layoutY="31.0" prefHeight="25.0" prefWidth="504.0" />
       <CheckBox fx:id="active" layoutX="261.0" layoutY="60.0" mnemonicParsing="false" />

@@ -14,13 +14,17 @@ import java.util.List;
 
 public interface DocumentSelector<T extends DocumentHeader, E extends DocumentStatus> {
 
-    void dropDocument(T document);
+    void openDocument(String documentGuid);
+
+    boolean dropDocument(T document);
 
     T createEmptyDocument();
 
-    ObservableList<T> getDocuments(ObtainDocumentsRequest obtainDocumentsRequest);
+    ObservableList<T> getDocuments(ObtainDocumentsRequest<E> obtainDocumentsRequest);
 
     String getId();
 
     E[] getDocumentStatusValues();
+
+    boolean isDroppable(T document);
 }

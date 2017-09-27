@@ -1,5 +1,6 @@
 package ru.metal.gui.windows;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -10,14 +11,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.util.Iterator;
 import java.util.List;
@@ -56,23 +59,25 @@ public class MainFrame extends VBox {
                     if (c.wasAdded()) {
                         for (Window addedNode : c.getAddedSubList()) {
                             addedNode.setMainFrame(MainFrame.this);
-                            addedNode.modalProperty().addListener(new ChangeListener<Boolean>() {
-                                @Override
-                                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                                    lock.set(newValue);
-                                }
-                            });
-                            List<Node> d=contentPane.getChildren();
                             if (addedNode.isModal()) {
-                                lock.setValue(true);
-                                AnchorPane modalPane = new AnchorPane(addedNode);
-                                AnchorPane.setRightAnchor(modalPane, 0.0);
-                                AnchorPane.setLeftAnchor(modalPane, 0.0);
-                                AnchorPane.setBottomAnchor(modalPane, 0.0);
-                                AnchorPane.setTopAnchor(modalPane, 0.0);
-                                modalPane.setStyle("-fx-background-color: transparent");
-                                modalPane.toFront();
-                                contentPane.getChildren().add(contentPane.getChildren().isEmpty() ? 0 : contentPane.getChildren().size() - 1, modalPane);
+                                Stage dialog = new Stage();
+                                dialog.initOwner(getScene().getWindow());
+                                dialog.setScene(new Scene(new AnchorPane(addedNode)));
+                                dialog.setTitle(addedNode.getTitle());
+                                dialog.initStyle(StageStyle.DECORATED);
+                                dialog.initOwner(getScene().getWindow());
+                                dialog.setResizable(false);
+                                dialog.initModality(Modality.WINDOW_MODAL);
+                                dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                                    @Override
+                                    public void handle(WindowEvent event) {
+
+                                        addedNode.setCloseRequest(true);
+                                        addedNode.setCloseRequest(false);
+                                        event.consume();
+                                    }
+                                });
+                                dialog.showAndWait();
                             } else {
                                 contentPane.getChildren().add(addedNode);
                                 addedNode.toFront();

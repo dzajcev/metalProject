@@ -26,9 +26,9 @@ public class OrderHeaderDto extends AbstractDto {
 
     private String userGuid;
 
-    private OrderStatus status;
-
     private List<OrderBodyDto> body;
+
+    private OrderStatus status;
 
     public Date getCreateDate() {
         return createDate;

@@ -1,4 +1,4 @@
-package ru.metal.gui.controllers.contragents;
+package ru.metal.gui.controllers.catalogs.contragents;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -19,7 +19,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import ru.common.api.response.AbstractResponse;
 import ru.metal.api.contragents.dto.ContragentType;
 import ru.metal.api.contragents.dto.DocumentType;
 import ru.metal.api.contragents.dto.PersonType;
@@ -536,7 +535,7 @@ public class ContragentInfoController extends AbstractController {
         saveResult(true);
     }
 
-    private BooleanProperty saved = new SimpleBooleanProperty(false);
+    private BooleanProperty saved = new SimpleBooleanProperty();
 
     @Override
     protected UpdateContragentResponse save() {
@@ -675,12 +674,11 @@ public class ContragentInfoController extends AbstractController {
         }
 
         UpdateContragentResponse updateContragentResponse = contragentsClient.updateContragents(request);
-
+        contragentFx.setGuid(updateContragentResponse.getImportResults().get(0).getGuid());
         saved.setValue(true);
         setCloseRequest(true);
         return updateContragentResponse;
     }
-
 
     public boolean isSaved() {
         return saved.get();
@@ -715,6 +713,10 @@ public class ContragentInfoController extends AbstractController {
                 }
             }
         });
+    }
+
+    public ContragentFx getContragent() {
+        return contragentFx;
     }
 
     public void setContragent(ContragentFx contragent) {

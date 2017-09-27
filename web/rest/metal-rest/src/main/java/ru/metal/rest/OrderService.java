@@ -1,6 +1,7 @@
 package ru.metal.rest;
 
 import ru.metal.api.documents.order.OrderFacade;
+import ru.metal.api.documents.order.request.DropOrderRequest;
 import ru.metal.api.documents.order.request.ObtainOrderRequest;
 import ru.metal.api.documents.order.request.UpdateOrderRequest;
 import ru.metal.api.documents.order.response.ObtainOrderResponse;
@@ -38,6 +39,12 @@ public class OrderService {
     @Path("/update")
     public Response updateOrders(UpdateOrderRequest updateOrderRequest) throws Exception {
         UpdateOrderResponse contragents = orderFacade.updateOrders(updateOrderRequest);
+        return Response.ok(contragents).build();
+    }
+    @POST
+    @Path("/drop")
+    public Response dropOrders(DropOrderRequest dropOrderRequest) throws Exception {
+        UpdateOrderResponse contragents = orderFacade.dropOrders(dropOrderRequest);
         return Response.ok(contragents).build();
     }
 }

@@ -18,7 +18,7 @@ public interface NomenclatureFacade {
 
     UpdateGoodGroupResponse updateGroups(UpdateTreeItemRequest<GroupDto> request);
 
-    UpdateGoodGroupResponse deleteGroups(DeleteTreeItemRequest<GroupDto> request);
+    UpdateGoodGroupResponse deleteGroups(DeleteTreeItemRequest request);
 
     ObtainGoodResponse getGoods(ObtainGoodRequest obtainGoodRequest);
 

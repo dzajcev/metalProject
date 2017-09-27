@@ -42,6 +42,7 @@ public class GoodGroupHelper implements FxHelper<GroupFx,GroupDto> {
 
         groupFx.setGroupGuid(dto.getGroupGuid());
         groupFx.setName(dto.getName());
+        groupFx.setUserGuid(dto.getUserGuid());
         return groupFx;
     }
     @Override

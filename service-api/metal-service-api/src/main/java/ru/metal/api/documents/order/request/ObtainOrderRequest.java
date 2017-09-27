@@ -1,6 +1,7 @@
 package ru.metal.api.documents.order.request;
 
 import ru.common.api.request.ObtainAbstractRequest;
+import ru.metal.api.documents.order.dto.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +23,9 @@ public class ObtainOrderRequest extends ObtainAbstractRequest {
 
     private List<String> sources = new ArrayList<>();
 
-    private String userGuid;
+    private List<String> userGuids;
+
+    private List<OrderStatus> statuses;
 
     public List<String> getGuids() {
         return guids;
@@ -57,6 +60,9 @@ public class ObtainOrderRequest extends ObtainAbstractRequest {
     }
 
     public List<String> getRecipients() {
+        if (recipients==null){
+            recipients=new ArrayList<>();
+        }
         return recipients;
     }
 
@@ -65,6 +71,9 @@ public class ObtainOrderRequest extends ObtainAbstractRequest {
     }
 
     public List<String> getSources() {
+        if (sources==null){
+            sources=new ArrayList<>();
+        }
         return sources;
     }
 
@@ -72,11 +81,25 @@ public class ObtainOrderRequest extends ObtainAbstractRequest {
         this.sources = sources;
     }
 
-    public String getUserGuid() {
-        return userGuid;
+    public List<String> getUserGuids() {
+        if (userGuids == null) {
+            userGuids = new ArrayList<>();
+        }
+        return userGuids;
     }
 
-    public void setUserGuid(String userGuid) {
-        this.userGuid = userGuid;
+    public void setUserGuids(List<String> userGuids) {
+        this.userGuids = userGuids;
+    }
+
+    public List<OrderStatus> getStatuses() {
+        if (statuses == null) {
+            statuses = new ArrayList<>();
+        }
+        return statuses;
+    }
+
+    public void setStatuses(List<OrderStatus> statuses) {
+        this.statuses = statuses;
     }
 }

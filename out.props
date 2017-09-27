@@ -1,0 +1,6 @@
+databaseHost=127.0.0.1
+user=mt_user
+password=mt_user
+jndi=java:jboss/datasources/mtds
+databasePort=5432
+databaseName=mtdb

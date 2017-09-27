@@ -11,6 +11,8 @@ public class ObtainTreeItemRequest extends ObtainAbstractRequest {
 
     private List<String> groupGuids;
 
+    private List<String> userGuids;
+
     public boolean getActive() {
         return active;
     }
@@ -28,5 +30,16 @@ public class ObtainTreeItemRequest extends ObtainAbstractRequest {
 
     public void setGroupGuids(List<String> groupGuids) {
         this.groupGuids = groupGuids;
+    }
+
+    public List<String> getUserGuids() {
+        if (userGuids==null){
+            userGuids=new ArrayList<>();
+        }
+        return userGuids;
+    }
+
+    public void setUserGuids(List<String> userGuids) {
+        this.userGuids = userGuids;
     }
 }

@@ -4,41 +4,60 @@
 <?import javafx.scene.layout.*?>
 <?import ru.metal.gui.controllers.documents.order.OrderBodyTable?>
 <?import ru.metal.gui.windows.SaveMenuItem?>
-<AnchorPane id="order" prefHeight="570.0" prefWidth="843.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.documents.order.OrderController">
-   <children>
-      <AnchorPane layoutX="14.0" layoutY="34.0" prefHeight="141.0" prefWidth="455.0" style="-fx-border-width: 1; -fx-border-color: grey; -fx-border-radius: 5;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="35.0">
-         <children>
-            <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="68.0" text="Поставщик" />
-            <ComboBox fx:id="shipper" layoutX="90.0" layoutY="10.0" prefHeight="25.0" prefWidth="179.0" />
-            <ComboBox fx:id="buyer" layoutX="90.0" layoutY="41.0" prefHeight="25.0" prefWidth="179.0" />
-            <Label layoutX="14.0" layoutY="45.0" prefHeight="17.0" prefWidth="68.0" text="Покупатель" />
-            <Label layoutX="290.0" layoutY="14.0" text="Счет №" />
-            <TextField fx:id="orderNumber" disable="true" layoutX="343.0" layoutY="10.0" prefHeight="25.0" prefWidth="103.0" />
-            <Label layoutX="290.0" layoutY="45.0" text="Дата" />
-            <DatePicker fx:id="orderDate" layoutX="343.0" layoutY="41.0" prefHeight="25.0" prefWidth="103.0" />
-            <Label layoutX="13.0" layoutY="83.0" text="Примечание" />
-            <TextArea fx:id="comment" layoutX="90.0" layoutY="74.0" prefHeight="60.0" prefWidth="356.0" wrapText="true" />
-         </children>
-      </AnchorPane>
-      <OrderBodyTable fx:id="orderBody" layoutX="14.0" layoutY="181.0" prefHeight="411.0" prefWidth="833.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="180.0">
-      </OrderBodyTable>
-      <MenuButton layoutX="5.0" layoutY="2.0" mnemonicParsing="false" text="Меню">
-        <items>
-          <SaveMenuItem fx:id="save" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" />
-          <SaveMenuItem fx:id="savePrint" mnemonicParsing="false" text="Сохранить и печать" />
-        </items>
-      </MenuButton>
-      <AnchorPane layoutX="594.0" layoutY="35.0" prefHeight="109.0" prefWidth="235.0" style="-fx-border-width: 1; -fx-border-color: grey; -fx-border-radius: 5;" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="35.0">
-         <children>
-            <Label layoutX="14.0" layoutY="14.0" text="Сумма: " />
-            <Label fx:id="summa" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="14.0" prefHeight="17.0" prefWidth="84.0" text="Label" />
-            <Label fx:id="sumWoNds" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="37.0" prefHeight="17.0" prefWidth="84.0" text="Label" />
-            <Label layoutX="14.0" layoutY="37.0" text="Сумма без НДС: " />
-            <Label layoutX="14.0" layoutY="62.0" text="Вес:" />
-            <Label fx:id="weight" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="62.0" prefHeight="17.0" prefWidth="84.0" text="Label" />
-            <Label fx:id="count" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="85.0" prefHeight="17.0" prefWidth="84.0" text="Label" />
-            <Label layoutX="14.0" layoutY="85.0" text="Кол-во наменований:" />
-         </children>
-      </AnchorPane>
-   </children>
+<AnchorPane id="order" prefHeight="570.0" prefWidth="843.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.metal.gui.controllers.documents.order.OrderController">
+    <children>
+        <AnchorPane layoutX="14.0" layoutY="34.0" prefHeight="141.0" prefWidth="455.0"
+                    style="-fx-border-width: 1; -fx-border-color: grey; -fx-border-radius: 5;"
+                    AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="35.0">
+            <children>
+                <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="68.0" text="Поставщик"/>
+                <ComboBox fx:id="shipper" layoutX="90.0" layoutY="10.0" prefHeight="25.0" prefWidth="179.0"/>
+                <ComboBox fx:id="buyer" layoutX="90.0" layoutY="41.0" prefHeight="25.0" prefWidth="179.0"/>
+                <Label layoutX="14.0" layoutY="45.0" prefHeight="17.0" prefWidth="68.0" text="Покупатель"/>
+                <Label layoutX="290.0" layoutY="14.0" text="Счет №"/>
+                <TextField fx:id="orderNumber" disable="true" layoutX="343.0" layoutY="10.0" prefHeight="25.0"
+                           prefWidth="103.0"/>
+                <Label layoutX="290.0" layoutY="45.0" text="Дата"/>
+                <DatePicker fx:id="orderDate" layoutX="343.0" layoutY="41.0" prefHeight="25.0" prefWidth="103.0"/>
+                <Label layoutX="13.0" layoutY="83.0" text="Примечание"/>
+                <TextArea fx:id="comment" layoutX="90.0" layoutY="74.0" prefHeight="60.0" prefWidth="356.0"
+                          wrapText="true"/>
+            </children>
+        </AnchorPane>
+        <OrderBodyTable fx:id="orderBody" layoutX="14.0" layoutY="181.0" prefHeight="411.0" prefWidth="833.0"
+                        AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+                        AnchorPane.topAnchor="180.0">
+        </OrderBodyTable>
+        <MenuButton layoutX="5.0" layoutY="2.0" mnemonicParsing="false" text="Меню">
+            <items>
+                <SaveMenuItem fx:id="save" mnemonicParsing="false" onAction="#saveAction" text="Сохранить"/>
+                <SaveMenuItem fx:id="savePrint" mnemonicParsing="false" text="Сохранить и печать"/>
+                <SeparatorMenuItem/>
+                <CheckMenuItem  fx:id="setPaid" mnemonicParsing="false" text="Оплачен"/>
+            </items>
+        </MenuButton>
+        <AnchorPane layoutX="594.0" layoutY="35.0" prefHeight="141.0" prefWidth="235.0"
+                    style="-fx-border-width: 1; -fx-border-color: grey; -fx-border-radius: 5;"
+                    AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="35.0">
+            <children>
+                <Label layoutX="14.0" layoutY="14.0" text="Сумма: "/>
+                <Label fx:id="summa" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="14.0" prefHeight="17.0"
+                       prefWidth="84.0" text="Label"/>
+                <Label fx:id="sumWoNds" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="37.0" prefHeight="17.0"
+                       prefWidth="84.0" text="Label"/>
+                <Label layoutX="14.0" layoutY="37.0" text="Сумма без НДС: "/>
+                <Label layoutX="14.0" layoutY="62.0" text="Вес:"/>
+                <Label fx:id="weight" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="62.0" prefHeight="17.0"
+                       prefWidth="84.0" text="Label"/>
+                <Label fx:id="count" alignment="CENTER_RIGHT" layoutX="137.0" layoutY="85.0" prefHeight="17.0"
+                       prefWidth="84.0" text="Label"/>
+                <Label layoutX="14.0" layoutY="85.0" text="Кол-во наменований:"/>
+                <Label layoutX="14.0" layoutY="110.0" text="Статус:"/>
+                <Label fx:id="status" alignment="CENTER_RIGHT" layoutX="73.0" layoutY="110.0" prefHeight="17.0"
+                       prefWidth="148.0" text="Label"/>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

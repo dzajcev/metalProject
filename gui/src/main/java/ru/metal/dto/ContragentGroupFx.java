@@ -1,5 +1,9 @@
 package ru.metal.dto;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import ru.common.api.dto.TreeviewElement;
 import ru.metal.api.contragents.dto.ContragentGroupDto;
 import ru.metal.dto.helper.ContragentGroupHelper;
@@ -10,34 +14,63 @@ import ru.metal.dto.helper.FxHelper;
  */
 public class ContragentGroupFx extends FxEntity<ContragentGroupDto> implements TreeviewElement {
 
-    private String groupGuid;
+    private StringProperty groupGuid=new SimpleStringProperty();
 
-    private String name;
+    private StringProperty name=new SimpleStringProperty();
 
-    private boolean active = true;
+    private BooleanProperty active = new SimpleBooleanProperty(true);
 
+    private StringProperty userGuid=new SimpleStringProperty();
+
+    @Override
     public String getGroupGuid() {
+        return groupGuid.get();
+    }
+
+    public StringProperty groupGuidProperty() {
         return groupGuid;
     }
 
     public void setGroupGuid(String groupGuid) {
-        this.groupGuid = groupGuid;
+        this.groupGuid.set(groupGuid);
     }
 
+    @Override
     public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
+    @Override
     public boolean getActive() {
+        return active.get();
+    }
+
+    public BooleanProperty activeProperty() {
         return active;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.active.set(active);
+    }
+
+    public String getUserGuid() {
+        return userGuid.get();
+    }
+
+    public StringProperty userGuidProperty() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid.set(userGuid);
     }
 
     @Override
@@ -51,6 +84,7 @@ public class ContragentGroupFx extends FxEntity<ContragentGroupDto> implements T
         contragentGroup.setActive(getActive());
         contragentGroup.setGroupGuid(getGroupGuid());
         contragentGroup.setName(getName());
+        contragentGroup.setUserGuid(getUserGuid());
         return contragentGroup;
     }
 

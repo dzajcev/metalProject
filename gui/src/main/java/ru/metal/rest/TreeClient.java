@@ -5,6 +5,7 @@ import ru.common.api.request.DeleteTreeItemRequest;
 import ru.common.api.request.ObtainTreeItemRequest;
 import ru.common.api.request.UpdateTreeItemRequest;
 import ru.common.api.response.UpdateTreeItemResponse;
+import ru.metal.dto.ContragentGroupFx;
 import ru.metal.dto.response.ObtainTreeItemResponse;
 
 /**
@@ -14,8 +15,10 @@ public interface TreeClient<T extends TreeviewElement> {
 
     ObtainTreeItemResponse<T> getGroupItems(ObtainTreeItemRequest obtainTreeItemRequest);
 
+    ObtainTreeItemResponse<T> getGroupFullItems(ObtainTreeItemRequest obtainTreeItemRequest);
+
     UpdateTreeItemResponse updateGroupItems(UpdateTreeItemRequest<T> updateTreeItemRequest);
 
-    UpdateTreeItemResponse deleteGroupItem(DeleteTreeItemRequest<T> deleteTreeItemRequest);
+    UpdateTreeItemResponse deleteGroupItem(DeleteTreeItemRequest deleteTreeItemRequest);
 
 }

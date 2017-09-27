@@ -6,5 +6,5 @@ import ru.metal.api.contragents.dto.ContragentGroupDto;
 /**
  * Created by User on 15.08.2017.
  */
-public class ObtainContragentGroupReponse extends ObtainAbstractResponse<ContragentGroupDto> {
+public class ObtainContragentGroupResponse extends ObtainAbstractResponse<ContragentGroupDto> {
 }

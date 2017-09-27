@@ -161,31 +161,30 @@ public abstract class AbstractController<T extends AbstractResponse> {
 
     protected abstract T save();
 
-    private String collectErrors(List<Error> list){
-        StringBuilder stringBuilder=new StringBuilder();
-        if (!list.isEmpty()){
-            for (Error error:list){
+    private String collectErrors(List<Error> list) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!list.isEmpty()) {
+            for (Error error : list) {
                 stringBuilder.append(error.getDescription()).append("\n");
             }
         }
         return stringBuilder.toString();
     }
-    protected boolean saveResult(boolean withMessage) {
+
+    public boolean saveResult(boolean withMessage) {
         T save = save();
         boolean hasErrors = save == null || !save.getErrors().isEmpty();
         if (hasErrors) {
-            if (withMessage) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Ошибка");
-                alert.setHeaderText("Произошла ошибка при сохранении");
-                if (save == null) {
-                    alert.setContentText("Проверьте правильность заполнения полей");
-                }else{
-                    alert.setContentText(collectErrors(save.getErrors()));
-                }
-                alert.initOwner(getPrimaryStage());
-                alert.show();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText("Произошла ошибка при сохранении");
+            if (save == null) {
+                alert.setContentText("Проверьте правильность заполнения полей");
+            } else {
+                alert.setContentText(collectErrors(save.getErrors()));
             }
+            alert.initOwner(getPrimaryStage());
+            alert.show();
             return false;
         } else {
             if (withMessage) {

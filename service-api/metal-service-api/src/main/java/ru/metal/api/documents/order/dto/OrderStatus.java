@@ -8,8 +8,7 @@ import ru.metal.api.documents.DocumentStatus;
  */
 public enum OrderStatus implements DocumentStatus {
     DRAFT("Черновик"),
-    PAID_FOR("Оплачен"),
-    EXECUTED("Исполнен")
+    PAID_FOR("Оплачен")
 
     ;
 

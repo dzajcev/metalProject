@@ -1,4 +1,4 @@
-package ru.metal.gui.controllers.contragents;
+package ru.metal.gui.controllers.catalogs.contragents;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

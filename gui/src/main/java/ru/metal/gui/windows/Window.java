@@ -1,5 +1,7 @@
 package ru.metal.gui.windows;
 
+import com.sun.glass.ui.Application;
+import com.sun.glass.ui.Robot;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -19,6 +21,8 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import ru.metal.gui.controllers.AbstractController;
 import ru.metal.gui.windows.icons.CloseIcon;
@@ -94,6 +98,10 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
                     if (newValue) {
                         setClosed(newValue);
                         controller.setToClose(!newValue);
+                        if (isModal()){
+                            Stage stage = (Stage) getScene().getWindow();
+                            stage.close();
+                        }
                     }
                 }
             });
@@ -103,6 +111,10 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
                         setClosed(true);
+                        if (isModal()){
+                            Stage stage = (Stage) getScene().getWindow();
+                            stage.close();
+                        }
                     }
                 }
             });
@@ -422,17 +434,23 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
 
     private double initX = 0;
     private double initY = 0;
+    private double initY1 = 0;
     Bounds boundsInLocal;
 
-    private void addDnd(Node node) {
+    public void setResizable() {
         DragResizerXY.makeResizable(this);
+    }
+
+    private void addDnd(Node node) {
+
         node.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 boundsInLocal = getParent().getBoundsInLocal();
                 initX = event.getX();
                 initY = event.getY() + 30;
-                event.consume();
+                initY1 = event.getY();
+
             }
         });
         node.setOnMouseDragged(event -> {
@@ -445,17 +463,20 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
                     return;
                 }
 
-                super.setLayoutX(event.getSceneX() - initX);
-                super.setLayoutY(event.getSceneY() - initY);
+                if (!isModal()) {
+                    super.setLayoutX(event.getSceneX() - initX);
+                    super.setLayoutY(event.getSceneY() - initY);
+                }
+
             }
-            event.consume();
+
         });
         node.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 initX = 0;
                 initY = 0;
-                event.consume();
+
             }
         });
     }
@@ -577,6 +598,7 @@ public class Window<T extends AbstractController, E extends Node> extends VBox {
     }
 
     public void setModal(boolean modal) {
+        ((Pane)header.getParent()).getChildren().remove(header);
         modalOld = modal;
         this.modal.set(modal);
     }

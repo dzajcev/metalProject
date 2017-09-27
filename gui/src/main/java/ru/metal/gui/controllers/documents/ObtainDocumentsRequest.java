@@ -5,16 +5,35 @@ import ru.metal.api.documents.DocumentStatus;
 import ru.metal.dto.ContragentFx;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by User on 21.09.2017.
  */
-public class ObtainDocumentsRequest {
+public class ObtainDocumentsRequest<T extends DocumentStatus> {
+    private Date start;
+    private Date end;
     private List<ContragentFx> sources;
     private List<ContragentFx> recipients;
-    private List<DocumentStatus> statuses;
+    private List<T> statuses;
     private List<String> userGuids;
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
 
     public List<ContragentFx> getSources() {
         return sources;
@@ -32,14 +51,14 @@ public class ObtainDocumentsRequest {
         this.recipients = recipients;
     }
 
-    public List<DocumentStatus> getStatuses() {
+    public List<T> getStatuses() {
         if (statuses==null){
             statuses=new ArrayList<>();
         }
         return statuses;
     }
 
-    public void setStatuses(List<DocumentStatus> statuses) {
+    public void setStatuses(List<T> statuses) {
         this.statuses = statuses;
     }
 

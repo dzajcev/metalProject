@@ -25,10 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by d.zaitsev on 02.08.2017.
@@ -56,6 +53,10 @@ public class ContragentsFacadeImpl extends AbstractCatalogFacade<ContragentGroup
         if (!obtainContragentGroupRequest.getGroupGuids().isEmpty()) {
             predicates.add(root.get(ContragentGroup_.guid).in(obtainContragentGroupRequest.getGroupGuids()));
         }
+        if (!obtainContragentGroupRequest.getContragentGuids().isEmpty()) {
+            ListJoin<ContragentGroup, Contragent> join = root.join(ContragentGroup_.items);
+            predicates.add(join.get(Contragent_.guid).in(obtainContragentGroupRequest.getContragentGuids()));
+        }
         if (!obtainContragentGroupRequest.getPersonTypes().isEmpty()) {
             Join<ContragentGroup, Contragent> contragents = root.join(ContragentGroup_.items);
             Predicate criteria = contragents.get(Contragent_.personType).in(obtainContragentGroupRequest.getPersonTypes());
@@ -73,35 +74,42 @@ public class ContragentsFacadeImpl extends AbstractCatalogFacade<ContragentGroup
         return results;
     }
 
-    public ObtainContragentGroupReponse getFullGroupsByContragents(ObtainContragentGroupRequest obtainContragentGroupRequest) {
+    public ObtainContragentGroupResponse getFullGroupsByContragents(ObtainContragentGroupRequest obtainContragentGroupRequest) {
 
         List<ContragentGroup> result = new ArrayList<>();
         getFullGroupsByContragentsSub(obtainContragentGroupRequest, result);
 
-        ObtainContragentGroupReponse obtainContragentGroupReponse = new ObtainContragentGroupReponse();
-        obtainContragentGroupReponse.setDataList(mapper.mapCollections(result, ContragentGroupDto.class));
-        return obtainContragentGroupReponse;
+        ObtainContragentGroupResponse obtainContragentGroupResponse = new ObtainContragentGroupResponse();
+        obtainContragentGroupResponse.setDataList(mapper.mapCollections(result, ContragentGroupDto.class));
+        return obtainContragentGroupResponse;
     }
 
     private void getFullGroupsByContragentsSub(ObtainContragentGroupRequest obtainContragentGroupRequest, List<ContragentGroup> result) {
         List<ContragentGroup> entityGroups = getEntityGroups(obtainContragentGroupRequest);
+        Set<String> groups1=new HashSet<>();
+        for (ContragentGroup group:entityGroups){
+            groups1.add(group.getGuid());
+        }
         result.addAll(entityGroups);
-        List<String> groups = new ArrayList<>();
+        Set<String> groups = new HashSet<>();
         for (ContragentGroup group : entityGroups) {
-            if (group.getGroupGuid() != null) {
+            if (group.getGroupGuid() != null && !groups1.contains(group.getGroupGuid())) {
                 groups.add(group.getGroupGuid());
             }
         }
         if (!groups.isEmpty()) {
-            obtainContragentGroupRequest.setGroupGuids(groups);
+            obtainContragentGroupRequest.getContragentTypes().clear();
+            obtainContragentGroupRequest.getPersonTypes().clear();
+            obtainContragentGroupRequest.getContragentGuids().clear();
+            obtainContragentGroupRequest.setGroupGuids(new ArrayList<>(groups));
             getFullGroupsByContragentsSub(obtainContragentGroupRequest, result);
         }
     }
 
-    public ObtainContragentGroupReponse getGroups(ObtainContragentGroupRequest obtainTreeItemRequest) {
-        ObtainContragentGroupReponse obtainContragentGroupReponse = new ObtainContragentGroupReponse();
-        obtainContragentGroupReponse.setDataList(mapper.mapCollections(getEntityGroups(obtainTreeItemRequest), ContragentGroupDto.class));
-        return obtainContragentGroupReponse;
+    public ObtainContragentGroupResponse getGroups(ObtainContragentGroupRequest obtainTreeItemRequest) {
+        ObtainContragentGroupResponse obtainContragentGroupResponse = new ObtainContragentGroupResponse();
+        obtainContragentGroupResponse.setDataList(mapper.mapCollections(getEntityGroups(obtainTreeItemRequest), ContragentGroupDto.class));
+        return obtainContragentGroupResponse;
     }
 
     @Override
@@ -133,10 +141,10 @@ public class ContragentsFacadeImpl extends AbstractCatalogFacade<ContragentGroup
 
 
     @Override
-    public UpdateContragentGroupResponse deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request) {
+    public UpdateContragentGroupResponse deleteGroups(DeleteTreeItemRequest request) {
 
         ObtainContragentGroupRequest obtainContragentGroupRequest = new ObtainContragentGroupRequest();
-        obtainContragentGroupRequest.setGroupGuids(request.getGuids());
+        obtainContragentGroupRequest.setGroupGuids(request.getDataList());
         List<ContragentGroup> groups = getEntityGroups(obtainContragentGroupRequest);
         List<ContragentGroup> deleted = getDeletedGroups(groups);
         UpdateContragentGroupResponse response = new UpdateContragentGroupResponse();

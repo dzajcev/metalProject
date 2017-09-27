@@ -1,11 +1,11 @@
 package ru.metal.dto;
 
 import javafx.beans.property.Property;
-import ru.metal.security.ejb.dto.AbstractDto;
 import ru.metal.dto.annotations.PredicateField;
 import ru.metal.dto.annotations.ValidatableCollection;
 import ru.metal.dto.annotations.ValidatableField;
 import ru.metal.dto.helper.FxHelper;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -65,8 +65,9 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
                 if (fieldValue instanceof Collection) {
                     Collection collection = (Collection) fieldValue;
                     ValidatableCollection annotation = field.getAnnotation(ValidatableCollection.class);
+                    boolean result = true;
                     if (annotation != null) {
-                        boolean result = resultPredicate(validatedObject, predicateFields, annotation.predicateName());
+                        result = resultPredicate(validatedObject, predicateFields, annotation.predicateName());
                         if (result) {
                             int collectionSize = collection == null ? 0 : collection.size();
                             if (collectionSize > annotation.maxSize()) {
@@ -80,9 +81,10 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
                     for (Object o : collection) {
                         if (!(o instanceof FxEntity)) {
                             break;
-                        } else {
-                            Map<String, Map<String, Boolean>> result = validateSub(o, ((FxEntity) o).getTransportGuid());
-                            errorFields.putAll(result);
+                        } else if (result) {
+                            Map<String, Map<String, Boolean>> resultValidate = validateSub(o, ((FxEntity) o).getTransportGuid());
+                            errorFields.putAll(resultValidate);
+
                         }
                     }
                 } else {
@@ -97,8 +99,9 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
                         value = fieldValue;
                     }
                     ValidatableField annotation = field.getAnnotation(ValidatableField.class);
+                    boolean result=true;
                     if (annotation != null) {
-                        boolean result = resultPredicate(validatedObject, predicateFields, annotation.predicateName());
+                        result = resultPredicate(validatedObject, predicateFields, annotation.predicateName());
                         if (result) {
                             if (!annotation.nullable() && value == null) {
                                 hasError = true;
@@ -119,7 +122,7 @@ public abstract class FxEntity<T extends AbstractDto> extends AbstractDto {
 
 
                     }
-                    if (value instanceof FxEntity) {
+                    if (result && value instanceof FxEntity) {
                         Map<String, Map<String, Boolean>> validateResult = validateSub(value, ((FxEntity) value).getTransportGuid());
                         errorFields.putAll(validateResult);
                     }

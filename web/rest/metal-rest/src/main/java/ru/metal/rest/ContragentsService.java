@@ -34,13 +34,13 @@ public class ContragentsService {
     @POST
     @Path("/groups/get")
     public Response getGroups(ObtainContragentGroupRequest obtainTreeItemRequest) throws Exception {
-        ObtainContragentGroupReponse groups = contragentsFacade.getGroups(obtainTreeItemRequest);
+        ObtainContragentGroupResponse groups = contragentsFacade.getGroups(obtainTreeItemRequest);
         return Response.ok(groups).build();
     }
     @POST
     @Path("/groups/getFull")
     public Response getGroupsFull(ObtainContragentGroupRequest obtainTreeItemRequest) throws Exception {
-        ObtainContragentGroupReponse groups = contragentsFacade.getFullGroupsByContragents(obtainTreeItemRequest);
+        ObtainContragentGroupResponse groups = contragentsFacade.getFullGroupsByContragents(obtainTreeItemRequest);
         return Response.ok(groups).build();
     }
     @POST
@@ -52,7 +52,7 @@ public class ContragentsService {
 
     @POST
     @Path("/groups/delete")
-    public Response deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request) throws Exception {
+    public Response deleteGroups(DeleteTreeItemRequest request) throws Exception {
         UpdateContragentGroupResponse groupUpdateResponse = contragentsFacade.deleteGroups(request);
         return Response.ok(groupUpdateResponse).build();
     }

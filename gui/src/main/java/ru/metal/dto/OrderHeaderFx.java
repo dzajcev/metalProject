@@ -11,8 +11,6 @@ import ru.metal.dto.helper.FxHelper;
 import ru.metal.dto.helper.OrderBodyHelper;
 import ru.metal.dto.helper.OrderHeaderHelper;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -22,7 +20,7 @@ import java.util.Date;
 public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentHeader {
 
     @ValidatableField(nullable = false)
-    protected ObjectProperty<Date> createDate = new SimpleObjectProperty<>(new Date());
+    protected ObjectProperty<Date> dateCreate = new SimpleObjectProperty<>(new Date());
 
     private StringProperty number = new SimpleStringProperty();
 
@@ -30,13 +28,13 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
     private ObjectProperty<ContragentFx> source = new SimpleObjectProperty<>();
 
     @ValidatableField(nullable = false)
-    private ObjectProperty<OrderStatus> status = new SimpleObjectProperty<>();
+    private ObjectProperty<OrderStatus> documentStatus = new SimpleObjectProperty<>(OrderStatus.DRAFT);
 
     @ValidatableField(nullable = false)
     private ObjectProperty<ContragentFx> recipient = new SimpleObjectProperty<>();
 
     @ValidatableField(nullable = false)
-    private ObjectProperty<LocalDate> dateOrder = new SimpleObjectProperty<>();
+    private ObjectProperty<Date> dateDocument = new SimpleObjectProperty<>();
 
     private StringProperty comment = new SimpleStringProperty();
 
@@ -45,16 +43,16 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
     @ValidatableCollection(minSize = 1)
     private ObservableList<OrderBodyFx> orderBody = FXCollections.observableArrayList();
 
-    public Date getCreateDate() {
-        return createDate.get();
+    public Date getDateCreate() {
+        return dateCreate.get();
     }
 
-    public ObjectProperty<Date> createDateProperty() {
-        return createDate;
+    public ObjectProperty<Date> dateCreateProperty() {
+        return dateCreate;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate.set(createDate);
+    public void setDateCreate(Date dateCreate) {
+        this.dateCreate.set(dateCreate);
     }
 
     @Override
@@ -101,23 +99,18 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
 
     @Override
     public Date getDateDocument() {
-        if (dateOrder.getValue() != null) {
-            Instant instantDateOrder = Instant.from(dateOrder.getValue().atStartOfDay(ZoneId.systemDefault()));
-            return Date.from(instantDateOrder);
-        } else {
-            return null;
-        }
+        return dateDocument.get();
+
     }
 
     @Override
-    public ObjectProperty<LocalDate> dateDocumentProperty() {
-        return dateOrder;
+    public ObjectProperty<Date> dateDocumentProperty() {
+        return dateDocument;
     }
 
     public void setDateDocument(Date dateOrder) {
-        if (dateOrder != null) {
-            this.dateOrder.set(dateOrder.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        }
+        this.dateDocument.set(dateOrder);
+
     }
 
     public String getComment() {
@@ -144,16 +137,16 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
         this.userGuid.set(userGuid);
     }
 
-    public OrderStatus getStatus() {
-        return status.get();
+    public OrderStatus getDocumentStatus() {
+        return documentStatus.get();
     }
 
-    public ObjectProperty<OrderStatus> statusProperty() {
-        return status;
+    public ObjectProperty<OrderStatus> documentStatusProperty() {
+        return documentStatus;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status.set(status);
+    public void setDocumentStatus(OrderStatus documentStatus) {
+        this.documentStatus.set(documentStatus);
     }
 
     @Override
@@ -184,7 +177,7 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
     public OrderHeaderDto getEntity() {
         OrderHeaderDto dto = new OrderHeaderDto();
         dto.setComment(getComment());
-        dto.setCreateDate(getCreateDate());
+        dto.setCreateDate(getDateCreate());
         dto.setDateOrder(getDateDocument());
         dto.setNumber(getNumber());
         if (getRecipient() != null) {
@@ -197,7 +190,7 @@ public class OrderHeaderFx extends FxEntity<OrderHeaderDto> implements DocumentH
         dto.setGuid(getGuid());
         dto.setLastEditingDate(getLastEditingDate());
         dto.setTransportGuid(getTransportGuid());
-        dto.setStatus(getStatus());
+        dto.setStatus(getDocumentStatus());
         dto.setBody(OrderBodyHelper.getInstance().getDtoCollection(getOrderBody()));
         return dto;
     }

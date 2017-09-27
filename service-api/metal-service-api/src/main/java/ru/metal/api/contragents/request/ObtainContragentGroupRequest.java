@@ -11,19 +11,12 @@ import java.util.List;
  * Created by User on 16.08.2017.
  */
 public class ObtainContragentGroupRequest extends ObtainTreeItemRequest {
-    private boolean active;
+
+    private List<String> contragentGuids;
 
     private List<PersonType> personTypes = new ArrayList<>();
 
     private List<ContragentType> contragentTypes = new ArrayList<>();
-
-    public boolean getActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 
     public List<PersonType> getPersonTypes() {
         return personTypes;
@@ -39,5 +32,16 @@ public class ObtainContragentGroupRequest extends ObtainTreeItemRequest {
 
     public void setContragentTypes(List<ContragentType> contragentTypes) {
         this.contragentTypes = contragentTypes;
+    }
+
+    public List<String> getContragentGuids() {
+        if (contragentGuids==null){
+            contragentGuids=new ArrayList<>();
+        }
+        return contragentGuids;
+    }
+
+    public void setContragentGuids(List<String> contragentGuids) {
+        this.contragentGuids = contragentGuids;
     }
 }

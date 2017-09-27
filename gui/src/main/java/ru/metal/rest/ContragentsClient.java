@@ -25,7 +25,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
 
     @Override
     public ObtainTreeItemResponse<ContragentGroupFx> getGroupItems(ObtainTreeItemRequest obtainTreeItemRequest) {
-        ObtainContragentGroupReponse execute = executePost(pathGroup + "/get", obtainTreeItemRequest, ObtainContragentGroupReponse.class);
+        ObtainContragentGroupResponse execute = executePost(pathGroup + "/get", obtainTreeItemRequest, ObtainContragentGroupResponse.class);
         ObtainTreeItemResponse<ContragentGroupFx> response = new ObtainTreeItemResponse<ContragentGroupFx>();
         response.setErrors(execute.getErrors());
         response.setDataList(ContragentGroupHelper.getInstance().getFxCollection(execute.getDataList()));
@@ -33,7 +33,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     }
 
     public ObtainTreeItemResponse<ContragentGroupFx> getGroupFullItems(ObtainTreeItemRequest obtainTreeItemRequest) {
-        ObtainContragentGroupReponse execute = executePost(pathGroup + "/getFull", obtainTreeItemRequest, ObtainContragentGroupReponse.class);
+        ObtainContragentGroupResponse execute = executePost(pathGroup + "/getFull", obtainTreeItemRequest, ObtainContragentGroupResponse.class);
         ObtainTreeItemResponse<ContragentGroupFx> response = new ObtainTreeItemResponse<ContragentGroupFx>();
         response.setErrors(execute.getErrors());
         response.setDataList(ContragentGroupHelper.getInstance().getFxCollection(execute.getDataList()));
@@ -52,7 +52,7 @@ public class ContragentsClient extends AbstractRestClient implements TreeClient<
     }
 
     @Override
-    public UpdateTreeItemResponse deleteGroupItem(DeleteTreeItemRequest<ContragentGroupFx> deleteTreeItemRequest) {
+    public UpdateTreeItemResponse deleteGroupItem(DeleteTreeItemRequest deleteTreeItemRequest) {
         UpdateContragentGroupResponse execute = executePost(pathGroup + "/delete", deleteTreeItemRequest, UpdateContragentGroupResponse.class);
         return execute;
     }

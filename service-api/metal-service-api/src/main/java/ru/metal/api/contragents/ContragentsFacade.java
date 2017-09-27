@@ -14,13 +14,13 @@ import ru.metal.api.contragents.response.*;
  */
 public interface ContragentsFacade {
 
-    ObtainContragentGroupReponse getGroups(ObtainContragentGroupRequest obtainTreeItemRequest);
+    ObtainContragentGroupResponse getGroups(ObtainContragentGroupRequest obtainTreeItemRequest);
 
-    ObtainContragentGroupReponse getFullGroupsByContragents(ObtainContragentGroupRequest obtainContragentGroupRequest);
+    ObtainContragentGroupResponse getFullGroupsByContragents(ObtainContragentGroupRequest obtainContragentGroupRequest);
 
     UpdateContragentGroupResponse updateGroups(UpdateTreeItemRequest<ContragentGroupDto> request);
 
-    UpdateContragentGroupResponse deleteGroups(DeleteTreeItemRequest<ContragentGroupDto> request);
+    UpdateContragentGroupResponse deleteGroups(DeleteTreeItemRequest request);
 
     ObtainContragentResponse getContragents(ObtainContragentRequest obtainContragentRequest);
 

@@ -1,11 +1,11 @@
 package ru.metal.impl.facade;
 
 
+import ru.common.api.dto.Error;
+import ru.metal.api.documents.order.ErrorCodeEnum;
 import ru.metal.api.documents.order.OrderFacade;
-import ru.metal.api.documents.order.dto.OrderBodyDto;
-import ru.metal.api.documents.order.dto.OrderHeaderDto;
-import ru.metal.api.documents.order.dto.UpdateBodyResult;
-import ru.metal.api.documents.order.dto.UpdateOrderResult;
+import ru.metal.api.documents.order.dto.*;
+import ru.metal.api.documents.order.request.DropOrderRequest;
 import ru.metal.api.documents.order.request.ObtainOrderRequest;
 import ru.metal.api.documents.order.request.UpdateOrderRequest;
 import ru.metal.api.documents.order.response.ObtainOrderResponse;
@@ -88,20 +88,25 @@ public class OrderFacadeImpl implements OrderFacade {
         }
         if (!request.getRecipients().isEmpty()) {
             Predicate recipientPredicate;
-            Join<OrderHeader, Contragent> source = root.join(OrderHeader_.recipient);
-            if (request.getSources().size() == 1) {
-                recipientPredicate = cb.equal(source.get(Contragent_.guid), request.getSources().get(0));
+            Join<OrderHeader, Contragent> recipient = root.join(OrderHeader_.recipient);
+            if (request.getRecipients().size() == 1) {
+                recipientPredicate = cb.equal(recipient.get(Contragent_.guid), request.getRecipients().get(0));
             } else {
-                recipientPredicate = source.get(Contragent_.guid).in(request.getSources());
+                recipientPredicate = recipient.get(Contragent_.guid).in(request.getRecipients());
             }
             predicates.add(recipientPredicate);
         }
 
-        if (request.getUserGuid() != null) {
-            Predicate userPredicate = cb.equal(root.get(OrderHeader_.userGuid), request.getUserGuid());
+        if (!request.getUserGuids().isEmpty()) {
+            Predicate userPredicate = root.get(OrderHeader_.userGuid).in(request.getUserGuids());
             predicates.add(userPredicate);
         }
-        cq.where(predicates.toArray(new Predicate[0])).distinct(true);
+
+        if (!request.getStatuses().isEmpty()) {
+            final Predicate predicate =root.get(OrderHeader_.status).in(request.getStatuses());
+            predicates.add(predicate);
+        }
+        cq.where(cb.and(predicates.toArray(new Predicate[0]))).distinct(true);
 
         TypedQuery<OrderHeader> q = entityManager.createQuery(cq);
         List<OrderHeader> results = q.getResultList();
@@ -164,6 +169,29 @@ public class OrderFacadeImpl implements OrderFacade {
                         break;
                     }
                 }
+            }
+            response.getImportResults().add(updateOrderResult);
+        }
+        return response;
+    }
+
+    @Override
+    public UpdateOrderResponse dropOrders(DropOrderRequest dropOrderRequest) {
+        UpdateOrderResponse response=new UpdateOrderResponse();
+        for (String guid:dropOrderRequest.getDataList()){
+            OrderHeader orderHeader = entityManager.find(OrderHeader.class, guid);
+            UpdateOrderResult updateOrderResult = new UpdateOrderResult();
+            updateOrderResult.setGuid(guid);
+            if (orderHeader==null){
+                Error error = new Error(ErrorCodeEnum.ORDER002, guid);
+                updateOrderResult.getErrors().add(error);
+            }
+            if (orderHeader.getStatus()!= OrderStatus.DRAFT){
+                Error error = new Error(ErrorCodeEnum.ORDER001, guid);
+                updateOrderResult.getErrors().add(error);
+            }
+            if (updateOrderResult.getErrors().isEmpty()){
+                entityManager.remove(orderHeader);
             }
             response.getImportResults().add(updateOrderResult);
         }

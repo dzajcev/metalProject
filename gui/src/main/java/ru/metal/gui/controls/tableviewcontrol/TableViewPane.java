@@ -21,11 +21,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import ru.common.api.dto.TableElement;
-import ru.metal.security.ejb.dto.AbstractDto;
 import ru.metal.dto.FxEntity;
+import ru.metal.gui.controllers.catalogs.ItemSelector;
 import ru.metal.gui.windows.LabelButton;
+import ru.metal.security.ejb.dto.AbstractDto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,13 +41,14 @@ public class TableViewPane<T extends TableElement> extends VBox {
     private ObservableList<T> source;
     private TableView<T> tableView;
     private BooleanProperty onlyActive = new SimpleBooleanProperty(true);
-    private ObjectProperty<T> toSave = new SimpleObjectProperty();
     private ObjectProperty<T> open = new SimpleObjectProperty();
     private BooleanProperty editable = new SimpleBooleanProperty(false);
 
     private ObjectProperty<T> obtainItem = new SimpleObjectProperty<T>();
+    private ItemSelector<T> itemSelector;
 
-    public TableViewPane(Class<T> clazz) {
+    public TableViewPane(Class<T> clazz, ItemSelector<T> itemSelector) {
+        this.itemSelector = itemSelector;
         setAlignment(Pos.TOP_CENTER);
         setPadding(new Insets(2));
         HBox buttonBlock = new HBox();
@@ -184,7 +187,8 @@ public class TableViewPane<T extends TableElement> extends VBox {
                             FxEntity fxEntity = entity.getHelper().getFxEntity((AbstractDto) contentTableRow);
                             TableElement tableElement = (TableElement) fxEntity;
                             next.setGroup(tableElement.getGroup());
-                            toSave.setValue(next);
+
+                            itemSelector.updateItems(Collections.singletonList(next));
                             iterator.remove();
                             break;
                         }
@@ -201,20 +205,7 @@ public class TableViewPane<T extends TableElement> extends VBox {
                 add.setDisable(!newValue);
             }
         });
-
-    }
-
-
-    public T getToSave() {
-        return toSave.get();
-    }
-
-    public ObjectProperty<T> toSaveProperty() {
-        return toSave;
-    }
-
-    public void setToSave(T toSave) {
-        this.toSave.set(toSave);
+        setItems(itemSelector.getItems(new ArrayList<>(), isOnlyActive()));
     }
 
     private List<T> findItems(String text) {
@@ -251,6 +242,9 @@ public class TableViewPane<T extends TableElement> extends VBox {
         tableView.setItems(sortedList);
     }
 
+    public void addItem(T item){
+        source.add(item);
+    }
     public boolean isOnlyActive() {
         return onlyActive.get();
     }

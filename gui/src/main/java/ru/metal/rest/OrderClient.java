@@ -1,5 +1,6 @@
 package ru.metal.rest;
 
+import ru.metal.api.documents.order.request.DropOrderRequest;
 import ru.metal.api.documents.order.request.ObtainOrderRequest;
 import ru.metal.api.documents.order.request.UpdateOrderRequest;
 import ru.metal.api.documents.order.response.ObtainOrderResponse;
@@ -23,5 +24,8 @@ public class OrderClient extends AbstractRestClient {
         UpdateOrderResponse response = executePost(pathOrder + "/update", obtainOrderRequest, UpdateOrderResponse.class);
         return response;
     }
-
+    public UpdateOrderResponse dropOrders(DropOrderRequest dropOrderRequest) {
+        UpdateOrderResponse response = executePost(pathOrder + "/drop", dropOrderRequest, UpdateOrderResponse.class);
+        return response;
+    }
 }

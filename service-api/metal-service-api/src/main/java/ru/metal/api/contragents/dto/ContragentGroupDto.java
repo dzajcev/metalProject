@@ -14,6 +14,8 @@ public class ContragentGroupDto extends AbstractDto implements TreeviewElement {
 
     private boolean active = true;
 
+    private String userGuid;
+
     public String getGroupGuid() {
         return groupGuid;
     }
@@ -36,5 +38,13 @@ public class ContragentGroupDto extends AbstractDto implements TreeviewElement {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
     }
 }

@@ -1,4 +1,4 @@
-package ru.metal.gui.controllers.nomenclature;
+package ru.metal.gui.controllers.catalogs.nomenclature;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -113,7 +113,7 @@ public class GoodInfoController extends AbstractController<UpdateGoodsResponse> 
         updateGoodsRequest.getDataList().add(goodFx.getEntity());
 
         UpdateGoodsResponse updateGoodsResponse = nomenclatureClient.updateGoods(updateGoodsRequest);
-
+        goodFx.setGuid(updateGoodsResponse.getImportResults().get(0).getGuid());
         saved.setValue(true);
         setCloseRequest(true);
         return updateGoodsResponse;
@@ -144,5 +144,9 @@ public class GoodInfoController extends AbstractController<UpdateGoodsResponse> 
 
         registerControlsProperties(save, name.textProperty(), active.selectedProperty(),
                 okei.getSelectionModel().selectedItemProperty(), nds.textProperty());
+    }
+
+    public GoodFx getGood(){
+        return goodFx;
     }
 }

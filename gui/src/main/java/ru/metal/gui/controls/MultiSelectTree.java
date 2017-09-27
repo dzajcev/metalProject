@@ -1,12 +1,8 @@
 package ru.metal.gui.controls;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -35,7 +31,10 @@ public class MultiSelectTree<G extends TreeviewElement, I extends TableElement<G
 
     private Map<String, TreeItem<MultiSelectTreeValue<G, I>>> leafItems = new HashMap<>();
 
-    public MultiSelectTree(List<G> groups, List<I> items, String name) {
+    private boolean isMultiSelect;
+
+    public MultiSelectTree(List<G> groups, List<I> items, String name, boolean multiSelect) {
+        isMultiSelect = multiSelect;
         setPrefHeight(400);
         setPrefWidth(300);
         LabelButton collapseAll = new LabelButton(null, new Image(getClass().getResourceAsStream("/icons/collapse_tree.png")));
@@ -103,7 +102,7 @@ public class MultiSelectTree<G extends TreeviewElement, I extends TableElement<G
         for (I i : selectedItems) {
             TreeItem<MultiSelectTreeValue<G, I>> multiSelectTreeValueTreeItem = leafItems.get(i.getGuid());
             multiSelectTreeValueTreeItem.getValue().setSelectMode(MultiSelectTreeValue.FULL_SELECT);
-            selectParentBranch(multiSelectTreeValueTreeItem,selected);
+            selectParentBranch(multiSelectTreeValueTreeItem, selected);
         }
         treeView.refresh();
     }
@@ -184,6 +183,7 @@ public class MultiSelectTree<G extends TreeviewElement, I extends TableElement<G
         }
         return list;
     }
+
     private void selectParentBranch(TreeItem<MultiSelectTreeValue<G, I>> item, boolean selected) {
         TreeItem<MultiSelectTreeValue<G, I>> parent = item.getParent();
         if (parent == null) {
@@ -208,10 +208,10 @@ public class MultiSelectTree<G extends TreeviewElement, I extends TableElement<G
             }
             if (isFinded) {
                 parent.getValue().setSelectMode(MultiSelectTreeValue.HALF_SELECT);
-            }else{
-                if (selected){
+            } else {
+                if (selected) {
                     parent.getValue().setSelectMode(MultiSelectTreeValue.FULL_SELECT);
-                }else{
+                } else {
                     parent.getValue().setSelectMode(MultiSelectTreeValue.UNSELECT);
                 }
             }
@@ -219,6 +219,7 @@ public class MultiSelectTree<G extends TreeviewElement, I extends TableElement<G
         selectParentBranch(parent, selected);
 
     }
+
     private final class TextFieldTreeCellImpl extends TreeCell<MultiSelectTreeValue<G, I>> {
         ImageView openFolder = new ImageView(new Image(getClass().getResourceAsStream("/icons/open_folder.png")));
         ImageView selectedOpenFolder = new ImageView(new Image(getClass().getResourceAsStream("/icons/selected_open_folder.png")));
@@ -231,39 +232,38 @@ public class MultiSelectTree<G extends TreeviewElement, I extends TableElement<G
         ImageView leaf = new ImageView(new Image(getClass().getResourceAsStream("/icons/leaf.png")));
         ImageView selectedLeaf = new ImageView(new Image(getClass().getResourceAsStream("/icons/selected_leaf.png")));
 
-        private Map<String, I> selectedItems;
-
-
-
         public TextFieldTreeCellImpl(Map<String, I> selectedItems) {
-
-            this.selectedItems = selectedItems;
             this.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.SECONDARY) {
-                        int selectMode = getTreeItem().getValue().getSelectMode();
+                    if (isMultiSelect) {
+                        if (event.getButton() == MouseButton.SECONDARY) {
+                            int selectMode = getTreeItem().getValue().getSelectMode();
 
-                        List<TreeItem<MultiSelectTreeValue<G, I>>> allChildren = getAllChildren(getTreeItem());
+                            List<TreeItem<MultiSelectTreeValue<G, I>>> allChildren = getAllChildren(getTreeItem());
 
-                        for (TreeItem<MultiSelectTreeValue<G, I>> treeItem : allChildren) {
-                            if (selectMode == MultiSelectTreeValue.UNSELECT) {
-                                treeItem.getValue().setSelectMode(MultiSelectTreeValue.FULL_SELECT);
-                            } else if (treeItem.getValue().isLeaf()) {
-                                treeItem.getValue().setSelectMode(MultiSelectTreeValue.UNSELECT);
-                            }
-                            selectParentBranch(treeItem, selectMode == MultiSelectTreeValue.UNSELECT);
-                            if (treeItem.getValue().isLeaf()) {
-                                if (treeItem.getValue().getSelectMode() != MultiSelectTreeValue.FULL_SELECT) {
-                                    selectedItems.remove(treeItem.getValue().getItem().getGuid());
-                                } else {
-                                    selectedItems.put(treeItem.getValue().getItem().getGuid(), treeItem.getValue().getItem());
+                            for (TreeItem<MultiSelectTreeValue<G, I>> treeItem : allChildren) {
+                                if (selectMode == MultiSelectTreeValue.UNSELECT) {
+                                    treeItem.getValue().setSelectMode(MultiSelectTreeValue.FULL_SELECT);
+                                } else if (treeItem.getValue().isLeaf()) {
+                                    treeItem.getValue().setSelectMode(MultiSelectTreeValue.UNSELECT);
+                                }
+                                selectParentBranch(treeItem, selectMode == MultiSelectTreeValue.UNSELECT);
+                                if (treeItem.getValue().isLeaf()) {
+                                    if (treeItem.getValue().getSelectMode() != MultiSelectTreeValue.FULL_SELECT) {
+                                        selectedItems.remove(treeItem.getValue().getItem().getGuid());
+                                    } else {
+                                        selectedItems.put(treeItem.getValue().getItem().getGuid(), treeItem.getValue().getItem());
+                                    }
                                 }
                             }
-                        }
-                        getTreeView().refresh();
+                            getTreeView().refresh();
 
+                        }
+                    } else {
+                        //todo: singleselect
                     }
+
                 }
             });
         }

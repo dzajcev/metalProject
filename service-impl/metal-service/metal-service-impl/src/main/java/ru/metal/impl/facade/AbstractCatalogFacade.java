@@ -1,13 +1,7 @@
 package ru.metal.impl.facade;
 
-import ru.metal.api.contragents.dto.ContragentGroupDto;
-import ru.metal.api.contragents.request.ObtainContragentGroupRequest;
-import ru.metal.api.contragents.response.ObtainContragentGroupReponse;
 import ru.metal.impl.domain.persistent.catalog.Catalog;
-import ru.metal.impl.domain.persistent.contragents.ContragentGroup;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

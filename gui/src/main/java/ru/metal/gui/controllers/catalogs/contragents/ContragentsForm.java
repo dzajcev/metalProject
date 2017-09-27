@@ -1,29 +1,32 @@
-package ru.metal.gui.controllers.contragents;
+package ru.metal.gui.controllers.catalogs.contragents;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import ru.metal.api.contragents.request.ObtainContragentGroupRequest;
-import ru.metal.api.contragents.request.ObtainContragentRequest;
-import ru.metal.api.contragents.request.UpdateContragentRequest;
-import ru.metal.api.contragents.response.ObtainContragentResponse;
+import ru.metal.api.contragents.dto.ContragentType;
+import ru.metal.api.users.request.ObtainDelegatingUsersRequest;
+import ru.metal.api.users.response.ObtainDelegatingUsersResponse;
 import ru.metal.dto.ContragentFx;
 import ru.metal.dto.ContragentGroupFx;
-import ru.metal.dto.helper.ContragentHelper;
 import ru.metal.gui.StartPage;
+import ru.metal.gui.controllers.catalogs.ItemSelector;
 import ru.metal.gui.controls.tableviewcontrol.TableViewPane;
 import ru.metal.gui.controls.treeviewcontrol.TreeViewPane;
 import ru.metal.gui.windows.Window;
-import ru.metal.rest.ContragentsClient;
+import ru.metal.rest.UserClient;
+import ru.metal.security.ejb.security.DelegatingUser;
+import ru.metal.security.ejb.security.SecurityUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,14 +34,24 @@ import java.util.List;
  */
 public class ContragentsForm extends AnchorPane {
     public static final String ID = "contragents";
-    private ContragentsClient contragentsClient;
-    TableViewPane<ContragentFx> tableViewPane = new TableViewPane<>(ContragentFx.class);
+    private TableViewPane<ContragentFx> tableViewPane;
 
-    private ObtainContragentRequest obtainContragentRequest;
-    private ObtainContragentGroupRequest groupRequest;
-    public ContragentsForm(boolean editable, ObtainContragentRequest obtainContragentRequest) {
-        contragentsClient = new ContragentsClient();
-        setRequest(obtainContragentRequest);
+    private final ContragentSelector selector;
+
+    public ContragentsForm(boolean editable, ContragentType... contragentTypes) {
+        ObtainDelegatingUsersRequest obtainDelegatingUsersRequest = new ObtainDelegatingUsersRequest();
+        obtainDelegatingUsersRequest.setUserGuids(Collections.singletonList(SecurityUtils.getUserGUID()));
+        UserClient userClient = new UserClient();
+        ObtainDelegatingUsersResponse usersResponse = userClient.getDelegateUsers(obtainDelegatingUsersRequest);
+
+        ContragentBaseCriteria contragentBaseCriteria = new ContragentBaseCriteria();
+        contragentBaseCriteria.setContragentTypes(new ArrayList(Arrays.asList(contragentTypes)));
+        contragentBaseCriteria.setUserGuids(getUserGuids(usersResponse.getDataList()));
+
+        selector = new ContragentSelector(contragentBaseCriteria);
+        ItemSelector<ContragentFx> itemSelector = selector.getItemSelector();
+
+        tableViewPane = new TableViewPane(ContragentFx.class, itemSelector);
 
         setId(ID);
         SplitPane splitPane = new SplitPane();
@@ -49,10 +62,9 @@ public class ContragentsForm extends AnchorPane {
         splitPane.setDividerPositions(0.3);
         getChildren().add(splitPane);
 
-        TreeViewPane<ContragentGroupFx> treeView = new TreeViewPane(contragentsClient, "Контрагенты", ContragentGroupFx.class);
+        TreeViewPane<ContragentGroupFx> treeView = new TreeViewPane(this.selector.getGroupSelector(), "Контрагенты", ContragentGroupFx.class);
         treeView.setEditable(editable);
         splitPane.getItems().add(treeView);
-        treeView.setRequest(groupRequest);
 
         tableViewPane.openProperty().addListener(new ChangeListener<ContragentFx>() {
             @Override
@@ -69,15 +81,12 @@ public class ContragentsForm extends AnchorPane {
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                         if (newValue) {
-                            ObtainContragentRequest request = new ObtainContragentRequest();
-                            request.getContragentTypes().addAll(obtainContragentRequest.getContragentTypes());
-                            request.getPersonTypes().addAll(obtainContragentRequest.getPersonTypes());
-                            request.setGroupGuids(treeView.getSelectedGroups());
-                            request.setActive(tableViewPane.isOnlyActive());
-                            tableViewPane.setItems(obtainContragents(request));
+                            tableViewPane.addItem(window.getController().getContragent());
+                            selector.getItemSelector().getAllItems().add(window.getController().getContragent());
                         }
                     }
                 });
+
                 window.setTitle("Карточка контрагента");
                 window.setClosable(true);
                 window.setMaximizable(false);
@@ -90,7 +99,6 @@ public class ContragentsForm extends AnchorPane {
             @Override
             public void changed(ObservableValue<? extends ContragentGroupFx> observable, ContragentGroupFx oldValue, ContragentGroupFx newValue) {
                 boolean root = newValue.getGuid().equals("-1");
-
                 tableViewPane.setEditable(!root);
             }
         });
@@ -98,25 +106,15 @@ public class ContragentsForm extends AnchorPane {
         treeView.selectedGroupsProperty().addListener(new ChangeListener<List<String>>() {
             @Override
             public void changed(ObservableValue<? extends List<String>> observable, List<String> oldValue, List<String> newValue) {
-                ObtainContragentRequest request = new ObtainContragentRequest();
-                request.getContragentTypes().addAll(obtainContragentRequest.getContragentTypes());
-                request.getPersonTypes().addAll(obtainContragentRequest.getPersonTypes());
-                request.setGroupGuids(newValue);
-                request.setActive(tableViewPane.isOnlyActive());
-                tableViewPane.setItems(obtainContragents(request));
+                List<ContragentFx> items = selector.getItemSelector().getItems(newValue, tableViewPane.isOnlyActive());
+                tableViewPane.setItems(items);
             }
         });
         tableViewPane.onlyActiveProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                ObtainContragentRequest request = new ObtainContragentRequest();
-                request.setGroupGuids(treeView.getSelectedGroups());
-                request.getContragentTypes().addAll(obtainContragentRequest.getContragentTypes());
-                request.getPersonTypes().addAll(obtainContragentRequest.getPersonTypes());
-                request.setActive(newValue);
-
-                tableViewPane.setItems(obtainContragents(request));
-
+                List<ContragentFx> items = selector.getItemSelector().getItems(treeView.getSelectedGroups(), tableViewPane.isOnlyActive());
+                tableViewPane.setItems(items);
             }
         });
 
@@ -155,34 +153,7 @@ public class ContragentsForm extends AnchorPane {
 
 
         tableViewPane.addColumns(name, address, phone, inn, kpp, group);
-        tableViewPane.toSaveProperty().addListener(new ChangeListener<ContragentFx>() {
-            @Override
-            public void changed(ObservableValue<? extends ContragentFx> observable, ContragentFx oldValue, ContragentFx newValue) {
-                if (newValue != null) {
-                    UpdateContragentRequest request = new UpdateContragentRequest();
-                    request.getDataList().add(newValue.getEntity());
-
-                        contragentsClient.updateContragents(request);
-                }
-            }
-        });
         splitPane.getItems().add(tableViewPane);
-    }
-
-
-    public void setRequest(ObtainContragentRequest request) {
-        this.obtainContragentRequest=request;
-        groupRequest = new ObtainContragentGroupRequest();
-
-        groupRequest.setContragentTypes(request.getContragentTypes());
-        groupRequest.setPersonTypes(request.getPersonTypes());
-        tableViewPane.setItems(obtainContragents(request));
-    }
-
-    private ObservableList<ContragentFx> obtainContragents(ObtainContragentRequest obtainContragentRequest) {
-            ObtainContragentResponse response = contragentsClient.getContragents(obtainContragentRequest);
-            return ContragentHelper.getInstance().getFxCollection(response.getDataList());
-
     }
 
     public void setObtainMode(boolean obtainMode) {
@@ -195,5 +166,13 @@ public class ContragentsForm extends AnchorPane {
 
     public ObjectProperty<ContragentFx> obtainItemProperty() {
         return tableViewPane.obtainItemProperty();
+    }
+
+    private List<String> getUserGuids(List<DelegatingUser> users) {
+        List<String> result = new ArrayList<>();
+        for (DelegatingUser user : users) {
+            result.add(user.getUserGuid());
+        }
+        return result;
     }
 }

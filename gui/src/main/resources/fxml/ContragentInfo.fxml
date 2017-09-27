@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import ru.metal.gui.controls.tableviewcontrol.ValidatedTableView?>
 <?import ru.metal.gui.windows.SaveButton?>
-<AnchorPane id="contragentInfo" fx:id="rootPane" prefHeight="613.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.contragents.ContragentInfoController">
+<AnchorPane id="contragentInfo" fx:id="rootPane" prefHeight="613.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.metal.gui.controllers.catalogs.contragents.ContragentInfoController">
    <children>
       <SaveButton fx:id="save" layoutX="762.0" layoutY="581.0" mnemonicParsing="false" onAction="#saveAction" text="Сохранить" AnchorPane.leftAnchor="762.0" AnchorPane.topAnchor="581.0" />
       <TabPane prefHeight="581.0" prefWidth="850.0" tabClosingPolicy="UNAVAILABLE">

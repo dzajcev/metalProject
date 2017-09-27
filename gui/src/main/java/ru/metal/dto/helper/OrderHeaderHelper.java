@@ -45,8 +45,9 @@ public class OrderHeaderHelper implements FxHelper<OrderHeaderFx,OrderHeaderDto>
         orderHeader.setRecipient(ContragentHelper.getInstance().getFxEntity(dto.getRecipient()));
         orderHeader.setNumber(dto.getNumber());
         orderHeader.setDateDocument(dto.getDateOrder());
-        orderHeader.setCreateDate(dto.getCreateDate());
+        orderHeader.setDateCreate(dto.getCreateDate());
         orderHeader.setComment(dto.getComment());
+        orderHeader.setDocumentStatus(dto.getStatus());
         orderHeader.setOrderBody(OrderBodyHelper.getInstance().getFxCollection(dto.getBody()));
         return orderHeader;
     }
